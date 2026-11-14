@@ -2,6 +2,8 @@ import { expect, skipBrokenLocalWebkit, test, type Cell } from './support/fixtur
 
 skipBrokenLocalWebkit();
 
+test.describe.configure({ timeout: 120_000 });
+
 const COLUMN = { x: 12, z: 12 } as const;
 
 test('big builder: smashing the bottom of a tower of 3 knocks all 3 down, one undo restores all 3', async ({

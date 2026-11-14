@@ -46,8 +46,9 @@ const BUILDERS: Record<Exclude<BlockShape, 'cube'>, (b: ShapeBuilder) => void> =
   slope,
   slab: (b) => b.box([0, 0, 0], [1, 0.5, 1]),
   plate: (b) => {
-    b.box([0, 0, 0], [1, 0.25, 1]);
-    studs(b, 0.25);
+    // A third of a block, matching the tray icon (src/content/art/shape-geometry.ts).
+    b.box([0, 0, 0], [1, 1 / 3, 1]);
+    studs(b, 1 / 3);
   },
   wheel,
   cone: (b) => cone(b, Y_FRAME(0.5, 0, 0.5), 0.47, 0.98, { segments: ROUND, sideFace: 'south', capFace: 'bottom' }),

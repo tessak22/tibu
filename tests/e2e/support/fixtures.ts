@@ -161,9 +161,13 @@ export class TibuApp {
     await this.tapElement(choice);
     await expect(choice).toHaveAttribute('aria-pressed', 'true');
     await expect(this.page.locator('.profile-list ~ .parent-msg.ok, .parent-msg.ok').first()).toBeVisible();
+    // Closing the grown-up area remounts the gallery; mark the old one so we wait for the new one.
+    await this.page.evaluate(() => document.querySelector('.gallery-screen')?.setAttribute('data-stale', ''));
     const close = this.page.locator('.parent-overlay .overlay-close');
     await close.scrollIntoViewIfNeeded();
     await this.tapElement(close);
+    await expect(this.page.locator('.parent-overlay')).toHaveCount(0);
+    await expect(this.page.locator('.gallery-screen:not([data-stale])')).toBeVisible();
     await this.waitForGallery();
   }
 
@@ -190,7 +194,7 @@ export class TibuApp {
         await this.page.evaluate(() => new Promise((r) => setTimeout(r, 120)));
         const b = await this.cellToScreen(probe);
         return a !== null && b !== null && Math.hypot(a.x - b.x, a.y - b.y) < 0.5;
-      }, { timeout: 20_000 })
+      }, { timeout: 60_000 })
       .toBe(true);
   }
 

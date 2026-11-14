@@ -69,9 +69,9 @@ describe('part shape templates', () => {
     }
   });
 
-  it('has the expected heights: slab half, plate quarter (plus studs), panes thin', () => {
+  it('has the expected heights: slab half, plate a third (plus studs), panes thin', () => {
     expect(bounds(shapeTemplate('slab', 0)).max[1]).toBeCloseTo(0.5);
-    expect(bounds(shapeTemplate('plate', 0)).max[1]).toBeLessThan(0.36);
+    expect(bounds(shapeTemplate('plate', 0)).max[1]).toBeLessThan(0.45);
     expect(bounds(shapeTemplate('pane', 0)).span[2]).toBeLessThan(0.2);
     expect(bounds(shapeTemplate('pane', 0)).span[0]).toBeCloseTo(1);
     expect(isGlassLike('pane', 'pane-blue')).toBe(true);

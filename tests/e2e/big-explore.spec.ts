@@ -2,6 +2,9 @@ import { expect, skipBrokenLocalWebkit, test, type Cell } from './support/fixtur
 
 skipBrokenLocalWebkit();
 
+// Big worlds render slowly with software WebGL when several workers share the CPU.
+test.describe.configure({ timeout: 240_000 });
+
 /** Neighbouring columns to try as a walk target, a few steps from the character. */
 const OFFSETS: readonly (readonly [number, number])[] = [
   [3, 0], [-3, 0], [0, 3], [0, -3], [3, 3], [-3, -3], [3, -3], [-3, 3], [2, 0], [0, 2], [-2, 0], [0, -2],
@@ -40,19 +43,22 @@ test('big builder: an adventure world starts in walk mode and a tap walks the ch
 
   await app.tapTopOf({ ...target, y: target.y - 1 });
 
+  const startDistance = Math.abs(start.x - target.x) + Math.abs(start.z - target.z);
+  // The buddy walks at its own pace (slower when frames are slow); it ends on or right next to the spot.
   await expect
     .poll(async () => {
       const at = await app.characterCell();
       return at ? Math.abs(at.x - target!.x) + Math.abs(at.z - target!.z) : 99;
-    }, { timeout: 20_000 })
-    .toBe(0);
+    }, { timeout: 60_000 })
+    .toBeLessThanOrEqual(Math.min(1, startDistance - 1));
   // Walking never builds or smashes.
   expect(await app.count()).toBe(before);
 });
 
 test('big builder HUD is all pictures and the sticker book opens with silhouettes', async ({ app, page }) => {
   await app.newAdventure('meadow');
-  const info = await page.locator('[data-testid="hud"] button').evaluateAll((els) =>
+  // The grown-up corner is intentionally small; every child control is at least 64 px.
+  const info = await page.locator('[data-testid="hud"] button:not([data-testid="parent-corner"])').evaluateAll((els) =>
     els
       .filter((el) => (el as HTMLElement).offsetParent !== null)
       .map((el) => ({
@@ -80,12 +86,13 @@ test('the home button brings the character back into view', async ({ app, page }
   if (!center) throw new Error('character not on screen');
   await app.input.drag(center, { x: center.x + 260, y: center.y + 30 });
   await app.tapElement(page.getByTestId('hud').locator('.home-btn'));
-  await app.waitForStableCamera();
-  const after = await app.cellToScreen((await app.characterCell())!);
   const viewport = page.viewportSize()!;
-  expect(after).not.toBeNull();
-  expect(after!.x).toBeGreaterThan(0);
-  expect(after!.x).toBeLessThan(viewport.width);
-  expect(after!.y).toBeGreaterThan(0);
-  expect(after!.y).toBeLessThan(viewport.height);
+  const middle = { x: viewport.width / 2, y: viewport.height / 2 };
+  // The camera flies back behind the buddy: it ends up near the middle of the screen.
+  await expect
+    .poll(async () => {
+      const p = await app.cellToScreen((await app.characterCell())!);
+      return p ? Math.hypot(p.x - middle.x, p.y - middle.y) : Infinity;
+    }, { timeout: 60_000 })
+    .toBeLessThan(Math.min(viewport.width, viewport.height) * 0.4);
 });

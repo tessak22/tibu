@@ -2,6 +2,8 @@ import { expect, skipBrokenLocalWebkit, test } from './support/fixtures';
 
 skipBrokenLocalWebkit();
 
+test.describe.configure({ timeout: 120_000 });
+
 test('big builder: a step-by-step build shows ghosts and tapping a ghost places that block', async ({ app, page }) => {
   await app.open();
   await app.setPlayerMode('big');
