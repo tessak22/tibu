@@ -269,3 +269,17 @@
     margin-block: 6px;
   }
 }
+
+/*
+ * Narrow portrait (phones): the top-end group (photo, sound, card, builds, stickers) does not fit
+ * beside the back/home buttons, so it drops to its own row below them and may wrap.
+ */
+@media (orientation: portrait) and (max-width: 600px) {
+  .hud-top-end {
+    top: calc(var(--safe-top) + 12px + var(--btn) + 10px);
+    inset-inline-end: calc(var(--safe-right) + 12px);
+    max-width: calc(100vw - var(--safe-left) - var(--safe-right) - 24px);
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+}
