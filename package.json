@@ -1,0 +1,36 @@
+{
+  "name": "tibu",
+  "version": "1.0.0",
+  "description": "Tibu, a block world for tiny builders.",
+  "scripts": {
+    "dev": "vite",
+    "build": "npm run validate && tsc && vite build",
+    "preview": "vite preview",
+    "validate": "tsx scripts/validate-content.ts",
+    "typecheck": "tsc",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "voice": "tsx scripts/voice/generate.ts"
+  },
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "idb": "^8.0.4",
+    "three": "^0.187.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.65.1",
+    "@types/node": "^26.6.6",
+    "@types/three": "^0.187.0",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
+    "fake-indexeddb": "^6.2.8",
+    "jsdom": "^29.1.1",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8",
+    "vite-plugin-pwa": "^2.0.0",
+    "vitest": "^5.1.0"
+  },
+  "private": true
+}
