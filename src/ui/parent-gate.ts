@@ -6,6 +6,8 @@ export const HOLD_MS = 3000;
 const TICK_MS = 50;
 const RING_R = 26;
 const RING_LEN = 2 * Math.PI * RING_R;
+/** Wrong answers allowed before the gate closes and the 3-second hold is needed again. */
+export const MAX_WRONG_ANSWERS = 3;
 
 export interface Sum {
   readonly a: number;
@@ -28,6 +30,7 @@ export function askParentSum(root: HTMLElement, rand: () => number = Math.random
     let sum = makeSum(rand);
     let entry = '';
     let solved = false;
+    let wrong = 0;
     const question = h('div', { class: 'gate-question', 'aria-live': 'polite', 'data-testid': 'gate-question' });
     const display = h('div', { class: 'gate-display', 'data-testid': 'gate-display' });
     const render = (): void => {
@@ -37,6 +40,11 @@ export function askParentSum(root: HTMLElement, rand: () => number = Math.random
     const submit = (): void => {
       if (Number(entry) === sum.answer && entry !== '') {
         solved = true;
+        handle.close();
+        return;
+      }
+      wrong += 1;
+      if (wrong >= MAX_WRONG_ANSWERS) {
         handle.close();
         return;
       }

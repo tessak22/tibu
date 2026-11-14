@@ -25,6 +25,7 @@ export default defineConfig({
   projects: [
     {
       name: 'ipad',
+      testIgnore: /desktop\.spec\.ts/,
       use: {
         ...devices['iPad (gen 7) landscape'],
         browserName: 'webkit',
@@ -34,12 +35,24 @@ export default defineConfig({
     },
     {
       name: 'tablet-chromium',
+      testIgnore: /desktop\.spec\.ts/,
       use: {
         browserName: 'chromium',
         viewport: { width: 1180, height: 820 },
         deviceScaleFactor: 2,
         hasTouch: true,
         isMobile: true,
+      },
+    },
+    {
+      // Desktop should work too: a plain mouse, no touch at all.
+      name: 'desktop-chromium',
+      testMatch: /desktop\.spec\.ts/,
+      use: {
+        browserName: 'chromium',
+        viewport: { width: 1280, height: 800 },
+        hasTouch: false,
+        isMobile: false,
       },
     },
   ],

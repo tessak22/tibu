@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { askParentSum, createParentCorner, HOLD_MS, makeSum } from '../../../src/ui/parent-gate';
+import { askParentSum, createParentCorner, HOLD_MS, makeSum, MAX_WRONG_ANSWERS } from '../../../src/ui/parent-gate';
 
 const press = (root: HTMLElement, key: string): void => {
   root.querySelector<HTMLButtonElement>(`[data-key="${key}"]`)?.click();
@@ -44,6 +44,16 @@ describe('askParentSum', () => {
     expect(root.querySelector('.gate-display')?.textContent?.trim()).toBe('');
     root.querySelector<HTMLButtonElement>('.overlay-close')?.click();
     await expect(promise).resolves.toBe(false);
+  });
+
+  it('closes after too many wrong answers so mashing cannot get in', async () => {
+    const promise = askParentSum(root, () => 0.5);
+    for (let i = 0; i < MAX_WRONG_ANSWERS; i++) {
+      press(root, '1');
+      press(root, 'ok');
+    }
+    await expect(promise).resolves.toBe(false);
+    expect(root.querySelector('.gate')).toBeNull();
   });
 });
 

@@ -34,8 +34,15 @@ export function openOverlay(root: HTMLElement, content: Node, opts: OverlayOptio
   }
   panel.append(content);
   if (opts.closeOnBackdrop !== false) {
+    // Only a press that started on the backdrop closes it. The finger that opened this overlay
+    // (e.g. lifting after the 3 s grown-up hold) produces a click here that must not close it.
+    let pressedBackdrop = false;
+    el.addEventListener('pointerdown', (e) => {
+      pressedBackdrop = e.target === el;
+    });
     el.addEventListener('click', (e) => {
-      if (e.target === el) close();
+      if (e.target === el && pressedBackdrop) close();
+      pressedBackdrop = false;
     });
   }
   root.append(el);
