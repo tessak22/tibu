@@ -10,8 +10,9 @@ const BASE_URL = `http://localhost:${PORT}`;
  */
 export default defineConfig({
   testDir: './tests/e2e',
-  timeout: 60_000,
-  expect: { timeout: 10_000 },
+  // CI runners render WebGL in software, which is several times slower.
+  timeout: process.env.CI ? 180_000 : 60_000,
+  expect: { timeout: process.env.CI ? 20_000 : 10_000 },
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: 0,

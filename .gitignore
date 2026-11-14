@@ -9,3 +9,4 @@ playwright-report/
 .DS_Store
 scripts/voice/.venv/
 scripts/voice/.cache/
+.wrangler/

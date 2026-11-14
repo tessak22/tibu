@@ -126,7 +126,12 @@ export function syntheticTouchDriver(page: Page): TouchDriver {
           }
           if (phase === 'up') {
             targets.delete(c.id);
-            if (target instanceof HTMLElement && document.elementFromPoint(c.p.x, c.p.y) === target) target.click();
+            // Like a real tap: the click fires on the touched element (even an SVG icon) and bubbles up.
+            if (document.elementFromPoint(c.p.x, c.p.y) === target) {
+              target.dispatchEvent(
+                new MouseEvent('click', { bubbles: true, cancelable: true, composed: true, clientX: c.p.x, clientY: c.p.y }),
+              );
+            }
           }
         }
       },
