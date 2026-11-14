@@ -5,7 +5,6 @@ export const ANIMALS_PACK_ID = 'animals';
 
 /** Used when the animals pack is unavailable. */
 const FALLBACK_ANIMALS: readonly { id: string; color: string }[] = [
-  { id: 'fox', color: '#ff8a50' },
   { id: 'cat', color: '#ffd54f' },
   { id: 'dog', color: '#bcaaa4' },
   { id: 'bunny', color: '#f8bbd0' },
@@ -61,5 +60,5 @@ export function animalPicture(registry: ContentRegistry, animal: string, size: n
 /** Picks an animal not used yet by existing profiles, for nicer defaults. */
 export function nextFreeAnimal(registry: ContentRegistry, used: readonly string[]): string {
   const choices = animalChoices(registry);
-  return (choices.find((c) => !used.includes(c.id)) ?? choices[0])?.id ?? 'fox';
+  return (choices.find((c) => !used.includes(c.id)) ?? choices[0])?.id ?? 'cat';
 }

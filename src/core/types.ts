@@ -196,7 +196,7 @@ export const DEFAULT_SETTINGS: Settings = {
 
 export interface Profile {
   readonly id: string;
-  /** Animal picture id, e.g. "fox". */
+  /** Animal picture id, e.g. "cat". */
   readonly animal: string;
   readonly createdAt: number;
 }

@@ -4,7 +4,7 @@ import { newId } from './ids';
 import { mergeSettings } from './settings';
 
 export const MAX_NAME_LENGTH = 60;
-export const DEFAULT_PROFILE_ANIMAL = 'fox';
+export const DEFAULT_PROFILE_ANIMAL = 'cat';
 
 export interface NewWorldInput {
   readonly profileId: string;
