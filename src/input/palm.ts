@@ -1,7 +1,11 @@
 /** Palm / accidental-touch rejection. Pure so it is unit testable. */
 export const PALM_EDGE_PX = 24;
-/** Contact sizes above this (CSS px) are treated as a palm or a flat hand. */
-export const PALM_CONTACT_PX = 60;
+/**
+ * Contact sizes above this (CSS px) are treated as a palm or a flat hand, but only while another
+ * finger is already down. iPad Safari reports adult and older-kid fingertips well above 60px, so a
+ * low threshold silently ignored grown-ups' taps; a single touch is never rejected for its size.
+ */
+export const PALM_CONTACT_PX = 180;
 
 export interface PointerSample {
   readonly x: number;
@@ -27,6 +31,6 @@ export function isPalmContact(p: PointerSample): boolean {
 
 /** Whether a new pointer should be ignored entirely. */
 export function shouldRejectPointer(p: PointerSample, view: Viewport, activePointers: number): boolean {
-  if (isPalmContact(p)) return true;
-  return p.pointerType === 'touch' && activePointers > 0 && isNearEdge(p, view);
+  if (p.pointerType !== 'touch' || activePointers === 0) return false;
+  return isPalmContact(p) || isNearEdge(p, view);
 }

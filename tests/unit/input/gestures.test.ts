@@ -23,8 +23,8 @@ describe('GestureTracker', () => {
   it('moving past the threshold becomes an orbit and never taps', () => {
     const g = new GestureTracker(() => view);
     g.down(touch(1, 100, 100));
-    expect(types(g.move(touch(1, 115, 100)))).toEqual(['pressCancel', 'orbit']);
-    expect(g.move(touch(1, 120, 90))).toEqual([{ type: 'orbit', dx: 5, dy: -10 }]);
+    expect(types(g.move(touch(1, 125, 100)))).toEqual(['pressCancel', 'orbit']);
+    expect(g.move(touch(1, 130, 90))).toEqual([{ type: 'orbit', dx: 5, dy: -10 }]);
     g.move(touch(1, 100, 100));
     expect(g.up(touch(1, 100, 100))).toEqual([]);
   });
@@ -58,10 +58,24 @@ describe('GestureTracker', () => {
     expect(g.up(touch(1, 100, 100))).toEqual([]);
   });
 
-  it('ignores palm-sized contacts', () => {
+  it('never ignores a single touch because of its size (adult fingertips)', () => {
     const g = new GestureTracker(() => view);
-    expect(g.down(touch(1, 500, 300, { width: 90, height: 90 }))).toEqual([]);
-    expect(g.up(touch(1, 500, 300))).toEqual([]);
+    g.down(touch(1, 500, 300, { width: 120, height: 120 }));
+    expect(g.up(touch(1, 500, 300))).toEqual([{ type: 'tap', x: 500, y: 300 }]);
+  });
+
+  it('treats a small wobble during a tap as a tap', () => {
+    const g = new GestureTracker(() => view);
+    g.down(touch(1, 500, 300));
+    g.move(touch(1, 512, 308));
+    expect(g.up(touch(1, 512, 308))).toEqual([{ type: 'tap', x: 512, y: 308 }]);
+  });
+
+  it('ignores a palm-sized contact while another finger is down', () => {
+    const g = new GestureTracker(() => view);
+    g.down(touch(1, 500, 300));
+    expect(g.down(touch(2, 600, 300, { width: 220, height: 220 }))).toEqual([]);
+    expect(g.up(touch(2, 600, 300))).toEqual([]);
   });
 
   it('ignores an edge touch while another finger is active', () => {

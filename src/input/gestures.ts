@@ -1,7 +1,11 @@
 import { shouldRejectPointer, type PointerSample, type Viewport } from './palm';
 
-/** Movement (CSS px) after which a touch becomes a drag. CSS px are already DPR independent. */
-export const DRAG_THRESHOLD_PX = 10;
+/**
+ * Movement (CSS px) after which a touch becomes a drag. CSS px are already DPR independent.
+ * Adult and older-kid taps wobble more than a toddler's, and a wobble past a small threshold
+ * turned their taps into drags that place nothing, so this is generous.
+ */
+export const DRAG_THRESHOLD_PX = 20;
 /** Mice are precise; use a smaller threshold. */
 export const MOUSE_DRAG_THRESHOLD_PX = 5;
 
