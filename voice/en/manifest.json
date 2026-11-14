@@ -2,1056 +2,1056 @@
   "clips": {
     "block.animals.bird": {
       "file": "block.animals.bird.m4a",
-      "hash": "9201ead77c80d312",
+      "hash": "88a0c858ae990802",
       "text": "bird"
     },
     "block.animals.bunny": {
       "file": "block.animals.bunny.m4a",
-      "hash": "8cf08a0a91855f5f",
+      "hash": "be5875506e0fedc9",
       "text": "bunny"
     },
     "block.animals.cat": {
       "file": "block.animals.cat.m4a",
-      "hash": "a9fcfde010682e36",
+      "hash": "2d746e7d699e8bb8",
       "text": "cat"
     },
     "block.animals.chicken": {
       "file": "block.animals.chicken.m4a",
-      "hash": "f4921e20e99cdda6",
+      "hash": "2021250b292a19a1",
       "text": "chicken"
     },
     "block.animals.cow": {
       "file": "block.animals.cow.m4a",
-      "hash": "0015258301453730",
+      "hash": "1261bfdec09838c3",
       "text": "cow"
     },
     "block.animals.dog": {
       "file": "block.animals.dog.m4a",
-      "hash": "6cf305ab7b88ddc6",
+      "hash": "a916c4ebc66120af",
       "text": "dog"
     },
     "block.animals.duck": {
       "file": "block.animals.duck.m4a",
-      "hash": "e56b129d35ce0223",
+      "hash": "f5c2955f1a151ad8",
       "text": "duck"
     },
     "block.animals.frog": {
       "file": "block.animals.frog.m4a",
-      "hash": "0c575b6e65a14ce1",
+      "hash": "fc3076c0544c107f",
       "text": "frog"
     },
     "block.animals.horse": {
       "file": "block.animals.horse.m4a",
-      "hash": "09da465a40a00d59",
+      "hash": "701f8785de1879c5",
       "text": "horse"
     },
     "block.animals.mouse": {
       "file": "block.animals.mouse.m4a",
-      "hash": "3cc1f5a5c49b3083",
+      "hash": "69f647e3bd460290",
       "text": "mouse"
     },
     "block.animals.pig": {
       "file": "block.animals.pig.m4a",
-      "hash": "a1b0e3129e30106d",
+      "hash": "38d41ce477fd5331",
       "text": "pig"
     },
     "block.animals.sheep": {
       "file": "block.animals.sheep.m4a",
-      "hash": "70598a3c27432096",
+      "hash": "c3d4de3f0fb7752e",
       "text": "sheep"
     },
     "block.building.blue-roof": {
       "file": "block.building.blue-roof.m4a",
-      "hash": "fe57ef23777325f6",
+      "hash": "4cb5b2c115eabb2d",
       "text": "blue roof"
     },
     "block.building.brick": {
       "file": "block.building.brick.m4a",
-      "hash": "6ad41f34ab6789a0",
+      "hash": "0b8d8e08a954ea8d",
       "text": "brick"
     },
     "block.building.door": {
       "file": "block.building.door.m4a",
-      "hash": "527e6c086a15e529",
+      "hash": "d0e9705dd07e0c9b",
       "text": "door"
     },
     "block.building.glass": {
       "file": "block.building.glass.m4a",
-      "hash": "3bb9d7cdcdb19754",
+      "hash": "c624a09c1840da8f",
       "text": "glass"
     },
     "block.building.heart-light": {
       "file": "block.building.heart-light.m4a",
-      "hash": "c96404fd28c63a29",
+      "hash": "bbe9b217c9784334",
       "text": "heart light"
     },
     "block.building.lamp": {
       "file": "block.building.lamp.m4a",
-      "hash": "f615f96d6db24203",
+      "hash": "f39824e442d1c77a",
       "text": "lamp"
     },
     "block.building.planks": {
       "file": "block.building.planks.m4a",
-      "hash": "52853ab2ff2a7db4",
+      "hash": "98eb65e74bc6e175",
       "text": "planks"
     },
     "block.building.roof": {
       "file": "block.building.roof.m4a",
-      "hash": "e1f571719a7e9c9f",
+      "hash": "26d52d6a71757983",
       "text": "roof"
     },
     "block.building.star-light": {
       "file": "block.building.star-light.m4a",
-      "hash": "40e4dda577a6484e",
+      "hash": "26f63b2b28016987",
       "text": "star light"
     },
     "block.building.wall": {
       "file": "block.building.wall.m4a",
-      "hash": "c2a61c491a505ca0",
+      "hash": "af0d15fb23383a8c",
       "text": "wall"
     },
     "block.building.window": {
       "file": "block.building.window.m4a",
-      "hash": "466c777de55c6f1d",
+      "hash": "6784fcbe49724e06",
       "text": "window"
     },
     "block.colors.black": {
       "file": "block.colors.black.m4a",
-      "hash": "6884303e87e81d1d",
+      "hash": "ad079ed36d38df2b",
       "text": "black"
     },
     "block.colors.blue": {
       "file": "block.colors.blue.m4a",
-      "hash": "76a9d2a934fc640c",
+      "hash": "6b30cb4f5fb1048f",
       "text": "blue"
     },
     "block.colors.brown": {
       "file": "block.colors.brown.m4a",
-      "hash": "1729fd9a71d39efb",
+      "hash": "251b4104563c7143",
       "text": "brown"
     },
     "block.colors.green": {
       "file": "block.colors.green.m4a",
-      "hash": "5e7858701b00147e",
+      "hash": "5c58e3aaa8c992e7",
       "text": "green"
     },
     "block.colors.orange": {
       "file": "block.colors.orange.m4a",
-      "hash": "5ea9c0d0a5938f5a",
+      "hash": "0855542450033a9d",
       "text": "orange"
     },
     "block.colors.pink": {
       "file": "block.colors.pink.m4a",
-      "hash": "9b0b7fcb9c1a7b99",
+      "hash": "e3435cab4f776ff4",
       "text": "pink"
     },
     "block.colors.purple": {
       "file": "block.colors.purple.m4a",
-      "hash": "2aa70c3d64a1c62c",
+      "hash": "b1ec8b28717cd659",
       "text": "purple"
     },
     "block.colors.red": {
       "file": "block.colors.red.m4a",
-      "hash": "bcc1f8b0fa0f4558",
+      "hash": "d7b3a05ef17ce960",
       "text": "red"
     },
     "block.colors.white": {
       "file": "block.colors.white.m4a",
-      "hash": "cdf4ba137a4f56b4",
+      "hash": "c193ef567f385c53",
       "text": "white"
     },
     "block.colors.yellow": {
       "file": "block.colors.yellow.m4a",
-      "hash": "db31be3424006e87",
+      "hash": "5256a839789c046e",
       "text": "yellow"
     },
     "block.letters.a": {
       "file": "block.letters.a.m4a",
-      "hash": "43778e1f4fbdf122",
+      "hash": "9484656887e5db22",
       "text": "A"
     },
     "block.letters.b": {
       "file": "block.letters.b.m4a",
-      "hash": "26357225fcfb66ce",
+      "hash": "edab85daa8284f84",
       "text": "B"
     },
     "block.letters.c": {
       "file": "block.letters.c.m4a",
-      "hash": "30bcc9a559852f68",
+      "hash": "c3987bcb1e991c8b",
       "text": "C"
     },
     "block.letters.d": {
       "file": "block.letters.d.m4a",
-      "hash": "8dafa1c254e48e64",
+      "hash": "6ce9a862739cf72a",
       "text": "D"
     },
     "block.letters.e": {
       "file": "block.letters.e.m4a",
-      "hash": "4f74d0ae23119f6d",
+      "hash": "42a311db4f9d968c",
       "text": "E"
     },
     "block.letters.f": {
       "file": "block.letters.f.m4a",
-      "hash": "956fca2046c317f2",
+      "hash": "d7d5a7f5b0d3eb97",
       "text": "F"
     },
     "block.letters.g": {
       "file": "block.letters.g.m4a",
-      "hash": "f01600949eade934",
+      "hash": "59d83369b7390b25",
       "text": "G"
     },
     "block.letters.h": {
       "file": "block.letters.h.m4a",
-      "hash": "09119d5a3219f80e",
+      "hash": "cb8a6147862a9627",
       "text": "H"
     },
     "block.letters.i": {
       "file": "block.letters.i.m4a",
-      "hash": "362ed7b13d82233d",
+      "hash": "1a007acc3bfb958c",
       "text": "I"
     },
     "block.letters.j": {
       "file": "block.letters.j.m4a",
-      "hash": "0ac9694350688f73",
+      "hash": "73f7deadecaac1e6",
       "text": "J"
     },
     "block.letters.k": {
       "file": "block.letters.k.m4a",
-      "hash": "b2a2b0bb3a02647a",
+      "hash": "f808ee22432b251e",
       "text": "K"
     },
     "block.letters.l": {
       "file": "block.letters.l.m4a",
-      "hash": "31aa8d458e8b1111",
+      "hash": "79d872d1efec4d40",
       "text": "L"
     },
     "block.letters.m": {
       "file": "block.letters.m.m4a",
-      "hash": "d54e54a144576ec9",
+      "hash": "7cf5584bef007722",
       "text": "M"
     },
     "block.letters.n": {
       "file": "block.letters.n.m4a",
-      "hash": "d45150863f1902ec",
+      "hash": "6c09589a624b484c",
       "text": "N"
     },
     "block.letters.o": {
       "file": "block.letters.o.m4a",
-      "hash": "ca5edc0b6799aa8c",
+      "hash": "c3bfeeb36498dc5c",
       "text": "O"
     },
     "block.letters.p": {
       "file": "block.letters.p.m4a",
-      "hash": "f23b13d640699771",
+      "hash": "a377307047c8ea1b",
       "text": "P"
     },
     "block.letters.q": {
       "file": "block.letters.q.m4a",
-      "hash": "0a84f31bcfdb6d08",
+      "hash": "1334244814c5e800",
       "text": "Q"
     },
     "block.letters.r": {
       "file": "block.letters.r.m4a",
-      "hash": "20f27d8f17d4d7d0",
+      "hash": "dafce699945747a7",
       "text": "R"
     },
     "block.letters.s": {
       "file": "block.letters.s.m4a",
-      "hash": "8b7a0de07ce09dab",
+      "hash": "1b37a2ef7b7dbc38",
       "text": "S"
     },
     "block.letters.t": {
       "file": "block.letters.t.m4a",
-      "hash": "ae6fe97841da5797",
+      "hash": "a50e837fb92f618a",
       "text": "T"
     },
     "block.letters.u": {
       "file": "block.letters.u.m4a",
-      "hash": "de501d18a227980f",
+      "hash": "dff1eb705ab1babe",
       "text": "U"
     },
     "block.letters.v": {
       "file": "block.letters.v.m4a",
-      "hash": "fb1abb1b2d7b07e6",
+      "hash": "b91cae79e023149f",
       "text": "V"
     },
     "block.letters.w": {
       "file": "block.letters.w.m4a",
-      "hash": "2a35db729a213270",
+      "hash": "4e9a446a4330289d",
       "text": "W"
     },
     "block.letters.x": {
       "file": "block.letters.x.m4a",
-      "hash": "2b354a4d1117a5b9",
+      "hash": "151cd567289ef78d",
       "text": "X"
     },
     "block.letters.y": {
       "file": "block.letters.y.m4a",
-      "hash": "823f3ea35098496b",
+      "hash": "fa4cecdccc62aaf3",
       "text": "Y"
     },
     "block.letters.z": {
       "file": "block.letters.z.m4a",
-      "hash": "a7680092b90d7d43",
+      "hash": "86e2d77df272e9bc",
       "text": "Z"
     },
     "block.music.a": {
       "file": "block.music.a.m4a",
-      "hash": "43778e1f4fbdf122",
+      "hash": "9484656887e5db22",
       "text": "A"
     },
     "block.music.b": {
       "file": "block.music.b.m4a",
-      "hash": "26357225fcfb66ce",
+      "hash": "edab85daa8284f84",
       "text": "B"
     },
     "block.music.c": {
       "file": "block.music.c.m4a",
-      "hash": "30bcc9a559852f68",
+      "hash": "c3987bcb1e991c8b",
       "text": "C"
     },
     "block.music.d": {
       "file": "block.music.d.m4a",
-      "hash": "8dafa1c254e48e64",
+      "hash": "6ce9a862739cf72a",
       "text": "D"
     },
     "block.music.e": {
       "file": "block.music.e.m4a",
-      "hash": "4f74d0ae23119f6d",
+      "hash": "42a311db4f9d968c",
       "text": "E"
     },
     "block.music.f": {
       "file": "block.music.f.m4a",
-      "hash": "956fca2046c317f2",
+      "hash": "d7d5a7f5b0d3eb97",
       "text": "F"
     },
     "block.music.g": {
       "file": "block.music.g.m4a",
-      "hash": "f01600949eade934",
+      "hash": "59d83369b7390b25",
       "text": "G"
     },
     "block.music.high-c": {
       "file": "block.music.high-c.m4a",
-      "hash": "c8da4523ba4e555e",
+      "hash": "3a3d1ff694e2f484",
       "text": "high C"
     },
     "block.nature.dirt": {
       "file": "block.nature.dirt.m4a",
-      "hash": "bd1d125747df9704",
+      "hash": "3bc238b92a814b35",
       "text": "dirt"
     },
     "block.nature.flowers": {
       "file": "block.nature.flowers.m4a",
-      "hash": "8959b73aa48ed6dc",
+      "hash": "da18e22856a3aac8",
       "text": "flowers"
     },
     "block.nature.grass": {
       "file": "block.nature.grass.m4a",
-      "hash": "7a27efd69c09435e",
+      "hash": "560a78720d06c5c2",
       "text": "grass"
     },
     "block.nature.hay": {
       "file": "block.nature.hay.m4a",
-      "hash": "6ac49120c894b9fc",
+      "hash": "610d2fb468666973",
       "text": "hay"
     },
     "block.nature.ice": {
       "file": "block.nature.ice.m4a",
-      "hash": "c482d235fb48232e",
+      "hash": "9889b3975bf22f8c",
       "text": "ice"
     },
     "block.nature.leaves": {
       "file": "block.nature.leaves.m4a",
-      "hash": "f99d9d091737f576",
+      "hash": "0d1280080e986474",
       "text": "leaves"
     },
     "block.nature.moon-rock": {
       "file": "block.nature.moon-rock.m4a",
-      "hash": "11f3b88b1e9aede0",
+      "hash": "d109257c0c28f5d0",
       "text": "moon rock"
     },
     "block.nature.sand": {
       "file": "block.nature.sand.m4a",
-      "hash": "38791486d6c49cad",
+      "hash": "c030db3b3962a825",
       "text": "sand"
     },
     "block.nature.snow": {
       "file": "block.nature.snow.m4a",
-      "hash": "fd18aeeb7fa798db",
+      "hash": "eff84f3c23fcfb21",
       "text": "snow"
     },
     "block.nature.stone": {
       "file": "block.nature.stone.m4a",
-      "hash": "eed3c44e4964593c",
+      "hash": "1e6e2616a2c4d413",
       "text": "stone"
     },
     "block.nature.water": {
       "file": "block.nature.water.m4a",
-      "hash": "56a6981a756579ec",
+      "hash": "118ac4e6a23138dc",
       "text": "water"
     },
     "block.nature.wood": {
       "file": "block.nature.wood.m4a",
-      "hash": "4375b3baa484639d",
+      "hash": "db958d239ef4ef93",
       "text": "wood"
     },
     "block.numbers.0": {
       "file": "block.numbers.0.m4a",
-      "hash": "cccc16f9a30ec805",
+      "hash": "2943db20aacd3647",
       "text": "zero"
     },
     "block.numbers.1": {
       "file": "block.numbers.1.m4a",
-      "hash": "5004f6c6aef2160d",
+      "hash": "40a19ec4f2fde1da",
       "text": "one"
     },
     "block.numbers.10": {
       "file": "block.numbers.10.m4a",
-      "hash": "6da8e6c3790d16d9",
+      "hash": "a15950c79e7138fa",
       "text": "ten"
     },
     "block.numbers.2": {
       "file": "block.numbers.2.m4a",
-      "hash": "f8bee03511e124a4",
+      "hash": "6cd1552a7c76e95e",
       "text": "two"
     },
     "block.numbers.3": {
       "file": "block.numbers.3.m4a",
-      "hash": "6134be3a2dc36c73",
+      "hash": "c2d098961968c92d",
       "text": "three"
     },
     "block.numbers.4": {
       "file": "block.numbers.4.m4a",
-      "hash": "e7e7ad33ca2379f0",
+      "hash": "da99a515032ae271",
       "text": "four"
     },
     "block.numbers.5": {
       "file": "block.numbers.5.m4a",
-      "hash": "83eb51b7dec90172",
+      "hash": "c0993ebfb639c719",
       "text": "five"
     },
     "block.numbers.6": {
       "file": "block.numbers.6.m4a",
-      "hash": "4ac760274c0399bb",
+      "hash": "27d476581e914744",
       "text": "six"
     },
     "block.numbers.7": {
       "file": "block.numbers.7.m4a",
-      "hash": "ca9a8d83ad60a505",
+      "hash": "bae1e217bba2cf3a",
       "text": "seven"
     },
     "block.numbers.8": {
       "file": "block.numbers.8.m4a",
-      "hash": "1190ffb568efc362",
+      "hash": "dbdcf9a441d4bbcc",
       "text": "eight"
     },
     "block.numbers.9": {
       "file": "block.numbers.9.m4a",
-      "hash": "56cef87858c62f53",
+      "hash": "ea214a9ba656de2b",
       "text": "nine"
     },
     "block.placeholder": {
       "file": "block.placeholder.m4a",
-      "hash": "4a0ae5d1b578416d",
+      "hash": "b3d6eac4d57cd7e1",
       "text": "mystery block"
     },
     "block.shapes.circle": {
       "file": "block.shapes.circle.m4a",
-      "hash": "7a03b8c5e71fecc9",
+      "hash": "b2ce86cedd586674",
       "text": "circle"
     },
     "block.shapes.cloud": {
       "file": "block.shapes.cloud.m4a",
-      "hash": "29010c6e24ad19c1",
+      "hash": "edfc356b63446032",
       "text": "cloud"
     },
     "block.shapes.cross": {
       "file": "block.shapes.cross.m4a",
-      "hash": "cad99249cf92dcab",
+      "hash": "7bdfe7a71d2aaa95",
       "text": "cross"
     },
     "block.shapes.diamond": {
       "file": "block.shapes.diamond.m4a",
-      "hash": "e29f933619e45b64",
+      "hash": "2f1855b7f72e7ff3",
       "text": "diamond"
     },
     "block.shapes.heart": {
       "file": "block.shapes.heart.m4a",
-      "hash": "90c5d613f46ca998",
+      "hash": "6c111e8aad84e609",
       "text": "heart"
     },
     "block.shapes.hexagon": {
       "file": "block.shapes.hexagon.m4a",
-      "hash": "368eb77c33a1fbc2",
+      "hash": "059b62e9d762bcb5",
       "text": "hexagon"
     },
     "block.shapes.moon": {
       "file": "block.shapes.moon.m4a",
-      "hash": "6b3af6afe8151c3c",
+      "hash": "fa53bc5981373611",
       "text": "moon"
     },
     "block.shapes.oval": {
       "file": "block.shapes.oval.m4a",
-      "hash": "9bb7a888b6068844",
+      "hash": "4458ee27dcc181b4",
       "text": "oval"
     },
     "block.shapes.pentagon": {
       "file": "block.shapes.pentagon.m4a",
-      "hash": "3859c50b50ca53d8",
+      "hash": "83b142286c45c291",
       "text": "pentagon"
     },
     "block.shapes.rectangle": {
       "file": "block.shapes.rectangle.m4a",
-      "hash": "0a961a4978ea5673",
+      "hash": "d7cd411d5b0ee80a",
       "text": "rectangle"
     },
     "block.shapes.square": {
       "file": "block.shapes.square.m4a",
-      "hash": "bd4dc04e22f1d2cc",
+      "hash": "e8c85994d7a87754",
       "text": "square"
     },
     "block.shapes.star": {
       "file": "block.shapes.star.m4a",
-      "hash": "5c936fe5ff9b6c87",
+      "hash": "0da78c982d860dfe",
       "text": "star"
     },
     "block.shapes.triangle": {
       "file": "block.shapes.triangle.m4a",
-      "hash": "9095609cd4dbc300",
+      "hash": "b4cbfdb58d3117d5",
       "text": "triangle"
     },
     "build-mode": {
       "file": "build-mode.m4a",
-      "hash": "0b9aabec49906930",
+      "hash": "e2195c94c584ebe0",
       "text": "Build!"
     },
     "card-done": {
       "file": "card-done.m4a",
-      "hash": "fcac66592759b3e8",
+      "hash": "11321b6cc61ba493",
       "text": "You built it!"
     },
     "card-show": {
       "file": "card-show.m4a",
-      "hash": "c505f453c280c9f3",
+      "hash": "462dc2bade40780b",
       "text": "Can you build this?"
     },
     "card.abc": {
       "file": "card.abc.m4a",
-      "hash": "85a83984d2cd1235",
+      "hash": "0b9f7e2092056116",
       "text": "A B C"
     },
     "card.bridge": {
       "file": "card.bridge.m4a",
-      "hash": "ef6ae816e369b865",
+      "hash": "16fc283f7d1de499",
       "text": "bridge"
     },
     "card.car": {
       "file": "card.car.m4a",
-      "hash": "15c3e3fc1ce323f4",
+      "hash": "117af307d7e73489",
       "text": "car"
     },
     "card.count-to-three": {
       "file": "card.count-to-three.m4a",
-      "hash": "9a9bb4909b428006",
+      "hash": "42fd2557b1686484",
       "text": "one two three"
     },
     "card.flower-bed": {
       "file": "card.flower-bed.m4a",
-      "hash": "139c6c5696c565e5",
+      "hash": "edb0d8e42087199d",
       "text": "flower bed"
     },
     "card.house": {
       "file": "card.house.m4a",
-      "hash": "a7702b83710fa3e4",
+      "hash": "505835dfd2cb7467",
       "text": "house"
     },
     "card.music-steps": {
       "file": "card.music-steps.m4a",
-      "hash": "6f317785e855d717",
+      "hash": "19814a52326c8ac1",
       "text": "music steps"
     },
     "card.rainbow": {
       "file": "card.rainbow.m4a",
-      "hash": "30291ca5e4f4a708",
+      "hash": "f8dc325cf59aa6ed",
       "text": "rainbow"
     },
     "card.red-tower": {
       "file": "card.red-tower.m4a",
-      "hash": "6deb512d725b8f3b",
+      "hash": "6233fb74dfc71368",
       "text": "red tower"
     },
     "card.snowman": {
       "file": "card.snowman.m4a",
-      "hash": "bf6f7063c14c3d8c",
+      "hash": "be1eb96f847ea48f",
       "text": "snowman"
     },
     "card.tree": {
       "file": "card.tree.m4a",
-      "hash": "af0c537ef5f307dc",
+      "hash": "1ed561623e0aa407",
       "text": "tree"
     },
     "celebrate.1": {
       "file": "celebrate.1.m4a",
-      "hash": "3f64920ebf9b905a",
+      "hash": "b24fcb784a415521",
       "text": "Hooray!"
     },
     "celebrate.2": {
       "file": "celebrate.2.m4a",
-      "hash": "086ed2eb0e79bc2a",
+      "hash": "2f8fc12997767845",
       "text": "You did it!"
     },
     "celebrate.3": {
       "file": "celebrate.3.m4a",
-      "hash": "679b9f6faa5bd15b",
+      "hash": "253719f8167fe15e",
       "text": "Wow, great building!"
     },
     "celebrate.4": {
       "file": "celebrate.4.m4a",
-      "hash": "09412752b5d0cfa2",
+      "hash": "75c915b469a8a705",
       "text": "Yay!"
     },
     "celebrate.5": {
       "file": "celebrate.5.m4a",
-      "hash": "b4024d4b851b22f6",
+      "hash": "b50ce4ea16fa64b7",
       "text": "Amazing!"
     },
     "celebrate.6": {
       "file": "celebrate.6.m4a",
-      "hash": "1df1016a0877e42d",
+      "hash": "c5b141983c541df4",
       "text": "Super job!"
     },
     "celebrate.7": {
       "file": "celebrate.7.m4a",
-      "hash": "55dad374f6804fbb",
+      "hash": "a90e6d56bf370633",
       "text": "Woo-hoo!"
     },
     "celebrate.8": {
       "file": "celebrate.8.m4a",
-      "hash": "0281bb84edef88a5",
+      "hash": "2b58c2d2e2d0bdfb",
       "text": "Look what you made!"
     },
     "count.1": {
       "file": "count.1.m4a",
-      "hash": "e9f4d85a17e35ab8",
+      "hash": "61ccb226629a6054",
       "text": "One!"
     },
     "count.10": {
       "file": "count.10.m4a",
-      "hash": "597662904ed09702",
+      "hash": "bee0395e9ee40648",
       "text": "Ten!"
     },
     "count.11": {
       "file": "count.11.m4a",
-      "hash": "8b03a8d5718eb7a2",
+      "hash": "56cfe207eaa7ac53",
       "text": "Eleven!"
     },
     "count.12": {
       "file": "count.12.m4a",
-      "hash": "1694e890a062fef1",
+      "hash": "ba8ad90edfcab5d3",
       "text": "Twelve!"
     },
     "count.13": {
       "file": "count.13.m4a",
-      "hash": "9d1accfe02ee629c",
+      "hash": "b9398b7fa508fa23",
       "text": "Thirteen!"
     },
     "count.14": {
       "file": "count.14.m4a",
-      "hash": "d00c173b3eae7aee",
+      "hash": "f291343e2abb6d61",
       "text": "Fourteen!"
     },
     "count.15": {
       "file": "count.15.m4a",
-      "hash": "9f5a14dc4885581f",
+      "hash": "03aa3543923790de",
       "text": "Fifteen!"
     },
     "count.16": {
       "file": "count.16.m4a",
-      "hash": "57cff4815b9eda0c",
+      "hash": "c962e0253fc8a5ac",
       "text": "Sixteen!"
     },
     "count.2": {
       "file": "count.2.m4a",
-      "hash": "ce9cf794cfd48100",
+      "hash": "f19a1b9db4c4e6d0",
       "text": "Two!"
     },
     "count.3": {
       "file": "count.3.m4a",
-      "hash": "68d4f6e83e646938",
+      "hash": "f761629307f49936",
       "text": "Three!"
     },
     "count.4": {
       "file": "count.4.m4a",
-      "hash": "55d85cb25dde7920",
+      "hash": "d4cd8669cd5486c1",
       "text": "Four!"
     },
     "count.5": {
       "file": "count.5.m4a",
-      "hash": "03ee125ee45e1805",
+      "hash": "045138658a30d0c1",
       "text": "Five!"
     },
     "count.6": {
       "file": "count.6.m4a",
-      "hash": "b9973f850e9e3a02",
+      "hash": "104a91c9efdf4531",
       "text": "Six!"
     },
     "count.7": {
       "file": "count.7.m4a",
-      "hash": "a54d202d74282fd9",
+      "hash": "53c67be0a3c38ee2",
       "text": "Seven!"
     },
     "count.8": {
       "file": "count.8.m4a",
-      "hash": "f8760fe159b14a5b",
+      "hash": "ba91697b16ebd7fa",
       "text": "Eight!"
     },
     "count.9": {
       "file": "count.9.m4a",
-      "hash": "4e13da663be1f30c",
+      "hash": "d0f042d01038ecfb",
       "text": "Nine!"
     },
     "hello": {
       "file": "hello.m4a",
-      "hash": "e435c3a0a37f35fa",
+      "hash": "1234b8ed8293d6b2",
       "text": "Hi there! Let's build!"
     },
     "home": {
       "file": "home.m4a",
-      "hash": "7ea643be4f04d23e",
+      "hash": "2e168acbacaf40bc",
       "text": "Back home!"
     },
     "new-world": {
       "file": "new-world.m4a",
-      "hash": "6d402fe0fd888771",
+      "hash": "5b2b545532062c39",
       "text": "A brand new world!"
     },
     "pack.animals": {
       "file": "pack.animals.m4a",
-      "hash": "11d59a657ab688e1",
+      "hash": "f1a08f1e9ad358e2",
       "text": "Animals"
     },
     "pack.building": {
       "file": "pack.building.m4a",
-      "hash": "ed6fa638d157e41c",
+      "hash": "34e7a3c5a7ee08bf",
       "text": "Building"
     },
     "pack.colors": {
       "file": "pack.colors.m4a",
-      "hash": "6c390bbb10b5b43d",
+      "hash": "8d9ef8246ece8816",
       "text": "Colors"
     },
     "pack.letters": {
       "file": "pack.letters.m4a",
-      "hash": "5a7c949330398cf2",
+      "hash": "a86fec6d4e38e863",
       "text": "Letters"
     },
     "pack.music": {
       "file": "pack.music.m4a",
-      "hash": "1481fe44719f5982",
+      "hash": "c5f7e404c071d658",
       "text": "Music"
     },
     "pack.nature": {
       "file": "pack.nature.m4a",
-      "hash": "c2fab128c977268b",
+      "hash": "97c7b61fbf96dd4a",
       "text": "Nature"
     },
     "pack.numbers": {
       "file": "pack.numbers.m4a",
-      "hash": "197fc392749838b8",
+      "hash": "0d1b45316c2fdee2",
       "text": "Numbers"
     },
     "pack.shapes": {
       "file": "pack.shapes.m4a",
-      "hash": "164aaf9b133d8686",
+      "hash": "1db91bfda5b3c13b",
       "text": "Shapes"
     },
     "photo": {
       "file": "photo.m4a",
-      "hash": "667c82b6a3449d50",
+      "hash": "529cafb7beefbe06",
       "text": "Say cheese!"
     },
     "pick-theme": {
       "file": "pick-theme.m4a",
-      "hash": "00daa38dc0e9a63c",
+      "hash": "591fffc3ec9b5376",
       "text": "Where do you want to build?"
     },
     "sleep": {
       "file": "sleep.m4a",
-      "hash": "9267b7731b7a884c",
+      "hash": "1399ef6e6802bf99",
       "text": "The blocks are going to sleep now. Night night!"
     },
     "smash-mode": {
       "file": "smash-mode.m4a",
-      "hash": "464e93c62fdfee84",
+      "hash": "747f8c091238c433",
       "text": "Smash!"
     },
     "theme.beach": {
       "file": "theme.beach.m4a",
-      "hash": "a95997fe3ac04b5c",
+      "hash": "11792c70ad0de880",
       "text": "Beach"
     },
     "theme.farm": {
       "file": "theme.farm.m4a",
-      "hash": "bf40a2679b4ccbee",
+      "hash": "ec9511a14780bd5c",
       "text": "Farm"
     },
     "theme.meadow": {
       "file": "theme.meadow.m4a",
-      "hash": "3448e7da09d6bb5b",
+      "hash": "f5386da619af7462",
       "text": "Meadow"
     },
     "theme.snow": {
       "file": "theme.snow.m4a",
-      "hash": "5c1288246ced0c22",
+      "hash": "3e7f0aafe9a60534",
       "text": "Snow"
     },
     "theme.space": {
       "file": "theme.space.m4a",
-      "hash": "0abf402ebeef8309",
+      "hash": "3bfafe2ee00b820b",
       "text": "Space"
     },
     "undo": {
       "file": "undo.m4a",
-      "hash": "881a7d8be0916a02",
+      "hash": "7a3024caa49fb74a",
       "text": "Oops, back again!"
     },
     "wake": {
       "file": "wake.m4a",
-      "hash": "5e1ed3ab83e11b04",
+      "hash": "a2ebcf3f545a8a95",
       "text": "Good morning, blocks!"
     },
     "word.ant": {
       "file": "word.ant.m4a",
-      "hash": "c41a04c77ceac66e",
+      "hash": "75e0211a184a0331",
       "text": "Ant!"
     },
     "word.baby": {
       "file": "word.baby.m4a",
-      "hash": "ecbb4db904e38e0c",
+      "hash": "caed65c3f511efad",
       "text": "Baby!"
     },
     "word.ball": {
       "file": "word.ball.m4a",
-      "hash": "cfea22bc9c858ea0",
+      "hash": "ccd88915f0ae6622",
       "text": "Ball!"
     },
     "word.bat": {
       "file": "word.bat.m4a",
-      "hash": "7f4c0c9ed7bab72e",
+      "hash": "cfdd6202c05895c0",
       "text": "Bat!"
     },
     "word.bear": {
       "file": "word.bear.m4a",
-      "hash": "714bc5cb39f25166",
+      "hash": "a56f1bdae8914199",
       "text": "Bear!"
     },
     "word.bed": {
       "file": "word.bed.m4a",
-      "hash": "b0cff7130bcbde9b",
+      "hash": "b360c6582d5d2b8e",
       "text": "Bed!"
     },
     "word.bee": {
       "file": "word.bee.m4a",
-      "hash": "a431b26faee069c8",
+      "hash": "00ce855005e59cdd",
       "text": "Bee!"
     },
     "word.big": {
       "file": "word.big.m4a",
-      "hash": "a73f91308435959c",
+      "hash": "a3f88f904b028e04",
       "text": "Big!"
     },
     "word.bird": {
       "file": "word.bird.m4a",
-      "hash": "03973727235c80a6",
+      "hash": "ab0ce4ec96777adc",
       "text": "Bird!"
     },
     "word.blue": {
       "file": "word.blue.m4a",
-      "hash": "00b8146755a50994",
+      "hash": "48274e8277915558",
       "text": "Blue!"
     },
     "word.boat": {
       "file": "word.boat.m4a",
-      "hash": "6e58414aa58180ad",
+      "hash": "9157d5404d8482b4",
       "text": "Boat!"
     },
     "word.box": {
       "file": "word.box.m4a",
-      "hash": "be073c1279c63a71",
+      "hash": "a019965589a0beb0",
       "text": "Box!"
     },
     "word.bus": {
       "file": "word.bus.m4a",
-      "hash": "1b3a7c96246fdd45",
+      "hash": "96a298aec43be6ac",
       "text": "Bus!"
     },
     "word.cake": {
       "file": "word.cake.m4a",
-      "hash": "843792159a97d856",
+      "hash": "a7d7cb8d02fab36f",
       "text": "Cake!"
     },
     "word.car": {
       "file": "word.car.m4a",
-      "hash": "1a8a5db9d96c42d9",
+      "hash": "df6707ce7beaa4a8",
       "text": "Car!"
     },
     "word.cat": {
       "file": "word.cat.m4a",
-      "hash": "799f896ed004ef49",
+      "hash": "ee765d491d54dea9",
       "text": "Cat!"
     },
     "word.cow": {
       "file": "word.cow.m4a",
-      "hash": "37c84e2dfc2a5218",
+      "hash": "ec0cf3eeebad0307",
       "text": "Cow!"
     },
     "word.cup": {
       "file": "word.cup.m4a",
-      "hash": "5de46c8bea643d63",
+      "hash": "d3c5ee1f4c9a07a1",
       "text": "Cup!"
     },
     "word.dad": {
       "file": "word.dad.m4a",
-      "hash": "a4e504dd75105f57",
+      "hash": "f0ebcbac1cafa44a",
       "text": "Dad!"
     },
     "word.dog": {
       "file": "word.dog.m4a",
-      "hash": "df962d45bfb69bb0",
+      "hash": "9818b30c51ebc22d",
       "text": "Dog!"
     },
     "word.duck": {
       "file": "word.duck.m4a",
-      "hash": "d710f321b903022b",
+      "hash": "73a91d6259c50c82",
       "text": "Duck!"
     },
     "word.egg": {
       "file": "word.egg.m4a",
-      "hash": "cf25b3941899224d",
+      "hash": "e64617d07fb95008",
       "text": "Egg!"
     },
     "word.fish": {
       "file": "word.fish.m4a",
-      "hash": "9fec02ed8574b831",
+      "hash": "1aaed4eaf974943e",
       "text": "Fish!"
     },
     "word.fox": {
       "file": "word.fox.m4a",
-      "hash": "411eaa33e2f19b5a",
+      "hash": "11a4d2458a736b88",
       "text": "Fox!"
     },
     "word.frog": {
       "file": "word.frog.m4a",
-      "hash": "012e3fa584979906",
+      "hash": "45b4b256446980a0",
       "text": "Frog!"
     },
     "word.go": {
       "file": "word.go.m4a",
-      "hash": "6ac40145a2629d14",
+      "hash": "3c0f69daf4fef1c2",
       "text": "Go!"
     },
     "word.hat": {
       "file": "word.hat.m4a",
-      "hash": "d03d4a2094a7885d",
+      "hash": "d79f92dd44186b83",
       "text": "Hat!"
     },
     "word.hen": {
       "file": "word.hen.m4a",
-      "hash": "96e17513cc054a0a",
+      "hash": "12a261c52cefbd24",
       "text": "Hen!"
     },
     "word.hi": {
       "file": "word.hi.m4a",
-      "hash": "20c40bdaacfd7c31",
+      "hash": "84ca2903fe6b2210",
       "text": "Hi!"
     },
     "word.home": {
       "file": "word.home.m4a",
-      "hash": "31023aaad1378eea",
+      "hash": "b086782519c98053",
       "text": "Home!"
     },
     "word.hug": {
       "file": "word.hug.m4a",
-      "hash": "152d6cc2e2ddfd8a",
+      "hash": "64522b5694308d49",
       "text": "Hug!"
     },
     "word.love": {
       "file": "word.love.m4a",
-      "hash": "7ac13a24cb25fb88",
+      "hash": "8abda1bf4df5ad1d",
       "text": "Love!"
     },
     "word.map": {
       "file": "word.map.m4a",
-      "hash": "d065a063958d30ca",
+      "hash": "079f69b9e860159d",
       "text": "Map!"
     },
     "word.mom": {
       "file": "word.mom.m4a",
-      "hash": "da87a470349b3801",
+      "hash": "3a324952160eee18",
       "text": "Mom!"
     },
     "word.moon": {
       "file": "word.moon.m4a",
-      "hash": "9f66071793e195d4",
+      "hash": "f04eb1c571d79738",
       "text": "Moon!"
     },
     "word.no": {
       "file": "word.no.m4a",
-      "hash": "a9f46e751cdb60ed",
+      "hash": "3c76d1c92a81846c",
       "text": "No!"
     },
     "word.owl": {
       "file": "word.owl.m4a",
-      "hash": "2913f5939c21e91a",
+      "hash": "ed32ffd56aa17c8c",
       "text": "Owl!"
     },
     "word.pig": {
       "file": "word.pig.m4a",
-      "hash": "ccbec54ca2bfc069",
+      "hash": "87e86e0876f76fa4",
       "text": "Pig!"
     },
     "word.red": {
       "file": "word.red.m4a",
-      "hash": "6006e4f9db526cab",
+      "hash": "236953a468911d7b",
       "text": "Red!"
     },
     "word.run": {
       "file": "word.run.m4a",
-      "hash": "a5856e59e8949c94",
+      "hash": "173b10a85d8aace7",
       "text": "Run!"
     },
     "word.star": {
       "file": "word.star.m4a",
-      "hash": "d07e180be11b2bf4",
+      "hash": "1fb82852ad74d54d",
       "text": "Star!"
     },
     "word.sun": {
       "file": "word.sun.m4a",
-      "hash": "031484d926c7a547",
+      "hash": "16fd1bca7569489d",
       "text": "Sun!"
     },
     "word.top": {
       "file": "word.top.m4a",
-      "hash": "19910ec467173cec",
+      "hash": "a29571434a8703fd",
       "text": "Top!"
     },
     "word.tree": {
       "file": "word.tree.m4a",
-      "hash": "01c672c693ba77be",
+      "hash": "4727739bc6bd3fca",
       "text": "Tree!"
     },
     "word.up": {
       "file": "word.up.m4a",
-      "hash": "835347a401a74a5b",
+      "hash": "127c9be7ee22a200",
       "text": "Up!"
     },
     "word.yes": {
       "file": "word.yes.m4a",
-      "hash": "65d2e07c784601c9",
+      "hash": "98a1f2b9c08b6bcc",
       "text": "Yes!"
     }
   },
-  "encoding": "aac-mono-32k-v1",
+  "encoding": "aac-mono-32k-v2",
   "model": "hexgrad/Kokoro-82M",
   "revision": "f3ff3571791e39611d31c381e3a41a3af07b4987",
   "speed": 0.9,

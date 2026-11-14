@@ -32,7 +32,8 @@ MODEL_REVISION = "f3ff3571791e39611d31c381e3a41a3af07b4987"
 SAMPLE_RATE = 24000
 BITRATE = 32000
 CLIP_EXT = "m4a"
-ENCODING_ID = f"aac-mono-{BITRATE // 1000}k-v1"
+# Bump the suffix whenever synthesis input or encoding changes, so every clip regenerates.
+ENCODING_ID = f"aac-mono-{BITRATE // 1000}k-v2"
 
 # Single letters are ambiguous for TTS ("A" reads as "uh"), so give Kokoro the
 # letter-name phonemes with misaki's inline override syntax.
@@ -43,6 +44,23 @@ LETTER_PHONEMES = {
     "S": "ˈɛs", "T": "tˈi", "U": "jˈu", "V": "vˈi", "W": "dˈʌbəlju",
     "X": "ˈɛks", "Y": "wˈI", "Z": "zˈi",
 }
+
+
+def as_sentence(text: str) -> str:
+    """Give Kokoro a complete sentence: capitalized, ending in punctuation.
+
+    Bare words without final punctuation ("orange") come out with clipped final
+    consonants ("oran-de"); "Orange." is pronounced fully. Only the synthesis
+    input changes, never the text in LINES.json.
+    """
+    stripped = text.strip()
+    if not stripped:
+        return stripped
+    if stripped[0].islower():
+        stripped = stripped[0].upper() + stripped[1:]
+    if stripped[-1] not in ".!?":
+        stripped += "."
+    return stripped
 
 
 def tts_text(text: str, lang: str) -> str:
@@ -188,7 +206,7 @@ def generate_language(root: Path, lines_doc: dict, lang: str, force: bool) -> No
         voice_file = voice_path(voice)
         with tempfile.TemporaryDirectory() as tmp:
             for i, (lid, text, h, target) in enumerate(todo, 1):
-                audio = synthesize(pipeline, tts_text(text, lang), voice_file, speed)
+                audio = synthesize(pipeline, as_sentence(tts_text(text, lang)), voice_file, speed)
                 wav = Path(tmp) / "clip.wav"
                 sf.write(wav, audio, SAMPLE_RATE, subtype="PCM_16")
                 encode(wav, target)
