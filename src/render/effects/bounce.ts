@@ -26,7 +26,7 @@ export class BounceEffects {
   ) {}
 
   start(cell: Cell, block: BlockKey, gentle: boolean): void {
-    if (this.active.some((b) => b.cell.x === cell.x && b.cell.y === cell.y && b.cell.z === cell.z)) return;
+    if (this.indexOf(cell) !== -1) return;
     const materials = this.looks.boxTextures(block).map((map) => new THREE.MeshLambertMaterial({ map }));
     const mesh = new THREE.Mesh(this.geometry, materials);
     mesh.castShadow = true;
@@ -35,6 +35,16 @@ export class BounceEffects {
     this.active.push({ cell, mesh, materials, t: 0 });
     this.setHidden(cell, true);
     this.place(this.active[this.active.length - 1]);
+  }
+
+  /** Stops the bounce on this cell at once (the block was removed or the placement undone). */
+  cancel(cell: Cell): void {
+    const i = this.indexOf(cell);
+    if (i !== -1) this.finish(i);
+  }
+
+  isAnimating(): boolean {
+    return this.active.length > 0;
   }
 
   update(dt: number): void {
@@ -52,6 +62,10 @@ export class BounceEffects {
   dispose(): void {
     while (this.active.length) this.finish(this.active.length - 1);
     this.geometry.dispose();
+  }
+
+  private indexOf(cell: Cell): number {
+    return this.active.findIndex((b) => b.cell.x === cell.x && b.cell.y === cell.y && b.cell.z === cell.z);
   }
 
   private place(b: ActiveBounce): void {

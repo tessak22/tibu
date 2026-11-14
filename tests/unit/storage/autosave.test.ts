@@ -33,16 +33,54 @@ describe('autosaver', () => {
     expect(save).toHaveBeenCalledTimes(1);
   });
 
-  it('throttles thumbnails and refreshes on finish', async () => {
-    const { saveThumbnail, saver } = setup();
+  it('still saves within ~2s while changes keep coming', async () => {
+    const { save, saver } = setup();
+    // A tap every 150 ms would push a plain 300 ms debounce back forever.
+    for (let t = 0; t < 1950; t += 150) {
+      saver.markDirty();
+      await vi.advanceTimersByTimeAsync(150);
+    }
+    expect(save).toHaveBeenCalledTimes(0);
     saver.markDirty();
-    await vi.advanceTimersByTimeAsync(400);
+    await vi.advanceTimersByTimeAsync(150);
+    expect(save).toHaveBeenCalledTimes(1);
+    for (let t = 0; t < 2100; t += 150) {
+      saver.markDirty();
+      await vi.advanceTimersByTimeAsync(150);
+    }
+    expect(save).toHaveBeenCalledTimes(2);
+  });
+
+  it('never renders thumbnails during play, only on finish', async () => {
+    const { save, saveThumbnail, saver } = setup();
+    saver.markDirty();
+    await vi.advanceTimersByTimeAsync(10_000);
+    expect(save).toHaveBeenCalledTimes(1);
     expect(saveThumbnail).not.toHaveBeenCalled();
-    await vi.advanceTimersByTimeAsync(4000);
+    await saver.finish();
     expect(saveThumbnail).toHaveBeenCalledTimes(1);
+    await saver.finish();
+    expect(saveThumbnail).toHaveBeenCalledTimes(1);
+  });
+
+  it('saves data before the thumbnail and keeps thumbnail failures separate', async () => {
+    const order: string[] = [];
+    const onError = vi.fn();
+    const onThumbnailError = vi.fn();
+    const saver = createAutosaver({
+      save: async () => void order.push('save'),
+      saveThumbnail: async () => {
+        order.push('thumb');
+        throw new Error('webgl lost');
+      },
+      onError,
+      onThumbnailError,
+    });
     saver.markDirty();
     await saver.finish();
-    expect(saveThumbnail).toHaveBeenCalledTimes(2);
+    expect(order).toEqual(['save', 'thumb']);
+    expect(onError).not.toHaveBeenCalled();
+    expect(onThumbnailError).toHaveBeenCalledTimes(1);
   });
 
   it('reports errors without breaking later saves', async () => {

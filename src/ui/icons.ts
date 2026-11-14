@@ -66,6 +66,10 @@ export const ICONS = {
   save: svg(
     `<path d="M32 8v32M20 28l12 12 12-12" fill="none" stroke="#fff" stroke-width="7"/><path d="M12 46v6h40v-6" fill="none" stroke="#fff" stroke-width="7"/>`,
   ),
+  cloud: svg(
+    `<path d="M18 46a10 10 0 0 1 0-20 14 14 0 0 1 27-3 11 11 0 0 1 1 23Z" fill="#fff" stroke="#90a4ae" stroke-width="3"/>
+     <circle cx="26" cy="36" r="2.5" fill="#90a4ae"/><circle cx="38" cy="36" r="2.5" fill="#90a4ae"/>`,
+  ),
 } as const;
 
 export type IconName = keyof typeof ICONS;

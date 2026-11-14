@@ -3,38 +3,64 @@ import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 
 const MAX_SNAPSHOT_SIDE = 4096;
 
+export interface Snapshotter {
+  render(
+    renderer: THREE.WebGLRenderer,
+    scene: THREE.Scene,
+    camera: THREE.PerspectiveCamera,
+    width: number,
+    height: number,
+  ): Promise<Blob>;
+  dispose(): void;
+}
+
 /**
  * Renders a scene offscreen and returns a PNG. The scene is rendered to a linear HDR target,
  * then an OutputPass applies tone mapping and sRGB conversion exactly like on-screen output.
- * Works while the view is inactive and never touches the visible canvas.
+ * Works while the view is inactive and never touches the visible canvas. The render targets and
+ * pass are created once and resized only when a different size is asked for.
  */
-export async function renderSnapshot(
-  renderer: THREE.WebGLRenderer,
-  scene: THREE.Scene,
-  camera: THREE.PerspectiveCamera,
-  width: number,
-  height: number,
-): Promise<Blob> {
-  const w = Math.max(1, Math.min(MAX_SNAPSHOT_SIDE, Math.round(width)));
-  const h = Math.max(1, Math.min(MAX_SNAPSHOT_SIDE, Math.round(height)));
-  const sceneTarget = new THREE.WebGLRenderTarget(w, h, { type: THREE.HalfFloatType, samples: 4 });
-  const outputTarget = new THREE.WebGLRenderTarget(w, h, { type: THREE.UnsignedByteType });
-  const output = new OutputPass();
-  const previousTarget = renderer.getRenderTarget();
-  try {
-    renderer.setRenderTarget(sceneTarget);
-    renderer.clear();
-    renderer.render(scene, camera);
-    output.render(renderer, outputTarget, sceneTarget, 0, false);
-    const pixels = new Uint8Array(w * h * 4);
-    renderer.readRenderTargetPixels(outputTarget, 0, 0, w, h, pixels);
-    return await pixelsToPng(pixels, w, h);
-  } finally {
-    renderer.setRenderTarget(previousTarget);
-    sceneTarget.dispose();
-    outputTarget.dispose();
-    output.dispose();
-  }
+export function createSnapshotter(): Snapshotter {
+  let sceneTarget: THREE.WebGLRenderTarget | null = null;
+  let outputTarget: THREE.WebGLRenderTarget | null = null;
+  let output: OutputPass | null = null;
+
+  const targetsFor = (w: number, h: number) => {
+    sceneTarget ??= new THREE.WebGLRenderTarget(w, h, { type: THREE.HalfFloatType, samples: 4 });
+    outputTarget ??= new THREE.WebGLRenderTarget(w, h, { type: THREE.UnsignedByteType });
+    output ??= new OutputPass();
+    if (sceneTarget.width !== w || sceneTarget.height !== h) sceneTarget.setSize(w, h);
+    if (outputTarget.width !== w || outputTarget.height !== h) outputTarget.setSize(w, h);
+    return { scene: sceneTarget, out: outputTarget, pass: output };
+  };
+
+  return {
+    async render(renderer, scene, camera, width, height) {
+      const w = Math.max(1, Math.min(MAX_SNAPSHOT_SIDE, Math.round(width)));
+      const h = Math.max(1, Math.min(MAX_SNAPSHOT_SIDE, Math.round(height)));
+      const targets = targetsFor(w, h);
+      const previousTarget = renderer.getRenderTarget();
+      const pixels = new Uint8Array(w * h * 4);
+      try {
+        renderer.setRenderTarget(targets.scene);
+        renderer.clear();
+        renderer.render(scene, camera);
+        targets.pass.render(renderer, targets.out, targets.scene, 0, false);
+        renderer.readRenderTargetPixels(targets.out, 0, 0, w, h, pixels);
+      } finally {
+        renderer.setRenderTarget(previousTarget);
+      }
+      return pixelsToPng(pixels, w, h);
+    },
+    dispose() {
+      sceneTarget?.dispose();
+      outputTarget?.dispose();
+      output?.dispose();
+      sceneTarget = null;
+      outputTarget = null;
+      output = null;
+    },
+  };
 }
 
 function pixelsToPng(pixels: Uint8Array, w: number, h: number): Promise<Blob> {

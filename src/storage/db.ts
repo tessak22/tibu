@@ -13,9 +13,15 @@ export interface TibuDB extends DBSchema {
 
 export type TibuDatabase = IDBPDatabase<TibuDB>;
 
+export interface OpenOptions {
+  /** The browser closed the connection abnormally (iOS does this after backgrounding). */
+  readonly onTerminated?: () => void;
+}
+
 /** Opens (and creates or upgrades) the Tibu IndexedDB database. */
-export function openTibuDB(name: string = DB_NAME): Promise<TibuDatabase> {
+export function openTibuDB(name: string = DB_NAME, options: OpenOptions = {}): Promise<TibuDatabase> {
   return openDB<TibuDB>(name, DB_VERSION, {
+    terminated: options.onTerminated,
     upgrade(db) {
       if (!db.objectStoreNames.contains('profiles')) {
         db.createObjectStore('profiles', { keyPath: 'id' });

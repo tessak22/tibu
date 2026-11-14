@@ -121,12 +121,17 @@
   font-size: 14px;
 }
 
+/* 64px hit area for small fingers; the visible circle stays 36px. Negative margins keep the
+   pill compact. */
 .banner-x {
   border: 0;
-  background: #eee;
+  background: radial-gradient(circle, #eee 0 18px, transparent 18.5px);
   border-radius: 50%;
-  width: 36px;
-  height: 36px;
+  width: 64px;
+  height: 64px;
+  min-width: 64px;
+  margin: -14px -10px -14px -8px;
+  padding: 0;
   font-size: 22px;
   line-height: 1;
   cursor: pointer;

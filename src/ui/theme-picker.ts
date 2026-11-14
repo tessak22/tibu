@@ -9,7 +9,7 @@ export function pickTheme(ctx: UiContext): Promise<ThemeDef | null> {
     let picked: ThemeDef | null = null;
     const grid = h('div', { class: 'picture-grid theme-grid' });
     for (const theme of ctx.registry.themes) {
-      const btn = h('button', { type: 'button', class: 'picture-btn', 'aria-label': theme.name }, [
+      const btn = h('button', { type: 'button', class: 'picture-btn', 'aria-label': theme.name, 'data-testid': `theme-${theme.id}` }, [
         canvasCopy(theme.icon, 256),
       ]);
       btn.addEventListener('click', () => {

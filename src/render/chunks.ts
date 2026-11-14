@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import type { Cell } from '../core/types';
+import { cellIndex, inBounds } from '../world/grid';
 import { CHUNK_COUNT, chunkOrigin, chunksAffectedBy } from './chunkMath';
 import { meshChunk, type MeshArrays } from './chunkMesher';
 import type { TextureAtlas } from './atlas';
@@ -33,7 +34,7 @@ export class ChunkRenderer {
   readonly glowMaterial: THREE.MeshLambertMaterial;
   private readonly meshes: ChunkMeshes[] = Array.from({ length: CHUNK_COUNT }, () => ({ solid: null, glow: null }));
   private readonly dirty = new Set<number>();
-  private readonly hidden = new Set<string>();
+  private readonly hidden = new Set<number>();
   private builtAtlasVersion = -1;
   private shadows = true;
   private readonly offAtlas: () => void;
@@ -71,7 +72,9 @@ export class ChunkRenderer {
 
   /** Temporarily hide a cell (e.g. while an overlay animates it). */
   setHidden(c: Cell, hidden: boolean): void {
-    const key = `${c.x},${c.y},${c.z}`;
+    if (!inBounds(c)) return;
+    const key = cellIndex(c.x, c.y, c.z);
+    if (hidden === this.hidden.has(key)) return; // No change: no rebuild.
     if (hidden) this.hidden.add(key);
     else this.hidden.delete(key);
     this.markCell(c);

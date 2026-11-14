@@ -3,20 +3,29 @@ import { persistenceStatus, readImportFile, requestPersistence, type Repository 
 import type { UiContext } from '../ui/context';
 import { createGallery } from '../ui/gallery';
 import { createInstallBanner } from '../ui/install-banner';
-import { toast } from '../ui/overlay';
+import { saveHint, toast } from '../ui/overlay';
 import { openParentArea } from '../ui/parent/parent-area';
 import { createParentCorner } from '../ui/parent-gate';
 import { createProfilePicker } from '../ui/profile-picker';
 import { createRestingScreen } from '../ui/resting';
 import type { Screen } from '../ui/screen';
 import { pickTheme } from '../ui/theme-picker';
-import { APP_VERSION, REPO_URL, SLEEP_SCREEN_DELAY_MS } from './config';
+import {
+  APP_VERSION,
+  REPO_URL,
+  RESTING_FADE_IN_MS,
+  SLEEP_FADE_MS,
+  SLEEP_FADE_REDUCED_MS,
+  SLEEP_SCREEN_DELAY_MS,
+} from './config';
 import { exportWorldFile } from './export-io';
 import { LANGUAGES } from './languages';
 import { detectPlatform } from './platform';
 import { createPlaySession, type PlaySession } from './play-session';
+import { createProblemLog } from './problem-log';
 import { createSettingsStore } from './settings-store';
 import { createSleepController } from './sleep-flow';
+import type { UpdateGate } from './update-gate';
 
 export interface AppDeps {
   readonly registry: ContentRegistry;
@@ -30,17 +39,28 @@ export interface AppDeps {
     createWorldFromTheme(theme: ThemeDef): WorldModel;
     deserializeWorld(data: SavedWorld): WorldModel;
   };
+  /** Lets a downloaded app update reload only on calm screens. */
+  readonly updates?: UpdateGate | null;
 }
 
 const MSG = {
-  save: 'Tibu could not save just now. Your latest blocks may not be kept if you close the app.',
   open: 'That world could not be opened. It is still safe in the grown-up area.',
   create: 'A new world could not be made right now. Please try again.',
 } as const;
 
+const UNLOCK_EVENTS = ['pointerdown', 'pointerup', 'touchend', 'click'] as const;
+
+const delay = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
+
 export async function startApp(deps: AppDeps): Promise<void> {
   const { registry, audio, view, repo, overlayRoot } = deps;
-  const settings = createSettingsStore(repo, await repo.getSettings(), () => toast(overlayRoot, MSG.save));
+  const problems = createProblemLog();
+  /** A save failed: log it for the grown-up area and show only a quiet, word-free hint. */
+  const onSaveError = (error?: unknown): void => {
+    problems.record('save', error);
+    saveHint(overlayRoot);
+  };
+  const settings = createSettingsStore(repo, await repo.getSettings(), () => onSaveError());
   const ctx: UiContext = { audio, registry, overlayRoot, getSettings: settings.get };
   const platform = detectPlatform(navigator, (q) => window.matchMedia(q));
   let profiles: Profile[] = await repo.ensureProfiles();
@@ -52,11 +72,17 @@ export async function startApp(deps: AppDeps): Promise<void> {
   const corner = (): HTMLElement =>
     createParentCorner({ overlayRoot, onUnlock: () => void openParent(), onPlainTap: () => audio.sfx('tap') });
 
-  const mount = (next: Screen, showStage: boolean): void => {
+  /** `calm`: a gallery or profile screen, where an app update may reload the page. */
+  let calmScreen = false;
+  const isCalm = (): boolean => calmScreen && !session && !sleeping;
+  const mount = (next: Screen, showStage: boolean, calm = false): void => {
+    deps.updates?.setSafe(false);
     screen?.dispose();
     screen = next;
+    calmScreen = calm;
     deps.stage.hidden = !showStage;
     deps.screenRoot.append(next.el);
+    deps.updates?.setSafe(isCalm());
   };
 
   const leavePlay = async (): Promise<void> => {
@@ -66,8 +92,8 @@ export async function startApp(deps: AppDeps): Promise<void> {
     sleep.pause();
     try {
       await current.leave();
-    } catch {
-      toast(overlayRoot, MSG.save);
+    } catch (error) {
+      onSaveError(error);
     }
   };
 
@@ -90,6 +116,7 @@ export async function startApp(deps: AppDeps): Promise<void> {
         banner: createInstallBanner(overlayRoot, platform),
       }),
       false,
+      true,
     );
   };
 
@@ -105,6 +132,7 @@ export async function startApp(deps: AppDeps): Promise<void> {
         },
       }),
       false,
+      true,
     );
   };
 
@@ -126,7 +154,8 @@ export async function startApp(deps: AppDeps): Promise<void> {
       corner: corner(),
       updateSettings: settings.update,
       onBack: () => void showGallery(),
-      onSaveError: () => toast(overlayRoot, MSG.save),
+      onSaveError,
+      onThumbnailError: (error) => problems.record('thumbnail', error),
     });
     session = next;
     mount(next, true);
@@ -135,8 +164,12 @@ export async function startApp(deps: AppDeps): Promise<void> {
 
   const newWorld = async (): Promise<void> => {
     void audio.speak('pick-theme');
+    deps.updates?.setSafe(false);
     const theme = await pickTheme(ctx);
-    if (!theme) return;
+    if (!theme) {
+      deps.updates?.setSafe(isCalm());
+      return;
+    }
     try {
       const world = deps.worlds.createWorldFromTheme(theme);
       const count = (await repo.listWorlds(profile.id)).filter((w) => w.data.themeId === theme.id).length;
@@ -149,6 +182,7 @@ export async function startApp(deps: AppDeps): Promise<void> {
       await openWorld(record, world);
     } catch {
       toast(overlayRoot, MSG.create);
+      deps.updates?.setSafe(isCalm());
     }
   };
 
@@ -156,15 +190,26 @@ export async function startApp(deps: AppDeps): Promise<void> {
     if (sleeping || !session) return;
     sleeping = true;
     session.setDimmed(true);
+    audio.setMusicSuspended(true);
     audio.sfx('sleep');
     const spoken = audio.speak('sleep');
-    await Promise.race([spoken, new Promise((r) => setTimeout(r, SLEEP_SCREEN_DELAY_MS))]);
+    const fadeMs = settings.get().reducedMotion ? SLEEP_FADE_REDUCED_MS : SLEEP_FADE_MS;
+    // Let the twilight finish and the sleep line end (capped, in case speech never settles).
+    await Promise.all([delay(fadeMs), Promise.race([spoken, delay(SLEEP_SCREEN_DELAY_MS)])]);
+    if (!sleeping) return; // Woken (parent corner) while fading.
     await leavePlay();
-    mount(createRestingScreen(corner()), false);
+    if (!sleeping) return;
+    // Keep the dimmed scene underneath while the resting screen fades in over it.
+    const resting = createRestingScreen(corner());
+    mount(resting, true);
+    setTimeout(() => {
+      if (screen === resting) deps.stage.hidden = true;
+    }, RESTING_FADE_IN_MS);
   };
 
   const wake = async (): Promise<void> => {
     sleeping = false;
+    audio.setMusicSuspended(false);
     view.setDimmed(false);
     sleep.reset();
     void audio.speak('wake');
@@ -204,6 +249,7 @@ export async function startApp(deps: AppDeps): Promise<void> {
   const openParent = async (): Promise<void> => {
     if (sleeping) return wake();
     sleep.pause();
+    deps.updates?.setSafe(false);
     await openParentArea({
       ctx,
       repo,
@@ -223,13 +269,18 @@ export async function startApp(deps: AppDeps): Promise<void> {
         return null;
       },
       onDataChanged: () => undefined,
+      lastSaveProblem: () => problems.last('save')?.at ?? null,
     });
     await refreshAfterParent();
+    deps.updates?.setSafe(isCalm());
     if (session) sleep.resume();
   };
 
-  // Every tap anywhere unlocks audio (browsers require a gesture) and gets a response.
-  window.addEventListener('pointerdown', () => audio.unlock(), { capture: true, passive: true });
+  // Every tap anywhere unlocks audio. iOS only counts pointerup/touchend/click as user
+  // activation (not pointerdown), so listen to all of them; unlock() is idempotent.
+  for (const type of UNLOCK_EVENTS) {
+    document.addEventListener(type, () => audio.unlock(), { capture: true, passive: true });
+  }
   window.addEventListener('contextmenu', (e) => e.preventDefault());
   deps.stage.hidden = true;
   view.setActive(false);

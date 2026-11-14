@@ -1,4 +1,5 @@
 import type { Cell, FaceName } from '../core/types';
+import { cellIndex, SIZE_X, SIZE_Y, SIZE_Z } from '../world/grid';
 import { CHUNK_X, CHUNK_Y, CHUNK_Z } from './chunkMath';
 import { FACES } from './faces';
 
@@ -10,8 +11,8 @@ export interface MesherInput {
   readonly origin: Cell;
   uvRect(id: number, face: FaceName): UvRect;
   isGlow(id: number): boolean;
-  /** Cells treated as empty (e.g. while a bounce overlay animates). Keys are "x,y,z". */
-  readonly hidden?: ReadonlySet<string>;
+  /** Cells treated as empty (e.g. while a bounce overlay animates). Keys are dense cell indexes. */
+  readonly hidden?: ReadonlySet<number>;
 }
 
 export interface MeshArrays {
@@ -59,9 +60,13 @@ export function vertexAo(side1: boolean, side2: boolean, corner: boolean): numbe
  * (hidden internal faces). Each vertex gets a soft ambient-occlusion tint for a rounded look.
  */
 export function meshChunk(input: MesherInput): ChunkMesh {
-  const { origin, hidden } = input;
-  const solidAt = (x: number, y: number, z: number): boolean =>
-    input.idAt(x, y, z) !== 0 && !(hidden && hidden.size > 0 && hidden.has(`${x},${y},${z}`));
+  const { origin } = input;
+  const hidden = input.hidden && input.hidden.size > 0 ? input.hidden : null;
+  const isHidden = (x: number, y: number, z: number): boolean =>
+    hidden !== null &&
+    x >= 0 && y >= 0 && z >= 0 && x < SIZE_X && y < SIZE_Y && z < SIZE_Z &&
+    hidden.has(cellIndex(x, y, z));
+  const solidAt = (x: number, y: number, z: number): boolean => input.idAt(x, y, z) !== 0 && !isHidden(x, y, z);
   const idOf = (x: number, y: number, z: number): number => (solidAt(x, y, z) ? input.idAt(x, y, z) : 0);
   const solid = new Builder();
   const glow = new Builder();

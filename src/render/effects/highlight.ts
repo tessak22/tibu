@@ -82,6 +82,11 @@ export class Highlight {
     this.group.visible = false;
   }
 
+  /** The visible highlight pulses, so it needs smooth frames. */
+  isAnimating(): boolean {
+    return this.group.visible;
+  }
+
   update(dt: number, reducedMotion: boolean): void {
     if (!this.group.visible) return;
     this.time += dt;

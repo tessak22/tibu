@@ -19,7 +19,8 @@ export default defineConfig({
   plugins: [
     VitePWA({
       strategies: 'generateSW',
-      registerType: 'autoUpdate',
+      // New versions wait until the app is on a calm screen (see src/app/update-gate.ts).
+      registerType: 'prompt',
       injectRegister: false,
       includeAssets: ['favicon.svg', 'apple-touch-icon.png', 'icons/*.png'],
       manifest: {
@@ -49,8 +50,9 @@ export default defineConfig({
         maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
         navigateFallback: 'index.html',
         cleanupOutdatedCaches: true,
+        // The first install still controls the open page at once (offline in the first session).
+        // No skipWaiting: updates wait for the app's go-ahead.
         clientsClaim: true,
-        skipWaiting: true,
       },
       devOptions: { enabled: false },
     }),

@@ -242,6 +242,8 @@ export interface AudioSystem {
   /** Speak arbitrary text (e.g. a custom word). Uses a clip if lineId resolves, else speechSynthesis. */
   speakText(text: string): Promise<void>;
   applySettings(settings: Settings): void;
+  /** Pauses background music (e.g. while resting) without changing the setting. */
+  setMusicSuspended(suspended: boolean): void;
 }
 
 // ---------------------------------------------------------------------------

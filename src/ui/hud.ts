@@ -39,6 +39,8 @@ export function createHud(actions: HudActions, corner: HTMLElement): Hud {
   const smash = iconButton({ icon: ICONS.hammer, label: 'Smash', className: 'mode-btn', onTap: () => actions.onMode('smash') });
   build.dataset.mode = 'build';
   smash.dataset.mode = 'smash';
+  build.dataset.testid = 'mode-build';
+  smash.dataset.testid = 'mode-smash';
   const undo = iconButton({ icon: ICONS.undo, label: 'Undo', className: 'undo-btn big', onTap: actions.onUndo });
   const back = iconButton({ icon: ICONS.gallery, label: 'My worlds', className: 'back-btn', onTap: actions.onBack });
   const home = iconButton({ icon: ICONS.home, label: 'Find my island', className: 'home-btn', onTap: actions.onHome });
@@ -46,6 +48,8 @@ export function createHud(actions: HudActions, corner: HTMLElement): Hud {
   const mute = iconButton({ icon: ICONS.sound, label: 'Sound', className: 'mute-btn', onTap: actions.onToggleMute });
   const card = iconButton({ icon: ICONS.card, label: 'Build card', className: 'card-btn', onTap: actions.onCard });
   const packBtn = iconButton({ icon: ICONS.packs, label: 'Block packs', className: 'pack-btn', onTap: actions.onPackButton });
+  undo.dataset.testid = 'undo';
+  back.dataset.testid = 'back';
   const tray = createTray(actions.onSelectBlock);
 
   const el = h('div', { class: 'hud', dir: 'ltr', 'data-testid': 'hud' }, [

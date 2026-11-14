@@ -86,6 +86,12 @@ function playSilentTick(ctx: AudioContext): void {
   source.start(0);
 }
 
+/** True when the current event grants user activation (or the browser cannot tell us). */
+function hasUserActivation(): boolean {
+  const activation = (navigator as Navigator & { userActivation?: { isActive: boolean } }).userActivation;
+  return activation === undefined || activation.isActive;
+}
+
 export function createAudio(): AudioSystem {
   const lines = parseLinesFile(linesJson);
   const clips = buildClipIndex(clipLoaders);
@@ -93,6 +99,7 @@ export function createAudio(): AudioSystem {
   const limiter = createVoiceLimiter();
   let engine: Engine | null = null;
   let mix: Mix = mixFromSettings(DEFAULT_SETTINGS);
+  let musicSuspended = false;
 
   const voice = createVoicePlayer(
     lines,
@@ -115,7 +122,7 @@ export function createAudio(): AudioSystem {
     setGain(engine.sfxBus, mix.sfx);
     setGain(engine.musicBus, mix.music);
     setGain(engine.voiceBus, mix.voice);
-    if (mix.musicPlaying) engine.music.start();
+    if (mix.musicPlaying && !musicSuspended) engine.music.start();
     else engine.music.stop();
   };
 
@@ -152,11 +159,14 @@ export function createAudio(): AudioSystem {
         applyMix();
       }
       const { ctx } = engine;
-      if (ctx.state !== 'running') {
+      // Covers 'suspended' and iOS's non-standard 'interrupted' (after a call or Siri).
+      // Repeated calls are harmless: resume() is idempotent and the tick is silent.
+      if (ctx.state !== 'running' && ctx.state !== 'closed') {
         void ctx.resume().catch(() => undefined);
         playSilentTick(ctx);
       }
-      speech.prime();
+      // Speech priming only sticks inside real user activation (not iOS pointerdown).
+      if (hasUserActivation()) speech.prime();
     },
     sfx(name: SfxName) {
       const t = slot(`sfx:${name}`, SFX_DURATION[name]);
@@ -181,6 +191,11 @@ export function createAudio(): AudioSystem {
     applySettings(settings: Settings) {
       mix = mixFromSettings(settings);
       voice.setLanguage(settings.language);
+      applyMix();
+    },
+    setMusicSuspended(suspended: boolean) {
+      if (musicSuspended === suspended) return;
+      musicSuspended = suspended;
       applyMix();
     },
   };

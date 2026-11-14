@@ -42,9 +42,10 @@ export function createGallery(ctx: UiContext, opts: GalleryOptions): Screen {
       opts.onNew();
     },
   });
+  plus.dataset.testid = 'gallery-new';
   grid.append(plus);
   for (const world of opts.worlds) {
-    const btn = h('button', { type: 'button', class: 'gallery-item', 'aria-label': world.name }, [
+    const btn = h('button', { type: 'button', class: 'gallery-item', 'aria-label': world.name, 'data-testid': 'gallery-item' }, [
       thumbnail(ctx, world, urls),
     ]);
     btn.addEventListener('click', () => {

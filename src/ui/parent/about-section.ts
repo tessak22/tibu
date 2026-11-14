@@ -17,9 +17,18 @@ export function installSection(deps: ParentAreaDeps): HTMLElement {
     status.textContent = STATUS_TEXT[s];
   };
   void deps.persistStatus().then(show, () => show('unsupported'));
+  const problemAt = deps.lastSaveProblem?.() ?? null;
+  const problem =
+    problemAt === null
+      ? null
+      : h('p', { class: 'hint', 'data-testid': 'save-problem' }, [
+          `A save did not go through at ${new Date(problemAt).toLocaleTimeString()}. `,
+          'Tibu keeps trying on every change; if this repeats, free up space or export important worlds.',
+        ]);
   return section('Install and storage', [
     installGuide(),
     status,
+    ...(problem ? [problem] : []),
     textButton('Ask the browser to keep worlds', () => void deps.requestPersist().then(show, () => show('unsupported'))),
   ]);
 }

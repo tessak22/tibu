@@ -17,7 +17,8 @@ import { createInteraction } from './interaction';
 import { QualityMonitor } from './quality';
 import { ISLAND_CENTER } from './scene/lights';
 import { SceneGraph } from './sceneGraph';
-import { renderSnapshot } from './snapshot';
+import { FramePacer } from './framePacer';
+import { createSnapshotter } from './snapshot';
 import { installTestHook } from './testHook';
 
 const MAX_PIXEL_RATIO = 2;
@@ -33,6 +34,9 @@ function createRenderer(canvas: HTMLCanvasElement): THREE.WebGLRenderer {
   renderer.toneMappingExposure = 1.05;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFShadowMap;
+  // The sun and its shadow camera are fixed, so the shadow map only changes with the blocks.
+  renderer.shadowMap.autoUpdate = false;
+  renderer.shadowMap.needsUpdate = true;
   return renderer;
 }
 
@@ -44,6 +48,8 @@ export function createGameView(canvas: HTMLCanvasElement, registry: ContentRegis
   const emitter = new ViewEmitter();
   const quality = new QualityMonitor();
   const clock = new THREE.Timer();
+  const pacer = new FramePacer();
+  const snapshotter = createSnapshotter();
 
   let world: WorldModel | null = null;
   let unsubscribeWorld: () => void = () => undefined;
@@ -54,6 +60,15 @@ export function createGameView(canvas: HTMLCanvasElement, registry: ContentRegis
   let disposed = false;
   let frameHandle = 0;
   let time = 0;
+  /** Something besides the clouds moved last frame: keep full frame rate. */
+  let animating = true;
+
+  const invalidateShadows = (): void => {
+    renderer.shadowMap.needsUpdate = true;
+  };
+  const rebuildChunks = (): void => {
+    if (graph.chunks.update()) invalidateShadows();
+  };
 
   const resize = (): void => {
     const w = Math.max(1, canvas.clientWidth);
@@ -72,6 +87,8 @@ export function createGameView(canvas: HTMLCanvasElement, registry: ContentRegis
     graph.chunks.markCell(change.cell);
     graph.glow.markDirty();
     if (change.type === 'remove') {
+      // Smashed or undone while still bouncing: drop the overlay so no ghost block lingers.
+      graph.bounce.cancel(change.cell);
       graph.particles.pop(cellCenter(change.cell), graph.looks.averageColor(change.block));
       if (cause === 'action') graph.highlight.hide();
     } else {
@@ -96,31 +113,48 @@ export function createGameView(canvas: HTMLCanvasElement, registry: ContentRegis
     },
   });
 
-  function step(dt: number): void {
+  /** `measure`: the frame time is a fair device-speed sample (not a throttled idle frame). */
+  function step(dt: number, measure: boolean): void {
     time += dt;
-    if (quality.frame(dt)) graph.setLowQuality(true, reducedMotion);
-    cameraCtl.update(dt);
+    if (measure && quality.frame(dt)) {
+      graph.setLowQuality(true, reducedMotion);
+      invalidateShadows();
+    }
+    const cameraMoving = cameraCtl.update(dt);
     graph.clouds.update(dt, reducedMotion ? 0.4 : 1);
     graph.particles.update(dt);
     graph.bounce.update(dt);
     graph.highlight.update(dt, reducedMotion);
-    graph.dim.update(dt, false);
+    graph.dim.update(dt, reducedMotion);
     graph.glow.update(dt, cameraCtl.camera);
-    graph.chunks.update();
+    rebuildChunks();
+    // The bouncing overlay cube casts a shadow.
+    if (graph.bounce.isAnimating()) invalidateShadows();
     graph.atlas.flush();
     graph.sky.follow(cameraCtl.camera, time);
+    animating =
+      cameraMoving ||
+      graph.particles.isAnimating() ||
+      graph.bounce.isAnimating() ||
+      graph.highlight.isAnimating() ||
+      graph.dim.isFading();
   }
 
-  function frame(): void {
+  function frame(now: number): void {
     frameHandle = 0;
     if (disposed || !active) return;
-    clock.update();
-    step(Math.min(MAX_FRAME_DT, clock.getDelta()));
-    renderer.render(graph.scene, cameraCtl.camera);
+    const paced = pacer.next(now, animating);
+    if (paced) {
+      clock.update();
+      step(Math.min(MAX_FRAME_DT, clock.getDelta()), paced.measure);
+      renderer.render(graph.scene, cameraCtl.camera);
+    }
     frameHandle = requestAnimationFrame(frame);
   }
 
+  /** Input, world changes and effects call this: render now and stay smooth for a moment. */
   function requestFrame(): void {
+    pacer.kick(performance.now());
     if (!disposed && active && frameHandle === 0) frameHandle = requestAnimationFrame(frame);
   }
 
@@ -134,7 +168,8 @@ export function createGameView(canvas: HTMLCanvasElement, registry: ContentRegis
       graph.glow.markDirty();
       graph.highlight.hide();
       unsubscribeWorld = next.onChange(onWorldChange);
-      graph.chunks.update();
+      rebuildChunks();
+      invalidateShadows();
       requestFrame();
     },
     setMode(next) {
@@ -169,7 +204,7 @@ export function createGameView(canvas: HTMLCanvasElement, registry: ContentRegis
       requestFrame();
     },
     async snapshot({ width, height, galleryAngle }) {
-      graph.chunks.update();
+      rebuildChunks();
       graph.atlas.flush();
       const camera = cameraCtl.camera.clone();
       camera.aspect = Math.max(1, width) / Math.max(1, height);
@@ -181,7 +216,7 @@ export function createGameView(canvas: HTMLCanvasElement, registry: ContentRegis
       graph.highlight.group.visible = false;
       graph.dim.mesh.visible = false;
       try {
-        return await renderSnapshot(renderer, graph.scene, camera, width, height);
+        return await snapshotter.render(renderer, graph.scene, camera, width, height);
       } finally {
         graph.highlight.group.visible = highlightWasVisible;
         graph.dim.mesh.visible = dimWasVisible;
@@ -196,6 +231,7 @@ export function createGameView(canvas: HTMLCanvasElement, registry: ContentRegis
       active = next;
       if (next) {
         clock.reset();
+        invalidateShadows();
         requestFrame();
       } else if (frameHandle) {
         cancelAnimationFrame(frameHandle);
@@ -212,6 +248,7 @@ export function createGameView(canvas: HTMLCanvasElement, registry: ContentRegis
       resizeObserver?.disconnect();
       window.removeEventListener('resize', resize);
       emitter.clear();
+      snapshotter.dispose();
       graph.dispose();
       clock.dispose();
       renderer.dispose();

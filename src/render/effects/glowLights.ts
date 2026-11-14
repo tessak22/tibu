@@ -3,6 +3,27 @@ import type { BlockLooks } from '../blockLook';
 import type { VoxelMirror } from '../voxelMirror';
 
 const MAX_LIGHTS = 4;
+
+interface Point {
+  readonly x: number;
+  readonly y: number;
+  readonly z: number;
+}
+
+/** The `limit` cells whose centers are nearest to `from`. Distances are computed once each. */
+export function nearestCells<T extends Point>(cells: readonly T[], from: Point, limit: number): T[] {
+  if (limit <= 0 || cells.length === 0) return [];
+  return cells
+    .map((cell) => {
+      const dx = cell.x + 0.5 - from.x;
+      const dy = cell.y + 0.5 - from.y;
+      const dz = cell.z + 0.5 - from.z;
+      return { cell, d: dx * dx + dy * dy + dz * dz };
+    })
+    .sort((a, b) => a.d - b.d)
+    .slice(0, limit)
+    .map((entry) => entry.cell);
+}
 const RESCAN_SECONDS = 0.6;
 
 /**
@@ -43,14 +64,7 @@ export class GlowLights {
     if (this.dirty) this.rescan();
     if (this.sinceScan < RESCAN_SECONDS) return;
     this.sinceScan = 0;
-    const cam = camera.position;
-    const nearest = [...this.glowCells]
-      .sort(
-        (a, b) =>
-          cam.distanceToSquared(new THREE.Vector3(a.x + 0.5, a.y + 0.5, a.z + 0.5)) -
-          cam.distanceToSquared(new THREE.Vector3(b.x + 0.5, b.y + 0.5, b.z + 0.5)),
-      )
-      .slice(0, this.limit);
+    const nearest = nearestCells(this.glowCells, camera.position, this.limit);
     this.lights.forEach((light, i) => {
       const cell = nearest[i];
       if (!cell) {

@@ -84,6 +84,11 @@ export class Particles {
     }
   }
 
+  /** True while any particle is still flying. */
+  isAnimating(): boolean {
+    return this.particles.some((p) => p.alive);
+  }
+
   update(dt: number): void {
     let maxIndex = -1;
     for (let i = 0; i < CAPACITY; i++) {

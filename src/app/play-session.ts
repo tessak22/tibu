@@ -19,7 +19,9 @@ export interface PlaySessionDeps {
   readonly corner: HTMLElement;
   updateSettings(update: (s: Settings) => Settings): Promise<void>;
   onBack(): void;
-  onSaveError(): void;
+  onSaveError(error: unknown): void;
+  /** Best effort: the world itself is already saved. */
+  onThumbnailError(error: unknown): void;
 }
 
 export interface PlaySession extends Screen {
@@ -49,6 +51,7 @@ export function createPlaySession(deps: PlaySessionDeps): PlaySession {
       await repo.updateWorld(record.id, { thumbnail: blob });
     },
     onError: deps.onSaveError,
+    onThumbnailError: deps.onThumbnailError,
   });
 
   const learning = createLearning({ view, getWorld: () => world, audio, registry, getSettings: ctx.getSettings });
@@ -125,10 +128,11 @@ export function createPlaySession(deps: PlaySessionDeps): PlaySession {
     autosaver.markDirty();
     hud.setUndoAvailable(world.canUndo());
   });
+  // Data is enqueued first, so a slow or failing snapshot never holds back the save.
   const onHidden = (): void => {
     if (document.visibilityState === 'hidden') void autosaver.finish();
   };
-  const onPageHide = (): void => void autosaver.flush();
+  const onPageHide = (): void => void autosaver.finish();
   document.addEventListener('visibilitychange', onHidden);
   window.addEventListener('pagehide', onPageHide);
 

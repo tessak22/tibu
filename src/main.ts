@@ -20,13 +20,14 @@ const GENERIC_HELP = 'Something went wrong while loading. Please check the conne
 async function main(): Promise<void> {
   const root = document.getElementById('app');
   if (!root) return;
-  registerServiceWorker();
+  const updates = registerServiceWorker();
   const shell = buildShell(root);
   let repo;
   try {
     repo = await createRepository();
   } catch {
     showBootError(root, STORAGE_HELP);
+    updates?.setSafe(true); // A fixed version may be waiting.
     return;
   }
   try {
@@ -42,10 +43,12 @@ async function main(): Promise<void> {
       overlayRoot: shell.overlayRoot,
       stage: shell.stage,
       worlds: { createWorldFromTheme, deserializeWorld },
+      updates,
     });
     document.documentElement.classList.add('ready');
   } catch (error) {
     showBootError(root, GENERIC_HELP);
+    updates?.setSafe(true);
     // Surface details for developers without a console.log in production paths.
     reportError(error);
   }

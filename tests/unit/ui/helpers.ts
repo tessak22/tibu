@@ -67,6 +67,7 @@ export function fakeAudio(): AudioSystem & { calls: string[] } {
     speak: async (id) => void calls.push(`speak:${id}`),
     speakText: async () => undefined,
     applySettings: () => undefined,
+    setMusicSuspended: (on) => void calls.push(`music-suspended:${on}`),
   };
 }
 

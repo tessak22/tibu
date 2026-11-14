@@ -1,7 +1,9 @@
 import * as THREE from 'three';
 
 const TARGET_OPACITY = 0.5;
+/** Keep in sync with SLEEP_FADE_MS / SLEEP_FADE_REDUCED_MS in app/config.ts. */
 const FADE_SECONDS = 2.5;
+const FADE_SECONDS_REDUCED = 0.8;
 
 /** A gentle, slow twilight fade over the whole view (play timer ending). */
 export class DimOverlay {
@@ -35,8 +37,13 @@ export class DimOverlay {
     this.target = on ? TARGET_OPACITY : 0;
   }
 
-  update(dt: number, instant: boolean): void {
-    const step = instant ? 1 : dt / FADE_SECONDS;
+  /** True while fading towards the target. */
+  isFading(): boolean {
+    return Math.abs(this.material.opacity - this.target) > 0.0001;
+  }
+
+  update(dt: number, reducedMotion: boolean): void {
+    const step = dt / (reducedMotion ? FADE_SECONDS_REDUCED : FADE_SECONDS);
     const o = this.material.opacity;
     const next = o < this.target ? Math.min(this.target, o + step) : Math.max(this.target, o - step);
     this.material.opacity = next;

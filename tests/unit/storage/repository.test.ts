@@ -130,3 +130,45 @@ describe('settings', () => {
     expect(s.voiceOn).toBe(DEFAULT_SETTINGS.voiceOn);
   });
 });
+
+describe('connection recovery', () => {
+  it('reopens and retries once when the connection was closed under it', async () => {
+    const opened: Awaited<ReturnType<typeof openTibuDB>>[] = [];
+    const recovering = await createRepository(dbName, () => clock++, async (name, options) => {
+      const db = await openTibuDB(name, options);
+      opened.push(db);
+      return db;
+    });
+    const created = await recovering.createWorld({ profileId: 'p1', name: 'A', data: sampleWorld() });
+    opened[0]?.close(); // What iOS does after a long time in the background.
+    const updated = await recovering.updateWorld(created.id, { data: sampleWorld(3) });
+    expect(updated?.data).toEqual(sampleWorld(3));
+    expect(opened).toHaveLength(2);
+    recovering.close();
+  });
+
+  it('reopens lazily after the browser terminates the connection', async () => {
+    let terminate: (() => void) | undefined;
+    let opens = 0;
+    const recovering = await createRepository(dbName, () => clock++, (name, options) => {
+      opens += 1;
+      terminate = options.onTerminated;
+      return openTibuDB(name, options);
+    });
+    terminate?.();
+    await recovering.listProfiles();
+    expect(opens).toBe(2);
+    recovering.close();
+  });
+
+  it('keeps a single connection while healthy', async () => {
+    let opens = 0;
+    const plain = await createRepository(dbName, () => clock++, (name, options) => {
+      opens += 1;
+      return openTibuDB(name, options);
+    });
+    await expect(plain.updateWorld('x', { name: 'y' })).resolves.toBeNull();
+    expect(opens).toBe(1);
+    plain.close();
+  });
+});

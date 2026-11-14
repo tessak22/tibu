@@ -22,6 +22,8 @@ export interface ParentAreaDeps {
   exportWorld(record: WorldRecord): Promise<void>;
   /** Imports a file into the current profile. Resolves an error message, or null on success. */
   importWorld(file: File): Promise<string | null>;
+  /** When the most recent background save failed this session (ms epoch), or null. */
+  lastSaveProblem?(): number | null;
   /** Called after profiles or worlds change so the app can refresh. */
   onDataChanged(): void;
 }

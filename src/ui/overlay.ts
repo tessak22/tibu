@@ -72,6 +72,19 @@ export function confirmDialog(
 }
 
 /** Short, non-blocking message for parents (e.g. a save error). */
+const SAVE_HINT_MS = 3000;
+
+/**
+ * Quiet, word-free hint that a save did not go through (children cannot read, and an error
+ * message would only worry them). A small soft cloud fades in and out; one at a time.
+ */
+export function saveHint(root: HTMLElement): void {
+  if (root.querySelector('.save-hint')) return;
+  const el = h('div', { class: 'save-hint', role: 'img', 'aria-label': 'Not saved yet', html: ICONS.cloud });
+  root.append(el);
+  setTimeout(() => el.remove(), SAVE_HINT_MS);
+}
+
 export function toast(root: HTMLElement, message: string, ms = 4000): void {
   const el = h('div', { class: 'toast', role: 'status' }, [message]);
   root.append(el);

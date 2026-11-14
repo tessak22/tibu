@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { chunkIndexOf, chunkOrigin, chunksAffectedBy, CHUNK_COUNT } from '../../../src/render/chunkMath';
 import { AO_LEVELS, meshChunk, vertexAo, type MesherInput } from '../../../src/render/chunkMesher';
+import { cellIndex } from '../../../src/world/grid';
 
 function input(cells: Record<string, number>, extra: Partial<MesherInput> = {}): MesherInput {
   return {
@@ -38,7 +39,7 @@ describe('meshChunk', () => {
   });
 
   it('treats hidden cells as empty', () => {
-    const { solid } = meshChunk(input({ '1,1,1': 1, '2,1,1': 1 }, { hidden: new Set(['2,1,1']) }));
+    const { solid } = meshChunk(input({ '1,1,1': 1, '2,1,1': 1 }, { hidden: new Set([cellIndex(2, 1, 1)]) }));
     expect(quads(solid.indices)).toBe(6);
   });
 

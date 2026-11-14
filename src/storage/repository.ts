@@ -1,5 +1,5 @@
 import type { Profile, SavedWorld, Settings, WorldRecord } from '../core/types';
-import { openTibuDB, SETTINGS_KEY, type TibuDatabase } from './db';
+import { openTibuDB, SETTINGS_KEY, type OpenOptions, type TibuDatabase } from './db';
 import { newId } from './ids';
 import { mergeSettings } from './settings';
 
@@ -50,12 +50,63 @@ export function cleanName(raw: string, fallback = 'My world'): string {
 
 const byNewest = (a: WorldRecord, b: WorldRecord): number => b.updatedAt - a.updatedAt;
 
-export async function createRepository(dbName?: string, now: () => number = Date.now): Promise<Repository> {
-  const db: TibuDatabase = await openTibuDB(dbName);
+/** A connection the browser closed under us (iOS after backgrounding, storage pressure). */
+export function isClosedConnectionError(error: unknown): boolean {
+  if (typeof error !== 'object' || error === null) return false;
+  const { name, message } = error as { name?: unknown; message?: unknown };
+  if (name === 'InvalidStateError') return true;
+  return typeof message === 'string' && /connection.*(clos|lost)|database.*clos/i.test(message);
+}
 
-  const getWorld = async (id: string): Promise<WorldRecord | null> => (await db.get('worlds', id)) ?? null;
+export type DbOpener = (name: string | undefined, options: OpenOptions) => Promise<TibuDatabase>;
 
-  const updateWorld = async (id: string, patch: WorldPatch): Promise<WorldRecord | null> => {
+export async function createRepository(
+  dbName?: string,
+  now: () => number = Date.now,
+  open: DbOpener = openTibuDB,
+): Promise<Repository> {
+  let closed = false;
+  let connection: Promise<TibuDatabase> | null = null;
+
+  const connect = (): Promise<TibuDatabase> => {
+    if (closed) return Promise.reject(new RepositoryError('Tibu: repository is closed'));
+    if (!connection) {
+      const opening = open(dbName, {
+        onTerminated: () => {
+          if (connection === opening) connection = null;
+        },
+      });
+      connection = opening;
+      opening.catch(() => {
+        if (connection === opening) connection = null;
+      });
+    }
+    return connection;
+  };
+
+  /** Runs an operation, reopening the database and retrying once if the connection died. */
+  const withDb = async <T>(op: (db: TibuDatabase) => Promise<T>): Promise<T> => {
+    const db = await connect();
+    try {
+      return await op(db);
+    } catch (error) {
+      if (closed || !isClosedConnectionError(error)) throw error;
+      if (connection) {
+        const stale = connection;
+        connection = null;
+        void stale.then((d) => d.close(), () => undefined);
+      }
+      return op(await connect());
+    }
+  };
+
+  // Open eagerly so a browser without IndexedDB fails at boot, not on the first save.
+  await connect();
+
+  const getWorld = (id: string): Promise<WorldRecord | null> =>
+    withDb(async (db) => (await db.get('worlds', id)) ?? null);
+
+  const updateWorld = (id: string, patch: WorldPatch): Promise<WorldRecord | null> => withDb(async (db) => {
     const tx = db.transaction('worlds', 'readwrite');
     const current = await tx.store.get(id);
     if (!current) {
@@ -72,7 +123,7 @@ export async function createRepository(dbName?: string, now: () => number = Date
     await tx.store.put(next);
     await tx.done;
     return next;
-  };
+  });
 
   const createWorld = async (input: NewWorldInput): Promise<WorldRecord> => {
     const t = now();
@@ -85,22 +136,23 @@ export async function createRepository(dbName?: string, now: () => number = Date
       data: input.data,
       thumbnail: input.thumbnail ?? null,
     };
-    await db.put('worlds', record);
+    await withDb((db) => db.put('worlds', record));
     return record;
   };
 
   const createProfile = async (animal: string): Promise<Profile> => {
     const profile: Profile = { id: newId(), animal: animal || DEFAULT_PROFILE_ANIMAL, createdAt: now() };
-    await db.put('profiles', profile);
+    await withDb((db) => db.put('profiles', profile));
     return profile;
   };
 
   const listProfiles = async (): Promise<Profile[]> =>
-    (await db.getAll('profiles')).sort((a, b) => a.createdAt - b.createdAt);
+    (await withDb((db) => db.getAll('profiles'))).sort((a, b) => a.createdAt - b.createdAt);
 
   return {
-    listWorlds: async (profileId) => (await db.getAllFromIndex('worlds', 'byProfile', profileId)).sort(byNewest),
-    listAllWorlds: async () => (await db.getAll('worlds')).sort(byNewest),
+    listWorlds: async (profileId) =>
+      (await withDb((db) => db.getAllFromIndex('worlds', 'byProfile', profileId))).sort(byNewest),
+    listAllWorlds: async () => (await withDb((db) => db.getAll('worlds'))).sort(byNewest),
     getWorld,
     createWorld,
     updateWorld,
@@ -115,27 +167,33 @@ export async function createRepository(dbName?: string, now: () => number = Date
         thumbnail: source.thumbnail,
       });
     },
-    deleteWorld: (id) => db.delete('worlds', id),
+    deleteWorld: (id) => withDb((db) => db.delete('worlds', id)),
     listProfiles,
-    getProfile: async (id) => (await db.get('profiles', id)) ?? null,
+    getProfile: async (id) => (await withDb((db) => db.get('profiles', id))) ?? null,
     createProfile,
-    async deleteProfile(id) {
-      const tx = db.transaction(['profiles', 'worlds'], 'readwrite');
-      const worlds = tx.objectStore('worlds');
-      const keys = await worlds.index('byProfile').getAllKeys(id);
-      await Promise.all([...keys.map((k) => worlds.delete(k)), tx.objectStore('profiles').delete(id)]);
-      await tx.done;
-    },
+    deleteProfile: (id) =>
+      withDb(async (db) => {
+        const tx = db.transaction(['profiles', 'worlds'], 'readwrite');
+        const worlds = tx.objectStore('worlds');
+        const keys = await worlds.index('byProfile').getAllKeys(id);
+        await Promise.all([...keys.map((k) => worlds.delete(k)), tx.objectStore('profiles').delete(id)]);
+        await tx.done;
+      }),
     async ensureProfiles() {
       const existing = await listProfiles();
       return existing.length > 0 ? existing : [await createProfile(DEFAULT_PROFILE_ANIMAL)];
     },
-    getSettings: async () => mergeSettings(await db.get('settings', SETTINGS_KEY)),
+    getSettings: async () => mergeSettings(await withDb((db) => db.get('settings', SETTINGS_KEY))),
     async saveSettings(settings) {
       const merged = mergeSettings(settings);
-      await db.put('settings', merged, SETTINGS_KEY);
+      await withDb((db) => db.put('settings', merged, SETTINGS_KEY));
       return merged;
     },
-    close: () => db.close(),
+    close() {
+      closed = true;
+      const current = connection;
+      connection = null;
+      void current?.then((d) => d.close(), () => undefined);
+    },
   };
 }

@@ -15,3 +15,9 @@ export const PHOTO_MAX_EDGE = 2048;
 export const CARD_CLEAR_MS = 2500;
 /** Max wait for the sleep line before showing the resting screen. */
 export const SLEEP_SCREEN_DELAY_MS = 6000;
+/** Minimum wait before the resting screen: the twilight dim fade (render/effects/dim.ts). */
+export const SLEEP_FADE_MS = 2500;
+/** Same, with reduced motion (the dim fade runs faster too). */
+export const SLEEP_FADE_REDUCED_MS = 800;
+/** The resting screen's own CSS fade-in (screens.css .resting-screen). */
+export const RESTING_FADE_IN_MS = 1600;

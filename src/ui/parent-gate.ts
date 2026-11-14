@@ -28,7 +28,7 @@ export function askParentSum(root: HTMLElement, rand: () => number = Math.random
     let sum = makeSum(rand);
     let entry = '';
     let solved = false;
-    const question = h('div', { class: 'gate-question', 'aria-live': 'polite' });
+    const question = h('div', { class: 'gate-question', 'aria-live': 'polite', 'data-testid': 'gate-question' });
     const display = h('div', { class: 'gate-display', 'data-testid': 'gate-display' });
     const render = (): void => {
       question.textContent = `${sum.a} + ${sum.b} = ?`;
@@ -101,7 +101,7 @@ export interface ParentCornerOptions {
 /** Small corner button: press and hold 3 s (progress ring), then answer a sum. */
 export function createParentCorner(opts: ParentCornerOptions): HTMLButtonElement {
   const holdMs = opts.holdMs ?? HOLD_MS;
-  const btn = h('button', { type: 'button', class: 'parent-corner', 'aria-label': 'Grown-ups: press and hold' });
+  const btn = h('button', { type: 'button', class: 'parent-corner', 'aria-label': 'Grown-ups: press and hold', 'data-testid': 'parent-corner' });
   btn.innerHTML = `${ICONS.parent}<svg class="hold-ring" viewBox="0 0 60 60" aria-hidden="true"><circle cx="30" cy="30" r="${RING_R}" fill="none" stroke-width="6" stroke-dasharray="${RING_LEN}" stroke-dashoffset="${RING_LEN}"/></svg>`;
   const ring = btn.querySelector<SVGCircleElement>('.hold-ring circle');
   isolatePointer(btn);
