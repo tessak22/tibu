@@ -31,14 +31,15 @@ export class Actors {
     return this.options.size;
   }
 
-  /** The nearest visible tappable actor along the ray, or null. */
-  hit(raycaster: THREE.Raycaster): ActorOptions | null {
+  /** The nearest visible tappable actor along the ray (with its ray distance), or null. */
+  hit(raycaster: THREE.Raycaster): { readonly options: ActorOptions; readonly distance: number } | null {
     const tappable = [...this.options].filter(([o, opts]) => opts.onTap && o.visible).map(([o]) => o);
     if (tappable.length === 0) return null;
     for (const hit of raycaster.intersectObjects(tappable, true)) {
       if (!isShown(hit.object)) continue;
       const root = this.rootOf(hit.object);
-      if (root) return this.options.get(root) ?? null;
+      const options = root ? this.options.get(root) : undefined;
+      if (options) return { options, distance: hit.distance };
     }
     return null;
   }

@@ -43,7 +43,8 @@ export interface CharacterController {
   gesture(kind: Gesture): void;
   /** The world changed: re-check footing on the next frame. */
   markDirty(): void;
-  update(dt: number): void;
+  /** Advances one frame; returns true while the buddy walks, hops or plays a gesture. */
+  update(dt: number): boolean;
   isWalking(): boolean;
 }
 
@@ -311,6 +312,7 @@ export function createCharacterController(deps: CharacterDeps): CharacterControl
         pose.hop = 0;
       }
       animateBody(dt, rm);
+      return follower !== null || gesture !== 'none';
     },
   };
 }

@@ -23,7 +23,19 @@ export const ORBIT_LIMITS: OrbitLimits = {
 };
 
 /** Big worlds: get close to the character, never so far that the fog swallows the view. */
-export const BIG_ORBIT_LIMITS: OrbitLimits = { minPolar: 0.18, maxPolar: 1.38, minRadius: 7, maxRadius: 64 };
+export const BIG_ORBIT_LIMITS: OrbitLimits = { minPolar: 0.18, maxPolar: 1.38, minRadius: 4.5, maxRadius: 64 };
+
+/**
+ * Friendly third-person framing while the camera follows the explorer buddy: a little behind
+ * and above, close enough that the buddy fills about 1/8 of a tablet screen's height.
+ */
+export const FOLLOW_POLAR = 1.12;
+export const FOLLOW_RADIUS = 7.5;
+
+/** The follow framing, keeping the child's current orbit direction. */
+export function followOrbitFor(azimuth: number = Math.PI / 4): OrbitState {
+  return { azimuth: Number.isFinite(azimuth) ? azimuth : Math.PI / 4, polar: FOLLOW_POLAR, radius: FOLLOW_RADIUS };
+}
 
 /** Worlds wider than this are "big": the orbit target can pan and chunks build lazily. */
 export const BIG_WORLD_MIN_SPAN = 32;

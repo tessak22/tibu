@@ -7,7 +7,7 @@
 import { randomCelebrateLine } from '../audio/lineIds';
 import type { AudioSystem, BlockKey, Blueprint, Cell, GameView, PlayMode, WorldAction, WorldModel } from '../core/types';
 import { builtVoiceLine } from '../content/voice-lines';
-import { evaluateBlueprint, findBlueprintAnchor, fitsInWorld, suggestFrom, type BlueprintStatus } from './blueprint';
+import { evaluateBlueprint, findBlueprintAnchor, fitsInWorld, isUsableAnchor, suggestFrom, type BlueprintStatus } from './blueprint';
 import { lookupFromWorld } from './grid';
 import { randomStepCheer, STEP_LAST_LINE, STEP_NEXT_LINE } from './lines';
 import { PRIORITY, type SpeechScheduler } from './scheduler';
@@ -24,7 +24,11 @@ export interface BlueprintControllerDeps {
 }
 
 export interface BlueprintController {
-  set(bp: Blueprint | null, near?: Cell): Cell | null;
+  /**
+   * Starts a build at `anchor`, used as-is when valid (the app picks it). Only an invalid or
+   * missing anchor makes learning search nearby. Null when nothing fits.
+   */
+  set(bp: Blueprint | null, anchor?: Cell): Cell | null;
   suggest(): BlockKey | null;
   onProgress(listener: BlueprintProgressListener): () => void;
   dispose(): void;
@@ -53,6 +57,15 @@ function middleCell(bp: Blueprint, anchor: Cell): Cell {
   const all = bp.steps.flatMap((s) => s.blocks);
   const avg = (axis: 'x' | 'y' | 'z'): number => Math.round(all.reduce((n, b) => n + b[axis], 0) / Math.max(1, all.length));
   return { x: anchor.x + avg('x'), y: anchor.y + avg('y'), z: anchor.z + avg('z') };
+}
+
+/** The given anchor when usable; otherwise a search near it (or near the middle). */
+function resolveAnchor(bp: Blueprint, world: WorldModel, given: Cell | undefined): Cell | null {
+  const lookup = { size: world.size, get: lookupFromWorld(world) };
+  if (given && isUsableAnchor(bp, given, lookup)) return given;
+  const center: Cell = given ?? { x: Math.floor(world.size.x / 2), y: 0, z: Math.floor(world.size.z / 2) };
+  const found = findBlueprintAnchor(bp, center, lookup);
+  return found && fitsInWorld(bp, found, world.size) ? found : null;
 }
 
 export function createBlueprintController(deps: BlueprintControllerDeps): BlueprintController {
@@ -140,13 +153,12 @@ export function createBlueprintController(deps: BlueprintControllerDeps): Bluepr
   };
 
   return {
-    set(bp, near) {
+    set(bp, given) {
       stop();
       const world = deps.getWorld();
       if (!bp || !world || disposed || deps.getMode() !== 'big') return null;
-      const center: Cell = near ?? { x: Math.floor(world.size.x / 2), y: 0, z: Math.floor(world.size.z / 2) };
-      const anchor = findBlueprintAnchor(bp, center, { size: world.size, get: lookupFromWorld(world) });
-      if (!anchor || !fitsInWorld(bp, anchor, world.size)) return null;
+      const anchor = resolveAnchor(bp, world, given);
+      if (!anchor) return null;
       const status = evaluateBlueprint(bp, anchor, lookupFromWorld(world));
       active = { bp, anchor, world, status, filledInStep: 0 };
       unsubscribeWorld = world.onChange(onWorldChange);

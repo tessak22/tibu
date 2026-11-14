@@ -2,7 +2,7 @@
  * In-memory record of background problems (failed saves, thumbnails) so the grown-up area can
  * mention them. Children never see text about these.
  */
-export type ProblemKind = 'save' | 'thumbnail';
+export type ProblemKind = 'save' | 'thumbnail' | 'open';
 
 export interface ProblemEntry {
   readonly kind: ProblemKind;

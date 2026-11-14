@@ -2,6 +2,7 @@ import type { BlockKey } from '../../core/types';
 import type { Writer } from './fill';
 import type { Rng } from './noise';
 import type { ExplorePalette } from './palette';
+import { CANOPY_REACH, planBush, planFlowers, planTree, writePlan, type FloraPalette } from './flora';
 import { col, isInterior, type Island, type Terrain } from './terrain';
 
 /** True when every column of the (2*half+1)^2 square is interior, free, unreserved and level. */
@@ -38,24 +39,13 @@ function randomSpot(rng: Rng, t: Terrain, isl: Island, half: number, level: bool
   return null;
 }
 
-function tree(t: Terrain, w: Writer, palette: ExplorePalette, x: number, z: number, rng: Rng): void {
-  const kind = palette.tree;
-  if (!kind) return;
-  const h = t.height[col(t, x, z)];
-  // Leaves start 4 above the ground so a character on a neighbouring (+1) column still fits.
-  const trunk = kind.tall ? rng.int(5, 6) : 4;
-  for (let y = 1; y <= trunk; y++) w.seed({ x, y: h + y, z }, kind.trunk);
-  const crown = h + trunk;
-  for (let dz = -1; dz <= 1; dz++) {
-    for (let dx = -1; dx <= 1; dx++) {
-      if (dx === 0 && dz === 0) continue;
-      w.seed({ x: x + dx, y: crown, z: z + dz }, kind.leaves);
-      if (!kind.tall || Math.abs(dx) + Math.abs(dz) === 1) w.seed({ x: x + dx, y: crown + 1, z: z + dz }, kind.leaves);
-    }
-  }
-  w.seed({ x, y: crown + 1, z }, kind.leaves);
-  w.seed({ x, y: crown + 2, z }, kind.cap ?? kind.leaves);
-  markUsed(t, x, z, 1);
+/** Plants one toy tree near (x, z); false when it did not fit there. */
+function tree(t: Terrain, w: Writer, flora: FloraPalette, x: number, z: number, rng: Rng, maxY: number): boolean {
+  const plan = planTree(t, w, flora, rng.pick(flora.kinds), x, z, rng, maxY);
+  if (!plan) return false;
+  writePlan(w, plan);
+  markUsed(t, x, z, CANOPY_REACH);
+  return true;
 }
 
 function rock(t: Terrain, w: Writer, block: BlockKey, x: number, z: number, rng: Rng): void {
@@ -95,17 +85,14 @@ export function paintPatches(t: Terrain, rng: Rng, palette: ExplorePalette): voi
   }
 }
 
-/** Trees, rocks, props and (space) little star lights, sized to each island's area. */
-export function scatterDecor(t: Terrain, w: Writer, rng: Rng, palette: ExplorePalette): void {
+/** Toy trees, bushes, flower clusters, rocks, props and (space) little star lights, sized to each island's area. */
+export function scatterDecor(t: Terrain, w: Writer, rng: Rng, palette: ExplorePalette, maxY = 31): void {
+  const flora = palette.flora;
   for (const isl of t.islands) {
     const area = islandArea(t, isl);
-    const trees = palette.tree ? Math.round(area / 50) : 0;
-    const rocks = Math.round(area / (palette.tree ? 110 : 60));
+    const rocks = Math.round(area / (flora ? 130 : 60));
     const props = palette.props.length > 0 ? Math.round(area / 150) : 0;
-    for (let k = 0; k < trees; k++) {
-      const s = randomSpot(rng, t, isl, 1, false);
-      if (s) tree(t, w, palette, s[0], s[1], rng);
-    }
+    if (flora) plantFlora(t, w, rng, flora, isl, area, maxY);
     for (let k = 0; k < rocks; k++) {
       const s = randomSpot(rng, t, isl, 1, false);
       if (s) rock(t, w, palette.rock, s[0], s[1], rng);
@@ -116,7 +103,7 @@ export function scatterDecor(t: Terrain, w: Writer, rng: Rng, palette: ExplorePa
       w.seed({ x: s[0], y: t.height[col(t, s[0], s[1])] + 1, z: s[1] }, rng.pick(palette.props));
       markUsed(t, s[0], s[1], 0);
     }
-    if (!palette.tree) {
+    if (!flora) {
       const lights = Math.max(1, Math.round(area / 200));
       for (let k = 0; k < lights; k++) {
         const s = randomSpot(rng, t, isl, 1, true);
@@ -127,5 +114,28 @@ export function scatterDecor(t: Terrain, w: Writer, rng: Rng, palette: ExplorePa
         markUsed(t, s[0], s[1], 1);
       }
     }
+  }
+}
+
+/** Trees first (they need the most room), then bushes and flower clusters in the gaps. */
+function plantFlora(t: Terrain, w: Writer, rng: Rng, flora: FloraPalette, isl: Island, area: number, maxY: number): void {
+  const trees = Math.round(area / 55);
+  for (let k = 0; k < trees; k++) {
+    const s = randomSpot(rng, t, isl, CANOPY_REACH, false);
+    if (s) tree(t, w, flora, s[0], s[1], rng, maxY);
+  }
+  const bushes = Math.round(area / 110);
+  for (let k = 0; k < bushes; k++) {
+    const s = randomSpot(rng, t, isl, 1, true);
+    if (!s) continue;
+    writePlan(w, planBush(t, flora, s[0], s[1], rng));
+    markUsed(t, s[0], s[1], 1);
+  }
+  const clusters = Math.round(area / 140);
+  for (let k = 0; k < clusters; k++) {
+    const s = randomSpot(rng, t, isl, 1, true);
+    if (!s) continue;
+    writePlan(w, planFlowers(t, flora, s[0], s[1], rng));
+    markUsed(t, s[0], s[1], 1);
   }
 }

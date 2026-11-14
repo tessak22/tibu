@@ -1,8 +1,9 @@
 import type { BlockKey, ThemeDef } from '../../core/types';
+import type { FloraPalette } from './flora';
 
 /**
  * Theme decoration table for explore worlds. Only block keys that exist in the shipped
- * nature and building packs are used (no "parts" pack dependency).
+ * nature, building, colors and parts packs are used (tests check every key).
  */
 export interface ExplorePalette {
   readonly top: BlockKey;
@@ -12,8 +13,8 @@ export interface ExplorePalette {
   /** Replaces the top block in small patches (flowers, ice...). Empty = none. */
   readonly patches: readonly BlockKey[];
   readonly rock: BlockKey;
-  /** null = no trees (space). */
-  readonly tree: { readonly trunk: BlockKey; readonly leaves: BlockKey; readonly cap?: BlockKey; readonly tall: boolean } | null;
+  /** Toy trees, bushes and flowers; null = none (space). */
+  readonly flora: FloraPalette | null;
   readonly hut: { readonly wall: BlockKey; readonly window: BlockKey; readonly roof: BlockKey };
   readonly tower: BlockKey;
   readonly light: BlockKey;
@@ -26,13 +27,27 @@ export interface ExplorePalette {
 
 const N = (id: string): BlockKey => `nature:${id}`;
 const B = (id: string): BlockKey => `building:${id}`;
+const P = (id: string): BlockKey => `parts:${id}`;
+const C = (id: string): BlockKey => `colors:${id}`;
+
+const FLORA: FloraPalette = {
+  trunk: P('pillar-white'),
+  leaves: [N('leaves'), N('leaves'), N('leaves'), N('leaves'), N('leaves'), C('green')],
+  pine: [C('green'), C('green'), N('leaves')],
+  blossom: [N('flowers')],
+  topper: P('cone-red'),
+  snow: null,
+  kinds: ['puff', 'puff', 'lollipop', 'lollipop', 'blossom', 'pine'],
+  bush: [N('leaves')],
+  blooms: [N('flowers'), P('plate-pink'), P('slab-yellow')],
+};
 
 const BASE: Omit<ExplorePalette, 'top' | 'under'> = {
   bridge: B('planks'),
   bridgeSupport: N('wood'),
   patches: [N('flowers')],
   rock: N('stone'),
-  tree: { trunk: N('wood'), leaves: N('leaves'), tall: false },
+  flora: FLORA,
   hut: { wall: B('planks'), window: B('window'), roof: B('roof') },
   tower: B('brick'),
   light: B('lamp'),
@@ -46,13 +61,18 @@ const BY_THEME: Record<string, Partial<ExplorePalette>> = {
   farm: { props: [N('hay')], garden: [N('flowers'), N('dirt'), N('hay')] },
   beach: {
     patches: [N('flowers')],
-    tree: { trunk: N('wood'), leaves: N('leaves'), tall: true },
+    flora: { ...FLORA, kinds: ['palm', 'palm', 'palm', 'lollipop'], blooms: [N('flowers'), P('plate-pink')] },
     hut: { wall: B('planks'), window: B('window'), roof: B('blue-roof') },
     garden: [N('flowers'), N('grass')],
   },
   snow: {
     patches: [N('ice')],
-    tree: { trunk: N('wood'), leaves: N('leaves'), cap: N('snow'), tall: true },
+    flora: {
+      ...FLORA,
+      snow: N('snow'),
+      kinds: ['pine', 'pine', 'pine', 'puff', 'lollipop'],
+      blooms: [P('slab-white'), N('ice')],
+    },
     hut: { wall: B('wall'), window: B('window'), roof: N('snow') },
     tower: N('stone'),
     garden: [N('ice'), N('snow')],
@@ -62,7 +82,7 @@ const BY_THEME: Record<string, Partial<ExplorePalette>> = {
     bridge: B('glass'),
     bridgeSupport: N('stone'),
     patches: [N('stone')],
-    tree: null,
+    flora: null,
     hut: { wall: B('wall'), window: B('glass'), roof: B('blue-roof') },
     tower: B('wall'),
     light: B('star-light'),

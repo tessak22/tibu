@@ -1,6 +1,6 @@
 import type { BlockKey, Mode, PlayMode, ResolvedPack } from '../core/types';
 import { createBuildSteps } from './build-steps';
-import { canvasCopy, clear, h, iconButton, isolatePointer } from './dom';
+import { canvasCopy, clear, h, iconButton, isolatePointer, pulse } from './dom';
 import { ICONS } from './icons';
 import { BIG_ICONS } from './icons-big';
 import { createTray } from './tray';
@@ -43,6 +43,8 @@ export interface Hud {
   setLayout(layout: HudLayout): void;
   /** Step indicator for a step-by-step build; null hides it. */
   setBlueprintProgress(progress: { picture: HTMLCanvasElement | null; step: number; count: number } | null): void;
+  /** Gentle cue on the builds button (e.g. a build found no room): a wiggle, no words. */
+  nudgeBuilds(): void;
   /** Highlights a tray block without telling the app (e.g. a build's suggested block). */
   setSelected(key: BlockKey): void;
 }
@@ -119,6 +121,7 @@ export function createHud(actions: HudActions, corner: HTMLElement): Hud {
       else steps.hide();
     },
     setSelected: (key) => tray.setSelected(key),
+    nudgeBuilds: () => pulse(builds, 'wiggle'),
     setMode(mode) {
       for (const b of [build, smash, walk]) {
         const on = b.dataset.mode === mode;

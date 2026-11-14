@@ -3,6 +3,7 @@ import { WORLD_SIZE, type WorldSize } from '../core/types';
 import {
   defaultOrbitFor,
   easeInOutCubic,
+  followOrbitFor,
   isBigWorld,
   lerpOrbit,
   orbitByDrag,
@@ -18,8 +19,10 @@ import { worldCenter } from './scene/lights';
 const FLY_SECONDS = 0.9;
 /** Follow smoothing: fraction of the remaining distance closed per second (exponential). */
 const FOLLOW_RATE = 5;
-/** Look a little above a followed character's origin (its feet). */
-const FOLLOW_LIFT = 1;
+/** Look a little above a followed character's origin (its feet), at about its middle. */
+const FOLLOW_LIFT = 0.5;
+/** The follow counts as converging while the target is farther than this from the character. */
+const FOLLOW_SETTLE = 0.01;
 
 /** Far plane and fog that keep big worlds cheap: fog hides the far plane, starting past the target. */
 export function viewRangeFor(size: WorldSize, radius: number): { near: number; far: number; fogNear: number; fogFar: number } {
@@ -52,9 +55,9 @@ export class CameraController {
     return this.state;
   }
 
-  /** Current orbit target (read-only copy). */
-  get focus(): THREE.Vector3 {
-    return this.target.clone();
+  /** Current orbit target. The live vector, not a copy: callers must not modify it. */
+  get focus(): Readonly<THREE.Vector3> {
+    return this.target;
   }
 
   get worldSize(): WorldSize {
@@ -106,10 +109,19 @@ export class CameraController {
     return true;
   }
 
-  /** Follow an object (keeps the child's orbit angle and zoom); null keeps orbiting where it is. */
+  /**
+   * Follow an object: the camera glides into the close third-person framing (keeping the child's
+   * orbit direction). null keeps orbiting where it is.
+   */
   setFollow(object: THREE.Object3D | null): void {
+    const started = object !== null && this.followed !== object;
     this.followed = object;
-    if (object) this.fly = null;
+    if (!started) return;
+    this.fly = { from: this.state, to: followOrbitFor(this.state.azimuth), fromTarget: this.target.clone(), t: 0 };
+  }
+
+  followTarget(): THREE.Object3D | null {
+    return this.followed;
   }
 
   isFollowing(): boolean {
@@ -117,7 +129,7 @@ export class CameraController {
   }
 
   reset(instant: boolean): void {
-    const to = defaultOrbitFor(this.size);
+    const to = this.followed ? followOrbitFor(this.state.azimuth) : defaultOrbitFor(this.size);
     const toTarget = this.followed ? this.target : this.home;
     if (instant) {
       this.fly = null;
@@ -129,7 +141,7 @@ export class CameraController {
     this.fly = { from: this.state, to, fromTarget: this.target.clone(), t: 0 };
   }
 
-  /** Returns true while the camera moves (fly home or catching up with a followed object). */
+  /** Returns true while the camera moves (a fly, or still catching up with a followed object). */
   update(dt: number): boolean {
     let moving = false;
     if (this.fly) {
@@ -143,9 +155,16 @@ export class CameraController {
     if (this.followed) {
       this.followed.getWorldPosition(this.followPoint);
       this.followPoint.y += FOLLOW_LIFT;
-      const k = 1 - Math.exp(-FOLLOW_RATE * Math.max(0, dt));
-      this.target.lerp(this.followPoint, k);
-      moving = true;
+      const gap2 = this.target.distanceToSquared(this.followPoint);
+      if (gap2 > FOLLOW_SETTLE * FOLLOW_SETTLE) {
+        const k = 1 - Math.exp(-FOLLOW_RATE * Math.max(0, dt));
+        this.target.lerp(this.followPoint, k);
+        moving = true;
+      } else if (gap2 > 0) {
+        // Settled: snap the last hair and stop counting as motion.
+        this.target.copy(this.followPoint);
+        this.apply();
+      }
     }
     if (moving) this.apply();
     return moving;

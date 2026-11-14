@@ -1,9 +1,12 @@
 import type { BlockKey, Blueprint, Cell, WorldModel } from '../core/types';
-import { findAnchor } from './blueprint-anchor';
+import { chooseAnchor, type AnchorPlace } from './blueprint-anchor';
 
 /** The part of the learning system that runs step-by-step builds. */
 export interface BlueprintLearning {
-  /** Returns the anchor actually used, or null when the build could not start (no room). */
+  /**
+   * Uses `anchor` as-is when it is valid (searching only when it is not). Returns the anchor
+   * actually used, or null when the build could not start (no room).
+   */
   setBlueprint(bp: Blueprint | null, anchor?: Cell): Cell | null;
   onBlueprintProgress(listener: (bp: Blueprint, stepIndex: number, stepCount: number, done: boolean) => void): () => void;
   suggestBlock(): BlockKey | null;
@@ -19,15 +22,15 @@ export interface BlueprintControllerDeps {
   readonly learning: BlueprintLearning;
   readonly world: WorldModel;
   readonly picture: (bp: Blueprint, size: number) => HTMLCanvasElement;
-  /** Where the child is: the character's cell (explore) or the island middle. */
-  readonly near: () => { readonly cell: Cell | null; readonly x: number; readonly z: number };
+  /** Where the child is looking: in front of the character (explore) or the view centre (island). */
+  readonly place: () => AnchorPlace;
   /** Show (or hide with null) the step dots. */
   readonly showProgress: (progress: BlueprintProgressView | null) => void;
   /** Select the block the next ghost needs in the tray. */
   readonly suggest: (key: BlockKey) => void;
   readonly onDone: () => void;
-  /** No free spot nearby: a soft response, nothing else happens. */
-  readonly onNoRoom?: () => void;
+  /** No free spot even after a wider search: a gentle cue (never a failure sound). */
+  readonly onNoRoom: () => void;
   readonly clearDelayMs?: number;
 }
 
@@ -42,7 +45,7 @@ export interface BlueprintController {
 const INDICATOR_PICTURE_SIZE = 128;
 const DONE_CLEAR_MS = 2500;
 
-/** Step-by-step builds: anchor near the child, step dots, suggested block, clear when done. */
+/** Step-by-step builds: one anchor (in front of the character / view centre), step dots, suggested block, clear when done. */
 export function createBlueprintController(deps: BlueprintControllerDeps): BlueprintController {
   let active: Blueprint | null = null;
   let picture: HTMLCanvasElement | null = null;
@@ -81,9 +84,13 @@ export function createBlueprintController(deps: BlueprintControllerDeps): Bluepr
   return {
     current: () => active,
     start(bp) {
+      const anchor = chooseAnchor(deps.world, bp, deps.place());
+      if (!anchor) {
+        // Nothing changes (a build already in progress keeps going); just the gentle cue.
+        deps.onNoRoom();
+        return;
+      }
       cancelTimer();
-      const near = deps.near();
-      const anchor = findAnchor(deps.world, bp, near, near.cell);
       active = bp;
       try {
         picture = deps.picture(bp, INDICATOR_PICTURE_SIZE);
@@ -94,7 +101,7 @@ export function createBlueprintController(deps: BlueprintControllerDeps): Bluepr
         active = null;
         picture = null;
         deps.showProgress(null);
-        deps.onNoRoom?.();
+        deps.onNoRoom();
         return;
       }
       deps.showProgress({ picture, step: 0, count: bp.steps.length });

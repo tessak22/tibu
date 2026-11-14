@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import type { BlockKey, Cell, Mode, Rotation, WorldAction, WorldModel } from '../core/types';
 import type { InputHandlers } from '../input/attachInput';
-import { highlightCell, resolveTapTarget, type TapTarget } from '../input/targeting';
+import { actorWinsTap, highlightCell, resolveTapTarget, type TapTarget } from '../input/targeting';
+import { raycastVoxels } from '../input/voxelRaycast';
 import type { CameraController } from './cameraController';
 import type { ViewEmitter } from './emitter';
 import type { SceneGraph } from './sceneGraph';
@@ -127,12 +128,24 @@ export function createInteraction(
     emitter.emit('smashed', { cell, block, collapsed: collapsedCount(action) });
   };
 
+  /** A tappable actor in front of every solid block along the current ray, or null. */
+  const tappedActor = (): (() => void) | null => {
+    const actor = graph.actors.hit(raycaster);
+    const onTap = actor?.options.onTap;
+    if (!actor || !onTap) return null;
+    const { origin, direction } = raycaster.ray;
+    const block = raycastVoxels(origin, direction, (cx, cy, cz) => graph.mirror.isSolid(cx, cy, cz), {
+      size: graph.mirror.size,
+    });
+    return actorWinsTap(actor.distance, block?.distance ?? null) ? onTap : null;
+  };
+
   const tap = (x: number, y: number): void => {
     hidePress();
     aim(x, y);
-    const actor = graph.actors.hit(raycaster);
-    if (actor?.onTap) {
-      actor.onTap();
+    const onActorTap = tappedActor();
+    if (onActorTap) {
+      onActorTap();
       return;
     }
     const { world, topple } = hooks.getState();

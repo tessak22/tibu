@@ -6,6 +6,7 @@ import { pickBlueprint } from '../ui/blueprint-picker';
 import { createHud, type Hud } from '../ui/hud';
 import { pickPack, playablePacks } from '../ui/pack-picker';
 import type { Screen } from '../ui/screen';
+import type { AnchorPlace } from './blueprint-anchor';
 import { createBlueprintController } from './blueprints';
 import { createCardCycler } from './cards';
 import { createExploreSession, type ExploreSession } from './explore-session';
@@ -72,6 +73,16 @@ export function createPlaySession(deps: PlaySessionDeps): PlaySession {
     repo: deps.repo,
     record,
     world,
+    exploreState: () => {
+      const setup = deps.explore;
+      if (!setup || !explore) return null;
+      const lastCell = explore.characterCell();
+      return {
+        spawn: setup.home ?? setup.spawn,
+        animalSpots: setup.animalSpots,
+        ...(lastCell ? { lastCell } : {}),
+      };
+    },
     onSaveError: deps.onSaveError,
     onThumbnailError: deps.onThumbnailError,
   });
@@ -177,15 +188,20 @@ export function createPlaySession(deps: PlaySessionDeps): PlaySession {
     learning,
     world,
     picture,
-    near: () => {
-      const cell = explore?.characterCell() ?? null;
-      const at = cell ?? centerStandCell(world);
-      return { cell, x: at.x, z: at.z };
+    place: (): AnchorPlace => {
+      const character = explore?.characterCell() ?? null;
+      if (character) return { kind: 'explore', character, facing: view.placementRotation() };
+      const middle = centerStandCell(world);
+      return { kind: 'island', center: { x: middle.x, z: middle.z } };
     },
     showProgress: (p) => hud.setBlueprintProgress(p),
     suggest: suggestBlock,
     onDone: () => undefined, // Learning celebrates; the indicator clears itself shortly after.
-    onNoRoom: () => audio.sfx('tap'),
+    // No spot even after a wider search: the builds button wiggles with a soft sound. Never a failure sound.
+    onNoRoom: () => {
+      hud.nudgeBuilds();
+      audio.sfx('tap');
+    },
   });
 
   const cards = createCardCycler({

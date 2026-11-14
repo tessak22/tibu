@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { AudioSystem, Blueprint, GameView, GhostBlock, PlayMode } from '../../../src/core/types';
 import {
-  blockMatches, blueprintExtent, evaluateBlueprint, findBlueprintAnchor, fitsInWorld, suggestFrom,
+  blockMatches, blueprintExtent, evaluateBlueprint, findBlueprintAnchor, fitsInWorld, isUsableAnchor, suggestFrom,
 } from '../../../src/learning/blueprint';
 import { createBlueprintController } from '../../../src/learning/blueprint-controller';
 import { lookupFromCells, lookupFromWorld } from '../../../src/learning/grid';
@@ -206,5 +206,43 @@ describe('blueprint controller', () => {
     world.place(at(0, 0, 0), 'colors:red');
     expect(view.bounce).not.toHaveBeenCalled();
     expect(ctl.suggest()).toBeNull();
+  });
+});
+
+describe('blueprint anchor hand-off', () => {
+  const makeCtl = () => {
+    const world = createFakeWorld();
+    world.ground('nature:grass');
+    const view = { setGhosts: vi.fn(), confetti: vi.fn(), bounce: vi.fn() } as unknown as GameView;
+    const audio = { sfx: vi.fn(), play: vi.fn(), speak: vi.fn(() => Promise.resolve()) } as unknown as AudioSystem;
+    const ctl = createBlueprintController({
+      view, audio, getWorld: () => world, getMode: () => 'big', scheduler: createSpeechScheduler({ delayMs: 10 }),
+    });
+    return { world, ctl };
+  };
+
+  it('uses a valid anchor exactly as given (no search)', () => {
+    const { ctl } = makeCtl();
+    expect(ctl.set(tower(1), { x: 2, y: 1, z: 19 })).toEqual({ x: 2, y: 1, z: 19 });
+  });
+
+  it('searches only when the given anchor is invalid', () => {
+    const { world, ctl } = makeCtl();
+    world.place({ x: 5, y: 1, z: 5 }, 'nature:wood');
+    const used = ctl.set(tower(2), { x: 5, y: 1, z: 5 });
+    expect(used).not.toBeNull();
+    expect(used).not.toEqual({ x: 5, y: 1, z: 5 });
+  });
+
+  it('isUsableAnchor: inside the world, and cells empty or already matching', () => {
+    const w = createFakeWorld();
+    w.ground('nature:grass');
+    const aw = { size: w.size, get: lookupFromWorld(w) };
+    expect(isUsableAnchor(tower(2), { x: 3, y: 1, z: 3 }, aw)).toBe(true);
+    w.place({ x: 3, y: 1, z: 3 }, 'colors:red');
+    expect(isUsableAnchor(tower(2), { x: 3, y: 1, z: 3 }, aw)).toBe(true);
+    w.place({ x: 4, y: 1, z: 3 }, 'nature:wood');
+    expect(isUsableAnchor(tower(2), { x: 3, y: 1, z: 3 }, aw)).toBe(false);
+    expect(isUsableAnchor(tower(2), { x: w.size.x - 1, y: 1, z: 3 }, aw)).toBe(false);
   });
 });

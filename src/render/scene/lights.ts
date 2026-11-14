@@ -21,6 +21,7 @@ export class Lights {
   private readonly hemi: THREE.HemisphereLight;
   private follows = false;
   private readonly center = new THREE.Vector3();
+  private readonly snapped = new THREE.Vector3();
 
   constructor() {
     this.hemi = new THREE.HemisphereLight('#fff6fb', '#c9e7c4', 1.55);
@@ -53,9 +54,9 @@ export class Lights {
   }
 
   /** Moves the shadow area with the camera target. Returns true when the shadow map must update. */
-  follow(target: THREE.Vector3): boolean {
+  follow(target: Readonly<THREE.Vector3>): boolean {
     if (!this.follows) return false;
-    const snapped = new THREE.Vector3(
+    const snapped = this.snapped.set(
       Math.round(target.x / SHADOW_SNAP) * SHADOW_SNAP,
       2,
       Math.round(target.z / SHADOW_SNAP) * SHADOW_SNAP,

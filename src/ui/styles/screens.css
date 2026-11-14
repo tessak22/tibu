@@ -88,6 +88,10 @@
   object-fit: cover;
 }
 
+.gallery-item.cannot-open .pic {
+  filter: grayscale(0.7) opacity(0.7);
+}
+
 .gallery-item canvas.pic {
   object-fit: contain;
   background: var(--sky-2);

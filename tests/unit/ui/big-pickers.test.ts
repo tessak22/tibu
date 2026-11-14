@@ -38,4 +38,17 @@ describe('sticker book', () => {
     expect(cells.filter((c) => c.classList.contains('not-yet'))).toHaveLength(2);
     for (const c of cells) expect(c.textContent).toBe('');
   });
+
+  it('every sticker answers a tap: found ones pop and say their name, hiding ones wiggle softly', () => {
+    const ctx = fakeCtx();
+    void openStickerBook(ctx, { allIds: ['sun', 'moon'], found: ['moon'], draw });
+    const cell = (id: string) => ctx.overlayRoot.querySelector<HTMLButtonElement>(`.sticker-cell[data-sticker="${id}"]`)!;
+    cell('moon').click();
+    expect(cell('moon').classList.contains('pop')).toBe(true);
+    expect(ctx.audio.calls).toEqual(['sfx:tap', 'speak:sticker.moon']);
+    cell('sun').click();
+    expect(cell('sun').tagName).toBe('BUTTON');
+    expect(cell('sun').classList.contains('wiggle')).toBe(true);
+    expect(ctx.audio.calls).toEqual(['sfx:tap', 'speak:sticker.moon', 'sfx:tap']);
+  });
 });

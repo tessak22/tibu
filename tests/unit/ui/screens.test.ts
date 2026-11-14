@@ -39,6 +39,27 @@ describe('gallery', () => {
     expect(onNew).toHaveBeenCalled();
     expect(onOpen).toHaveBeenCalledWith(expect.objectContaining({ id: 'a' }));
   });
+
+  it('a world that cannot be opened only wiggles with a soft sound (no words, nothing opens)', () => {
+    const ctx = fakeCtx();
+    const onOpen = vi.fn();
+    const g = createGallery(ctx, {
+      profile: { id: 'p', animal: 'fox', createdAt: 0 },
+      worlds: [record('newer')],
+      onSwitchProfile: null,
+      onOpen,
+      canOpen: () => false,
+      onNew: vi.fn(),
+      corner: document.createElement('div'),
+      banner: null,
+    });
+    const tile = g.el.querySelector<HTMLButtonElement>('.gallery-item')!;
+    tile.click();
+    expect(onOpen).not.toHaveBeenCalled();
+    expect(tile.classList.contains('wiggle')).toBe(true);
+    expect(ctx.audio.calls).toEqual(['sfx:tap']);
+    expect(tile.textContent).toBe('');
+  });
 });
 
 describe('profile picker', () => {

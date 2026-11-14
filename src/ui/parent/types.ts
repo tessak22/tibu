@@ -24,6 +24,8 @@ export interface ParentAreaDeps {
   importWorld(file: File): Promise<string | null>;
   /** When the most recent background save failed this session (ms epoch), or null. */
   lastSaveProblem?(): number | null;
+  /** False for a stored world whose data cannot be opened (e.g. made by a newer version). */
+  canOpenWorld?(record: WorldRecord): boolean;
   /** Called after profiles or worlds change so the app can refresh. */
   onDataChanged(): void;
 }

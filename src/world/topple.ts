@@ -3,12 +3,13 @@ import type { DenseGrid } from './denseGrid';
 import { FLOOR_Y } from './grid';
 
 /**
- * Hard cap on cells visited by one collapse search. Past it the search gives up and nothing
- * extra falls (the safe answer: the child only loses the block they tapped, which undo restores).
- * A full 96x32x96 world holds ~295k cells, but a real search ends long before this because it
- * dives towards the floor first.
+ * Hard cap on cells visited by one smash's collapse searches. Past it the search gives up and
+ * that structure counts as supported, so nothing extra falls (the safe answer: the child only
+ * loses the block they tapped, which undo restores). Real searches dive towards the floor first
+ * and end in a handful of steps; a toppling chunk bigger than this would be a heavy, surprising
+ * loss on a tablet anyway, and the cap keeps one tap cheap on the iPad.
  */
-export const MAX_TOPPLE_SEARCH = 40_000;
+export const MAX_TOPPLE_SEARCH = 2_500;
 
 const FACE_OFFSETS: readonly (readonly [number, number, number])[] = [
   [0, 1, 0],

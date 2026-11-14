@@ -64,6 +64,20 @@ function resolveBuild(q: TargetQuery, size: WorldSize): TapTarget | null {
   return floor ? { kind: 'place', cell: floor, tapped: null } : null;
 }
 
+/** An actor this much behind a block face still wins (it stands right on/against that block). */
+export const ACTOR_TAP_SLACK = 0.05;
+
+/**
+ * Occlusion for taps: the actor wins only when it is nearer along the ray than the first solid
+ * block (a buddy behind a wall must not steal a tap meant for the wall). Distances are along the
+ * same normalized ray; null means nothing was hit.
+ */
+export function actorWinsTap(actorDistance: number | null, blockDistance: number | null): boolean {
+  if (actorDistance === null || !Number.isFinite(actorDistance)) return false;
+  if (blockDistance === null || !Number.isFinite(blockDistance)) return true;
+  return actorDistance <= blockDistance + ACTOR_TAP_SLACK;
+}
+
 /** The cell to highlight for a target. */
 export function highlightCell(target: TapTarget): Cell {
   switch (target.kind) {

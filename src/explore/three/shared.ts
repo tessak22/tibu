@@ -116,7 +116,35 @@ export function eye(x: number, y: number, z: number, r: number): THREE.Group {
   return g;
 }
 
-/** Free everything (only when explore is torn down for good). */
+let users = 0;
+
+/**
+ * Registers one user of the shared resources (an explorer). The returned release function frees
+ * every shared geometry, material and texture once the last user is gone, so a new explorer
+ * created before an old one is disposed keeps its resources. Releasing twice is a no-op.
+ */
+export function acquireShared(): () => void {
+  users += 1;
+  let released = false;
+  return () => {
+    if (released) return;
+    released = true;
+    users = Math.max(0, users - 1);
+    if (users === 0) disposeShared();
+  };
+}
+
+/** Number of live users (tests). */
+export function sharedUsers(): number {
+  return users;
+}
+
+/** Shared resources currently alive (tests). */
+export function sharedCount(): number {
+  return geometries.size + colorMaterials.size + textureMaterials.size;
+}
+
+/** Free everything now. Prefer acquireShared(): this ignores other users. */
 export function disposeShared(): void {
   for (const g of geometries.values()) g.dispose();
   for (const m of colorMaterials.values()) m.dispose();

@@ -1,12 +1,36 @@
-import { WORLD_SIZE, type SavedWorld, type ThemeDef, type WorldModel } from '../core/types';
+import { WORLD_SIZE, type SavedWorld, type ThemeDef, type WorldEntity, type WorldModel } from '../core/types';
 import { SIZE_X, SIZE_Y, SIZE_Z } from './grid';
 import { islandMask } from './island';
 import { validateSavedWorld } from './serialize';
 import { createSeedableWorld } from './worldModel';
 
 /**
+ * Most entities a loaded world keeps. A generated explore world places one chest per sticker
+ * (a few dozen); anything far past that is a corrupted or hostile save and would cost actors.
+ */
+export const MAX_LOADED_ENTITIES = 96;
+
+/**
+ * Entities worth keeping for a loaded world: in bounds, not buried inside a block, at most
+ * MAX_LOADED_ENTITIES of them (first come, first kept). Pure; does not touch the model.
+ */
+export function loadableEntities(
+  model: Pick<WorldModel, 'inBounds' | 'get'>,
+  entities: readonly WorldEntity[],
+): WorldEntity[] {
+  const kept: WorldEntity[] = [];
+  for (const entity of entities) {
+    if (kept.length >= MAX_LOADED_ENTITIES) break;
+    if (!model.inBounds(entity.cell) || model.get(entity.cell) !== null) continue;
+    kept.push(entity);
+  }
+  return kept;
+}
+
+/**
  * Rebuilds a world from saved data (v1 or v2). Validates first; malformed, out-of-bounds or
- * duplicate entries are skipped. Never throws: completely invalid data yields an empty
+ * duplicate entries are skipped (entities too:
+ * out of bounds, inside a block, or past MAX_LOADED_ENTITIES). Never throws: completely invalid data yields an empty
  * 24x16x24 world. v1 saves load as a 24x16x24 'island'. The loaded state is not undoable.
  */
 export function deserializeWorld(data: SavedWorld): WorldModel {
@@ -25,7 +49,7 @@ export function deserializeWorld(data: SavedWorld): WorldModel {
     if (!model.inBounds(c) || model.get(c) !== null) continue;
     seed(c, clean.palette[paletteIndex], rot === 1 || rot === 2 || rot === 3 ? rot : 0);
   }
-  for (const entity of clean.entities ?? []) model.setEntity(entity);
+  for (const entity of loadableEntities(model, clean.entities ?? [])) model.setEntity(entity);
   return model;
 }
 

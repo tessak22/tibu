@@ -12,7 +12,7 @@ import { hashString } from './rng';
 import { createSpace } from './space';
 import type { CharacterVariant } from './three/characterMesh';
 import { createEffects } from './three/effects';
-import { disposeShared } from './three/shared';
+import { acquireShared } from './three/shared';
 import * as walk from './walkApi';
 
 export { placeChests, chooseSticker } from './chests';
@@ -42,10 +42,24 @@ export interface Explorer {
   dispose(): void;
 }
 
+/**
+ * Whether disposing an explorer should clear the view's follow target: only when the camera
+ * still follows this explorer's buddy (views without followTarget() fall back to "if we set it").
+ */
+export function shouldReleaseFollow(
+  view: Pick<GameView, 'followTarget'>,
+  mine: THREE.Object3D,
+  following: boolean,
+): boolean {
+  if (typeof view.followTarget === 'function') return view.followTarget() === mine;
+  return following;
+}
+
 const GIGGLE_NOTES = [76, 81, 84] as const;
 
 export function createExplorer(deps: ExplorerDeps): Explorer {
   const { view, world, audio } = deps;
+  const releaseShared = acquireShared();
   const space = createSpace(view);
   const effects = createEffects(deps.reducedMotion);
   const removeEffects = view.addActor(effects.root);
@@ -53,6 +67,7 @@ export function createExplorer(deps: ExplorerDeps): Explorer {
   let giggleQueue = 0;
   let giggleIn = 0;
   let disposed = false;
+  let following = false;
 
   // Chests reference the character (and vice versa) through these late-bound functions.
   let charCell = (): Cell => deps.spawn;
@@ -132,10 +147,12 @@ export function createExplorer(deps: ExplorerDeps): Explorer {
         giggleIn = 0.11;
       }
     }
-    character.update(dt);
-    animals.update(dt);
-    chests.update(dt);
-    effects.update(dt);
+    // Every update runs every frame; the view stays at full rate only while something moves.
+    const walking = character.update(dt);
+    const strolling = animals.update(dt);
+    const opening = chests.update(dt);
+    const sparkling = effects.update(dt);
+    return walking || strolling || opening || sparkling || giggleQueue > 0;
   });
 
   return {
@@ -153,6 +170,8 @@ export function createExplorer(deps: ExplorerDeps): Explorer {
       audio.sfx('whoosh');
     },
     setFollowing(on) {
+      if (disposed) return;
+      following = on;
       view.setFollowTarget(on ? character.rig.root : null);
     },
     dispose() {
@@ -160,13 +179,14 @@ export function createExplorer(deps: ExplorerDeps): Explorer {
       disposed = true;
       offFrame();
       offChange();
-      view.setFollowTarget(null);
+      // A newer explorer may already own the camera: only let go of our own buddy.
+      if (shouldReleaseFollow(view, character.rig.root, following)) view.setFollowTarget(null);
       animals.dispose();
       chests.dispose();
       removeCharacter();
       effects.dispose();
       removeEffects();
-      disposeShared();
+      releaseShared();
     },
   };
 }

@@ -11,7 +11,7 @@ import { loadContent } from './content/index';
 import { createGameView } from './render/index';
 import { createRepository } from './storage';
 import { placeChests } from './explore/index';
-import { createExploreWorld, createWorldFromTheme, deserializeWorld } from './world/index';
+import { createExploreWorld, createWorldFromTheme, deserializeWorld, validateSavedWorld } from './world/index';
 
 const STORAGE_HELP =
   'Saving is not available in this browser window (private browsing can block it). ' +
@@ -43,7 +43,7 @@ async function main(): Promise<void> {
       screenRoot: shell.screenRoot,
       overlayRoot: shell.overlayRoot,
       stage: shell.stage,
-      worlds: { createWorldFromTheme, deserializeWorld, createExploreWorld, placeChests },
+      worlds: { createWorldFromTheme, deserializeWorld, validateSavedWorld, createExploreWorld, placeChests },
       updates,
     });
     document.documentElement.classList.add('ready');

@@ -42,6 +42,16 @@ export class ChunkLayout {
     return { x: cx * this.width, y: 0, z: cz * this.width };
   }
 
+  /** Center X of a chunk column (allocation-free; for per-frame culling). */
+  centerX(index: number): number {
+    return (index % this.chunksX) * this.width + this.width / 2;
+  }
+
+  /** Center Z of a chunk column (allocation-free; for per-frame culling). */
+  centerZ(index: number): number {
+    return Math.floor(index / this.chunksX) * this.width + this.width / 2;
+  }
+
   /** World-space center of a chunk column (for culling and build priority). */
   center(index: number): { x: number; y: number; z: number } {
     const o = this.origin(index);

@@ -147,3 +147,19 @@ export function findBlueprintAnchor(bp: Blueprint, near: Cell, world: AnchorWorl
   }
   return null;
 }
+
+/**
+ * True when `anchor` can be used as given: every build cell is inside the world and either empty
+ * or already holding a block that counts for it (a build can be resumed where it stands).
+ */
+export function isUsableAnchor(bp: Blueprint, anchor: Cell, world: AnchorWorld): boolean {
+  if (![anchor.x, anchor.y, anchor.z].every(Number.isInteger)) return false;
+  if (!fitsInWorld(bp, anchor, world.size)) return false;
+  for (const step of placeSteps(bp, anchor)) {
+    for (const g of step) {
+      const actual = world.get(g.cell.x, g.cell.y, g.cell.z);
+      if (actual !== null && !blockMatches(g.block, actual, bp.difficulty)) return false;
+    }
+  }
+  return true;
+}

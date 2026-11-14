@@ -59,7 +59,7 @@ export function createExploreWorld(theme: ThemeDef, seed: number): ExploreWorld 
   paintPatches(t, rng, palette);
   fillGround(t, writer, palette);
   const discoveries = buildDiscoveries(t, writer, rng, palette, sites);
-  scatterDecor(t, writer, rng, palette);
+  scatterDecor(t, writer, rng, palette, BIG_WORLD_SIZE.y - 1);
   const spots = pickSpots(t, model, rng, discoveries);
   return { world: model, ...spots, discoveries };
 }

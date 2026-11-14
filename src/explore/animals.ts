@@ -77,7 +77,8 @@ export interface AnimalsDeps {
 }
 
 export interface AnimalsController {
-  update(dt: number): void;
+  /** Advances one frame; returns true while any animal walks or bounces. */
+  update(dt: number): boolean;
   markDirty(): void;
   count(): number;
   dispose(): void;
@@ -223,6 +224,7 @@ export function createAnimals(deps: AnimalsDeps): AnimalsController {
         dirty = false;
         for (const a of animals) recover(a);
       }
+      let moving = false;
       for (const a of animals) {
         if (a.follower) step(a, dt);
         else {
@@ -236,7 +238,9 @@ export function createAnimals(deps: AnimalsDeps): AnimalsController {
           }
         }
         animate(a, dt, rm);
+        if (a.follower !== null || a.bounce > 0) moving = true;
       }
+      return moving;
     },
     dispose() {
       for (const a of animals) a.remove();

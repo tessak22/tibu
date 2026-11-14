@@ -4,10 +4,11 @@ import type { Blueprint } from '../../../src/core/types';
 import { createBlueprintController, type BlueprintLearning } from '../../../src/app/blueprints';
 import { fakeBlueprint } from '../ui/helpers';
 import { fakeWorld } from './fake-world';
+import type { AnchorPlace } from '../../../src/app/blueprint-anchor';
 
 type Progress = (bp: Blueprint, i: number, n: number, done: boolean) => void;
 
-const setup = () => {
+const setup = (place: AnchorPlace = { kind: 'island', center: { x: 12, z: 12 } }, world = fakeWorld()) => {
   let progress: Progress = () => undefined;
   const learning: BlueprintLearning = {
     setBlueprint: vi.fn((bp: Blueprint | null, anchor?: { x: number; y: number; z: number }) => (bp ? (anchor ?? null) : null)),
@@ -20,17 +21,19 @@ const setup = () => {
   const showProgress = vi.fn();
   const suggest = vi.fn();
   const onDone = vi.fn();
+  const onNoRoom = vi.fn();
   const ctl = createBlueprintController({
     learning,
-    world: fakeWorld(),
+    world,
     picture: () => document.createElement('canvas'),
-    near: () => ({ cell: null, x: 12, z: 12 }),
+    place: () => place,
     showProgress,
     suggest,
     onDone,
+    onNoRoom,
     clearDelayMs: 100,
   });
-  return { ctl, learning, showProgress, suggest, onDone, progress: (...a: Parameters<Progress>) => progress(...a) };
+  return { ctl, learning, showProgress, suggest, onDone, onNoRoom, progress: (...a: Parameters<Progress>) => progress(...a) };
 };
 
 beforeEach(() => vi.useFakeTimers());
@@ -77,6 +80,22 @@ describe('blueprint controller', () => {
     expect(t.ctl.current()).toBeNull();
     expect(t.showProgress).toHaveBeenLastCalledWith(null);
     expect(t.suggest).not.toHaveBeenCalled();
+    expect(t.onNoRoom).toHaveBeenCalledTimes(1);
+  });
+
+  it('no spot anywhere: learning is not asked, the gentle cue runs once', () => {
+    const t = setup({ kind: 'island', center: { x: 2, z: 2 } }, fakeWorld({ x: 4, y: 2, z: 4 }, 1));
+    t.ctl.start(fakeBlueprint('house'));
+    expect(t.learning.setBlueprint).not.toHaveBeenCalled();
+    expect(t.onNoRoom).toHaveBeenCalledTimes(1);
+    expect(t.ctl.current()).toBeNull();
+  });
+
+  it('explore: hands learning the anchor in front of the character', () => {
+    const t = setup({ kind: 'explore', character: { x: 12, y: 1, z: 12 }, facing: 1 });
+    t.ctl.start(fakeBlueprint('house'));
+    const anchor = (t.learning.setBlueprint as unknown as ReturnType<typeof vi.fn>).mock.calls[0]?.[1];
+    expect(anchor).toEqual({ x: 14, y: 1, z: 12 });
   });
 
   it('ignores progress from another build', () => {

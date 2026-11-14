@@ -12,6 +12,8 @@ import { createSnapshotter } from './snapshot';
 import { installTestHook } from './testHook';
 import { createWorldSync } from './worldSync';
 
+type FrameCallback = (dt: number) => boolean | void;
+
 const MAX_PIXEL_RATIO = 2;
 const MAX_FRAME_DT = 0.1;
 
@@ -42,7 +44,8 @@ export function createGameView(canvas: HTMLCanvasElement, registry: ContentRegis
   const clock = new THREE.Timer();
   const pacer = new FramePacer();
   const snapshotter = createSnapshotter();
-  const frameCallbacks = new Set<(dt: number) => void>();
+  /** Copy-on-write: (un)subscribing swaps the array, so a frame iterates a stable snapshot. */
+  let frameCallbacks: readonly FrameCallback[] = [];
 
   let world: WorldModel | null = null;
   let unsubscribeWorld: () => void = () => undefined;
@@ -63,8 +66,7 @@ export function createGameView(canvas: HTMLCanvasElement, registry: ContentRegis
     renderer.shadowMap.needsUpdate = true;
   };
   const rebuildChunks = (force = false): void => {
-    const focus = cameraCtl.focus;
-    if (graph.chunks.update({ x: focus.x, z: focus.z }, force)) invalidateShadows();
+    if (graph.chunks.update(cameraCtl.focus, force)) invalidateShadows();
   };
 
   const resize = (): void => {
@@ -113,16 +115,20 @@ export function createGameView(canvas: HTMLCanvasElement, registry: ContentRegis
     pendingChunks: () => graph.chunks.pendingCount(),
   });
 
-  function runFrameCallbacks(dt: number): void {
-    for (const cb of [...frameCallbacks]) {
+  /** Runs every callback; true when any of them reports something moving. */
+  function runFrameCallbacks(dt: number): boolean {
+    const callbacks = frameCallbacks;
+    let moving = false;
+    for (let i = 0; i < callbacks.length; i++) {
       try {
-        cb(dt);
+        if ((callbacks[i] as FrameCallback)(dt) === true) moving = true;
       } catch (error) {
         queueMicrotask(() => {
           throw error;
         });
       }
     }
+    return moving;
   }
 
   /** Big worlds: fog, far plane, chunk distance culling and the sun all follow the view. */
@@ -142,7 +148,7 @@ export function createGameView(canvas: HTMLCanvasElement, registry: ContentRegis
       graph.setLowQuality(true, reducedMotion);
       invalidateShadows();
     }
-    runFrameCallbacks(dt);
+    const actorsMoving = runFrameCallbacks(dt);
     const cameraMoving = cameraCtl.update(dt);
     followView();
     graph.clouds.update(dt, reducedMotion ? 0.4 : 1);
@@ -157,15 +163,13 @@ export function createGameView(canvas: HTMLCanvasElement, registry: ContentRegis
     rebuildChunks();
     // The bouncing overlay casts a shadow; walking actors refresh theirs at half rate.
     if (graph.bounce.isAnimating()) invalidateShadows();
-    const actorsMoving = graph.actors.count() > 0 && (frameCallbacks.size > 0 || cameraCtl.isFollowing());
-    shadowTick = actorsMoving && !shadowTick;
+    shadowTick = actorsMoving && graph.actors.count() > 0 && !shadowTick;
     if (shadowTick) invalidateShadows();
     graph.atlas.flush();
     graph.sky.follow(cameraCtl.camera, time);
     animating =
       cameraMoving ||
-      frameCallbacks.size > 0 ||
-      cameraCtl.isFollowing() ||
+      actorsMoving ||
       graph.chunks.pendingCount() > 0 ||
       graph.particles.isAnimating() ||
       graph.bounce.isAnimating() ||
@@ -274,11 +278,16 @@ export function createGameView(canvas: HTMLCanvasElement, registry: ContentRegis
       cameraCtl.setFollow(object);
       requestFrame();
     },
+    followTarget() {
+      return cameraCtl.followTarget();
+    },
     onFrame(callback) {
-      frameCallbacks.add(callback);
+      // Wrap so the same function can subscribe twice and unsubscribe exactly once each.
+      const entry: FrameCallback = (dt) => callback(dt);
+      frameCallbacks = [...frameCallbacks, entry];
       requestFrame();
       return () => {
-        frameCallbacks.delete(callback);
+        frameCallbacks = frameCallbacks.filter((cb) => cb !== entry);
       };
     },
     cellCenter(cell) {
@@ -297,7 +306,7 @@ export function createGameView(canvas: HTMLCanvasElement, registry: ContentRegis
       requestFrame();
     },
     confetti(at?: Cell) {
-      graph.particles.confetti(at ? cellCenter(at) : cameraCtl.focus.add(new THREE.Vector3(0, 4, 0)));
+      graph.particles.confetti(at ? cellCenter(at) : new THREE.Vector3(0, 4, 0).add(cameraCtl.focus));
       requestFrame();
     },
     bounce(cell) {
@@ -333,7 +342,7 @@ export function createGameView(canvas: HTMLCanvasElement, registry: ContentRegis
       resizeObserver?.disconnect();
       window.removeEventListener('resize', resize);
       emitter.clear();
-      frameCallbacks.clear();
+      frameCallbacks = [];
       cameraCtl.setFollow(null);
       snapshotter.dispose();
       graph.dispose();

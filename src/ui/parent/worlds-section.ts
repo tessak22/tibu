@@ -4,6 +4,7 @@ import { confirmDialog } from '../overlay';
 import { message, section, textButton } from './controls';
 import type { ParentAreaDeps } from './types';
 
+export const CANNOT_OPEN_NOTE = "This world was made with a newer version and can't be opened. It is kept safe here.";
 const SAVE_ERROR = 'That did not work. Your worlds are unchanged. Please try again.';
 
 export function worldsSection(deps: ParentAreaDeps): HTMLElement {
@@ -42,6 +43,9 @@ export function worldsSection(deps: ParentAreaDeps): HTMLElement {
       textButton('Export', () => void run(() => deps.exportWorld(w)), 'small'),
       textButton('Delete', () => void remove(w), 'small danger'),
     ]);
+    if (deps.canOpenWorld && !deps.canOpenWorld(w)) {
+      li.append(h('p', { class: 'hint world-note', 'data-testid': 'world-cannot-open' }, [CANNOT_OPEN_NOTE]));
+    }
     li.append(actions);
     return li;
   };

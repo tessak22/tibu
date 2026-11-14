@@ -1,5 +1,5 @@
 import type { UiContext } from './context';
-import { h } from './dom';
+import { h, pulse } from './dom';
 import { openOverlay } from './overlay';
 
 const STICKER_SIZE = 160;
@@ -14,7 +14,8 @@ export interface StickerBookOptions {
 
 /**
  * Big grid of stickers: found ones in full color, the rest as soft silhouettes (something to
- * look forward to, never a "missing" mark). Pictures only; tapping a found one says its name.
+ * look forward to, never a "missing" mark). Pictures only. Every cell answers a tap: a found
+ * sticker pops and says its name, a hiding one wiggles with a soft sound.
  */
 export function openStickerBook(ctx: UiContext, opts: StickerBookOptions): Promise<void> {
   return new Promise((resolve) => {
@@ -30,16 +31,25 @@ export function openStickerBook(ctx: UiContext, opts: StickerBookOptions): Promi
       }
       pic.classList.add('pic');
       const cell = h(
-        have ? 'button' : 'div',
+        'button',
         {
+          type: 'button',
           class: `sticker-cell ${have ? 'found' : 'not-yet'}`,
           'data-sticker': id,
           'aria-label': have ? `Sticker ${id}` : 'A sticker still hiding',
-          ...(have ? { type: 'button' } : { role: 'img' }),
         },
         [pic],
       );
-      if (have) cell.addEventListener('click', () => ctx.audio.sfx('tap'));
+      cell.addEventListener('click', () => {
+        if (have) {
+          pulse(cell, 'pop');
+          ctx.audio.sfx('tap');
+          void ctx.audio.speak(`sticker.${id}`);
+        } else {
+          pulse(cell, 'wiggle');
+          ctx.audio.sfx('tap');
+        }
+      });
       grid.append(cell);
     }
     openOverlay(ctx.overlayRoot, grid, { className: 'sticker-overlay', label: 'Sticker book', onClose: resolve });

@@ -1,4 +1,4 @@
-import type { Cell, Profile, SavedWorld, ThemeDef, WorldModel } from '../core/types';
+import type { Cell, Profile, SavedExploreState, SavedWorld, ThemeDef, WorldModel, WorldRecord } from '../core/types';
 import type { WorldKind } from '../ui/theme-picker';
 
 /** What createExploreWorld returns (src/world). */
@@ -13,6 +13,8 @@ export interface ExploreWorldResult {
 export interface WorldFactory {
   createWorldFromTheme(theme: ThemeDef): WorldModel;
   deserializeWorld(data: SavedWorld): WorldModel;
+  /** The cleaned data, or null when it does not validate (corrupt, or made by a newer version). */
+  validateSavedWorld(data: unknown): SavedWorld | null;
   createExploreWorld(theme: ThemeDef, seed: number): ExploreWorldResult;
   /** Puts closed chests (one sticker each) on the given spots. */
   placeChests(world: WorldModel, spots: readonly Cell[], stickerIds: readonly string[], seed: number): unknown;
@@ -20,8 +22,11 @@ export interface WorldFactory {
 
 /** Where the character starts and where animals roam in an explore world. */
 export interface ExploreSetup {
+  /** Where the character appears now (the last cell it stood on when reopening). */
   readonly spawn: Cell;
   readonly animalSpots: readonly Cell[];
+  /** The world's original spawn, kept for saving when `spawn` is the last cell. */
+  readonly home?: Cell;
 }
 
 export interface NewWorld {
@@ -94,4 +99,61 @@ export function exploreSetupFor(factory: WorldFactory, world: WorldModel, theme:
     }
   }
   return { spawn: centerStandCell(world), animalSpots: [] };
+}
+
+/** True when a stored record's data validates. Invalid records are never opened (or autosaved over). */
+export function canOpenRecord(factory: Pick<WorldFactory, 'validateSavedWorld'>, record: Pick<WorldRecord, 'data'>): boolean {
+  try {
+    return factory.validateSavedWorld(record.data) !== null;
+  } catch {
+    return false;
+  }
+}
+
+const MAX_ANIMAL_SPOTS = 256;
+
+function isCellIn(world: Pick<WorldModel, 'inBounds'>, value: unknown): value is Cell {
+  if (typeof value !== 'object' || value === null) return false;
+  const { x, y, z } = value as Record<string, unknown>;
+  return (
+    Number.isInteger(x) && Number.isInteger(y) && Number.isInteger(z) &&
+    world.inBounds({ x: x as number, y: y as number, z: z as number })
+  );
+}
+
+const plainCell = (c: Cell): Cell => ({ x: c.x, y: c.y, z: c.z });
+
+/** An empty cell with something solid under it: the character can stand there. */
+export function canStandAt(world: Pick<WorldModel, 'get' | 'inBounds'>, cell: Cell): boolean {
+  const below = { x: cell.x, y: cell.y - 1, z: cell.z };
+  return world.inBounds(cell) && world.get(cell) === null && world.inBounds(below) && world.get(below) !== null;
+}
+
+/** Stored explore state from a record, checked against the world (never trust stored data). */
+export function readExploreState(world: Pick<WorldModel, 'inBounds'>, raw: unknown): SavedExploreState | null {
+  if (typeof raw !== 'object' || raw === null) return null;
+  const { spawn, animalSpots, lastCell } = raw as Record<string, unknown>;
+  if (!isCellIn(world, spawn) || !Array.isArray(animalSpots)) return null;
+  const spots = animalSpots.slice(0, MAX_ANIMAL_SPOTS).filter((c): c is Cell => isCellIn(world, c)).map(plainCell);
+  return {
+    spawn: plainCell(spawn),
+    animalSpots: spots,
+    ...(isCellIn(world, lastCell) ? { lastCell: plainCell(lastCell) } : {}),
+  };
+}
+
+/**
+ * Reopening an explore world: use the spawn and animal spots saved with the record, and put the
+ * character back where the child left it. Old records without them regenerate from the seed.
+ */
+export function exploreSetupForRecord(
+  factory: WorldFactory,
+  world: WorldModel,
+  theme: ThemeDef,
+  record: Pick<WorldRecord, 'data' | 'explore'>,
+): ExploreSetup {
+  const saved = readExploreState(world, record.explore);
+  if (!saved) return exploreSetupFor(factory, world, theme, record.data.seed);
+  const spawn = [saved.lastCell, saved.spawn].find((c): c is Cell => c !== undefined && canStandAt(world, c));
+  return { spawn: spawn ?? centerStandCell(world), animalSpots: saved.animalSpots, home: saved.spawn };
 }

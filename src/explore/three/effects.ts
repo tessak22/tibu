@@ -31,7 +31,8 @@ export interface Effects {
   burst(x: number, y: number, z: number, strength?: number): void;
   marker(x: number, y: number, z: number): void;
   sticker(id: string, x: number, y: number, z: number): void;
-  update(dt: number): void;
+  /** Advances one frame; returns true while a burst, marker or sticker is still showing. */
+  update(dt: number): boolean;
   dispose(): void;
 }
 
@@ -125,6 +126,9 @@ export function createEffects(reducedMotion: () => boolean): Effects {
           floating.splice(i, 1);
         }
       }
+      let active = markerLife > 0 || floating.length > 0;
+      for (const s of sparks) if (s.life > 0) active = true;
+      return active;
     },
     dispose() {
       for (const f of floating) {

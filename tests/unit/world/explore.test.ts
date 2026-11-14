@@ -2,6 +2,13 @@ import { describe, expect, it } from 'vitest';
 import { BIG_WORLD_SIZE, type ThemeDef } from '../../../src/core/types';
 import { createExploreWorld, isReachable, standable } from '../../../src/world';
 import { neighbors } from '../../../src/world/walk';
+import { readdirSync, readFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { CANOPY_CLEARANCE, CANOPY_REACH, canopyCells, planTree } from '../../../src/world/explore/flora';
+import { createRng } from '../../../src/world/explore/noise';
+import { explorePalette, type ExplorePalette } from '../../../src/world/explore/palette';
+import { createTerrain, type Terrain } from '../../../src/world/explore/terrain';
 
 const theme = (id: string, ground: string[]): ThemeDef =>
   ({ id, name: id, voiceLine: '', island: { shape: 'round', depth: 4 }, ground, scene: [], sky: { top: '', bottom: '' } }) as unknown as ThemeDef;
@@ -14,10 +21,77 @@ const THEMES = [
   theme('space', ['nature:moon-rock', 'nature:moon-rock']),
 ];
 
-const KNOWN = new Set([
-  ...['grass', 'dirt', 'sand', 'water', 'wood', 'leaves', 'flowers', 'stone', 'snow', 'ice', 'hay', 'moon-rock'].map((b) => `nature:${b}`),
-  ...['brick', 'wall', 'planks', 'window', 'door', 'roof', 'blue-roof', 'glass', 'lamp', 'star-light', 'heart-light'].map((b) => `building:${b}`),
-]);
+/** Every block key the shipped packs define (read straight from packs/<id>/pack.json). */
+function shippedBlockKeys(): Set<string> {
+  const root = resolve(dirname(fileURLToPath(import.meta.url)), '../../../packs');
+  const keys = new Set<string>();
+  for (const dir of readdirSync(root, { withFileTypes: true })) {
+    if (!dir.isDirectory()) continue;
+    const file = resolve(root, dir.name, 'pack.json');
+    const pack = JSON.parse(readFileSync(file, 'utf8')) as { id: string; blocks?: { id: string }[] };
+    for (const b of pack.blocks ?? []) keys.add(`${pack.id}:${b.id}`);
+  }
+  return keys;
+}
+
+const KNOWN = shippedBlockKeys();
+
+/** Every block key a palette (decor table) can write. */
+function paletteKeys(p: ExplorePalette): string[] {
+  const keys: string[] = [p.top, p.under, p.bridge, p.bridgeSupport, p.rock, p.tower, p.light, ...p.patches, ...p.garden, ...p.props];
+  keys.push(p.hut.wall, p.hut.window, p.hut.roof);
+  const f = p.flora;
+  if (f) keys.push(f.trunk, f.topper, ...f.leaves, ...f.pine, ...f.blossom, ...f.bush, ...f.blooms, ...(f.snow ? [f.snow] : []));
+  return keys;
+}
+
+describe('explore palettes', () => {
+  it.each(THEMES.map((t) => [t.id, t] as const))('%s: every decor block key exists in a shipped pack', (_id, t) => {
+    const missing = paletteKeys(explorePalette(t)).filter((k) => !KNOWN.has(k));
+    expect(missing).toEqual([]);
+  });
+
+  it('uses round pillar trunks and no flat cube trees', () => {
+    const f = explorePalette(THEMES[0]).flora;
+    expect(f?.trunk.startsWith('parts:pillar')).toBe(true);
+    expect(new Set(f?.kinds).size).toBeGreaterThanOrEqual(3);
+  });
+});
+
+describe('toy trees', () => {
+  const flat = (): Terrain => {
+    const t = createTerrain({ x: 16, y: 32, z: 16 });
+    t.height.fill(3);
+    t.island.fill(0);
+    return t;
+  };
+  const empty = { get: () => null };
+  const flora = explorePalette(THEMES[0]).flora as NonNullable<ExplorePalette['flora']>;
+
+  it.each(['puff', 'lollipop', 'blossom', 'pine', 'palm'] as const)('%s keeps walking clearance under its canopy', (kind) => {
+    for (let seed = 1; seed < 20; seed++) {
+      const plan = planTree(flat(), empty, flora, kind, 8, 8, createRng(seed), 31);
+      expect(plan).not.toBeNull();
+      for (const p of plan ?? []) {
+        const trunkColumn = p.cell.x === 8 && p.cell.z === 8;
+        if (!trunkColumn) expect(p.cell.y).toBeGreaterThanOrEqual(3 + CANOPY_CLEARANCE);
+        expect(Math.abs(p.cell.x - 8)).toBeLessThanOrEqual(CANOPY_REACH);
+      }
+    }
+  });
+
+  it('round canopies are not flat cuboid caps (rows narrow towards the top)', () => {
+    const cells = canopyCells('puff', createRng(3));
+    const widths = [0, 1, 2, 3].map((dy) => cells.filter((c) => c.dy === dy).length);
+    expect(widths[3]).toBe(1);
+    expect(Math.max(...widths)).toBe(widths[1]);
+  });
+
+  it('refuses to grow into existing blocks or past the world top', () => {
+    expect(planTree(flat(), { get: () => 'nature:stone' }, flora, 'puff', 8, 8, createRng(1), 31)).toBeNull();
+    expect(planTree(flat(), empty, flora, 'palm', 8, 8, createRng(1), 9)).toBeNull();
+  });
+});
 
 describe('createExploreWorld', () => {
   it('is deterministic per seed', () => {

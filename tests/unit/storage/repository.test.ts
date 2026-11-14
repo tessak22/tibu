@@ -26,6 +26,18 @@ describe('worlds', () => {
     expect(await repo.getWorld('missing')).toBeNull();
   });
 
+  it('keeps optional explore state (spawn, animal spots, last cell) without bumping updatedAt', async () => {
+    const explore = { spawn: { x: 1, y: 2, z: 3 }, animalSpots: [{ x: 4, y: 2, z: 4 }] };
+    const created = await repo.createWorld({ profileId: 'p1', name: 'A', data: sampleWorld(), explore });
+    expect((await repo.getWorld(created.id))?.explore).toEqual(explore);
+    const moved = await repo.updateWorld(created.id, { explore: { ...explore, lastCell: { x: 9, y: 2, z: 9 } } });
+    expect(moved?.explore?.lastCell).toEqual({ x: 9, y: 2, z: 9 });
+    expect(moved?.updatedAt).toBe(created.updatedAt);
+    expect((await repo.duplicateWorld(created.id))?.explore?.lastCell).toEqual({ x: 9, y: 2, z: 9 });
+    const plain = await repo.createWorld({ profileId: 'p1', name: 'B', data: sampleWorld() });
+    expect('explore' in plain).toBe(false);
+  });
+
   it('persists across repository instances', async () => {
     const created = await repo.createWorld({ profileId: 'p1', name: 'A', data: sampleWorld(2) });
     repo.close();

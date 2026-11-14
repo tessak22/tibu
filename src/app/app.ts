@@ -24,10 +24,11 @@ import { LANGUAGES } from './languages';
 import { detectPlatform } from './platform';
 import { createPlaySession, type PlaySession } from './play-session';
 import { createProblemLog } from './problem-log';
+import { createScreenHost } from './screen-host';
 import { createSettingsStore } from './settings-store';
 import { createSleepController } from './sleep-flow';
 import type { UpdateGate } from './update-gate';
-import { createNewWorld, exploreSetupFor, stickersToHide, type ExploreSetup, type WorldFactory } from './world-factory';
+import { canOpenRecord, createNewWorld, exploreSetupForRecord, stickersToHide, type ExploreSetup, type WorldFactory } from './world-factory';
 
 export interface AppDeps {
   readonly registry: ContentRegistry;
@@ -64,7 +65,7 @@ export async function startApp(deps: AppDeps): Promise<void> {
   const platform = detectPlatform(navigator, (q) => window.matchMedia(q));
   let profiles: Profile[] = await repo.ensureProfiles();
   let profile: Profile = profiles[0] as Profile;
-  let screen: Screen | null = null;
+  const host = createScreenHost(deps.screenRoot);
   let session: PlaySession | null = null;
   let sleeping = false;
 
@@ -74,14 +75,17 @@ export async function startApp(deps: AppDeps): Promise<void> {
   /** `calm`: a gallery or profile screen, where an app update may reload the page. */
   let calmScreen = false;
   const isCalm = (): boolean => calmScreen && !session && !sleeping;
-  const mount = (next: Screen, showStage: boolean, calm = false): void => {
+  /** Disposes the current screen completely, then builds and shows the next one. */
+  const mountBuilt = <T extends Screen>(build: () => T, showStage: boolean, calm = false): T => {
     deps.updates?.setSafe(false);
-    screen?.dispose();
-    screen = next;
+    const next = host.replace(build);
     calmScreen = calm;
     deps.stage.hidden = !showStage;
-    deps.screenRoot.append(next.el);
     deps.updates?.setSafe(isCalm());
+    return next;
+  };
+  const mount = (next: Screen, showStage: boolean, calm = false): void => {
+    mountBuilt(() => next, showStage, calm);
   };
 
   const leavePlay = async (): Promise<void> => {
@@ -110,6 +114,7 @@ export async function startApp(deps: AppDeps): Promise<void> {
         worlds,
         onSwitchProfile: profiles.length > 1 ? () => void showProfiles() : null,
         onOpen: (w) => void openWorld(w),
+        canOpen: (w) => canOpenRecord(deps.worlds, w),
         onNew: () => void newWorld(),
         corner: corner(),
         banner: createInstallBanner(overlayRoot, platform),
@@ -141,44 +146,67 @@ export async function startApp(deps: AppDeps): Promise<void> {
     profiles = profiles.map((p) => (p.id === next.id ? next : p));
   };
 
+  /** A world that cannot be opened (bad or newer data): stay on calm ground, change nothing. */
+  const refuseOpen = async (): Promise<void> => {
+    audio.sfx('tap');
+    if (!calmScreen) await showGallery();
+  };
+
+  /** The world and its explore setup, or null when the record cannot be opened safely. */
+  const loadWorld = (record: WorldRecord): { world: WorldModel; explore: ExploreSetup | null } | null => {
+    // Never open data that does not validate: it would open empty and autosave over the record.
+    if (!canOpenRecord(deps.worlds, record)) return null;
+    try {
+      const world = deps.worlds.deserializeWorld(record.data);
+      const explore =
+        world.kind === 'explore' ? exploreSetupForRecord(deps.worlds, world, registry.theme(world.themeId), record) : null;
+      return { world, explore };
+    } catch (error) {
+      problems.record('open', error);
+      return null;
+    }
+  };
+
   const openWorld = async (
     record: WorldRecord,
     preloaded?: { world: WorldModel; explore: ExploreSetup | null },
   ): Promise<void> => {
-    let world: WorldModel;
-    let explore: ExploreSetup | null = null;
+    const loaded = preloaded ?? loadWorld(record);
+    if (!loaded) return refuseOpen();
+    const { world, explore } = loaded;
     const playMode = profileMode(profile);
+    await leavePlay();
+    // The old session is fully disposed (view deactivated, follow target cleared, explorer
+    // resources released) before the new one sets up the shared view.
+    let next: PlaySession;
     try {
-      world = preloaded?.world ?? deps.worlds.deserializeWorld(record.data);
-      if (world.kind === 'explore') {
-        explore =
-          preloaded?.explore ??
-          exploreSetupFor(deps.worlds, world, registry.theme(world.themeId), record.data.seed);
-      }
-    } catch {
-      toast(overlayRoot, MSG.open);
+      next = mountBuilt(
+        () =>
+          createPlaySession({
+            profile,
+            playMode,
+            // A little builder can still open an older adventure world: it plays as a plain world.
+            explore: playMode === 'big' ? explore : null,
+            onProfileChanged,
+            ctx,
+            view,
+            repo,
+            record,
+            world,
+            corner: corner(),
+            updateSettings: settings.update,
+            onBack: () => void showGallery(),
+            onSaveError,
+            onThumbnailError: (error) => problems.record('thumbnail', error),
+          }),
+        true,
+      );
+    } catch (error) {
+      problems.record('open', error);
+      await showGallery();
       return;
     }
-    await leavePlay();
-    const next = createPlaySession({
-      profile,
-      playMode,
-      // A little builder can still open an older adventure world: it plays as a plain world.
-      explore: playMode === 'big' ? explore : null,
-      onProfileChanged,
-      ctx,
-      view,
-      repo,
-      record,
-      world,
-      corner: corner(),
-      updateSettings: settings.update,
-      onBack: () => void showGallery(),
-      onSaveError,
-      onThumbnailError: (error) => problems.record('thumbnail', error),
-    });
     session = next;
-    mount(next, true);
     sleep.resume();
   };
 
@@ -201,6 +229,7 @@ export async function startApp(deps: AppDeps): Promise<void> {
         profileId: profile.id,
         name: `${label} ${sameKind + 1}`,
         data: made.world.serialize(),
+        ...(made.explore ? { explore: { spawn: made.explore.spawn, animalSpots: made.explore.animalSpots } } : {}),
       });
       void audio.speak('new-world');
       await openWorld(record, made);
@@ -227,7 +256,7 @@ export async function startApp(deps: AppDeps): Promise<void> {
     const resting = createRestingScreen(corner());
     mount(resting, true);
     setTimeout(() => {
-      if (screen === resting) deps.stage.hidden = true;
+      if (host.current() === resting) deps.stage.hidden = true;
     }, RESTING_FADE_IN_MS);
   };
 
@@ -276,7 +305,7 @@ export async function startApp(deps: AppDeps): Promise<void> {
       return;
     }
     if (sleeping) return;
-    return profiles.length > 1 && screen?.el.classList.contains('profile-screen') ? showProfiles() : showGallery();
+    return profiles.length > 1 && host.current()?.el.classList.contains('profile-screen') ? showProfiles() : showGallery();
   };
 
   const openParent = async (): Promise<void> => {
@@ -302,6 +331,7 @@ export async function startApp(deps: AppDeps): Promise<void> {
         return null;
       },
       onDataChanged: () => undefined,
+      canOpenWorld: (record) => canOpenRecord(deps.worlds, record),
       lastSaveProblem: () => problems.last('save')?.at ?? null,
     });
     await refreshAfterParent();

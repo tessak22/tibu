@@ -187,11 +187,17 @@
   opacity: 0.8;
 }
 
-/* Step-by-step build indicator, top center. */
+/*
+ * Step-by-step build indicator: a pill centred just above the block tray. The top row holds
+ * photo / sound / card / builds / stickers (and grows when a card picture shows), so the pill
+ * never sits there; above the tray it clears every button in landscape, portrait and mirrored.
+ * Tray height = its row padding (2 x 14px) + one button; the tray sits 10px off the bottom.
+ */
 .hud-top-center {
-  top: calc(var(--safe-top) + 12px);
+  bottom: calc(var(--safe-bottom) + 10px + var(--btn) + 28px + 10px);
   left: 50%;
   transform: translateX(-50%);
+  max-width: calc(100vw - 2 * (var(--btn) * 1.5 + 36px));
   align-items: center;
   padding: 6px 6px 6px 10px;
   border-radius: 999px;
@@ -244,8 +250,22 @@
   padding: 14px;
 }
 
-@media (orientation: portrait) {
-  .hud-top-center {
-    top: calc(var(--safe-top) + var(--btn) + 24px);
+
+/*
+ * Short landscape screens (phones): the build / smash / walk column fills the band between the
+ * top row and the tray instead of centring on the screen, so it never slides under the top
+ * buttons. Buttons keep their full touch size; only the gaps shrink.
+ */
+@media (orientation: landscape) and (max-height: 520px) {
+  .hud-side-start {
+    top: calc(var(--safe-top) + 12px + var(--btn) + 4px);
+    bottom: calc(var(--safe-bottom) + 10px + var(--btn) + 28px);
+    justify-content: center;
+    transform: none;
+    gap: 2px;
+  }
+
+  .hud-side-start .mode-btn.active {
+    margin-block: 6px;
   }
 }

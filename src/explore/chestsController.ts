@@ -42,7 +42,8 @@ export interface ChestsDeps {
 export interface ChestsController {
   /** The explorer arrived at `cell`; opens any closed chest next to it. True if one opened. */
   arrivedAt(cell: Cell): boolean;
-  update(dt: number): void;
+  /** Advances one frame; returns true while a lid opens or a chest wiggles. */
+  update(dt: number): boolean;
   dispose(): void;
 }
 
@@ -180,7 +181,12 @@ export function createChests(deps: ChestsDeps): ChestsController {
       }
       const me = deps.characterCell();
       const rm = deps.reducedMotion();
-      for (const v of views.values()) animate(v, dt, me, rm);
+      let moving = false;
+      for (const v of views.values()) {
+        animate(v, dt, me, rm);
+        if ((v.open > 0 && v.open < 1) || v.wiggle > 0) moving = true;
+      }
+      return moving;
     },
     dispose() {
       for (const v of views.values()) v.remove();

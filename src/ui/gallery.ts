@@ -12,6 +12,8 @@ export interface GalleryOptions {
   /** Shown only when there is more than one profile. */
   readonly onSwitchProfile: (() => void) | null;
   readonly onOpen: (world: WorldRecord) => void;
+  /** False for a world whose data cannot be opened: its tile only wiggles (it stays safe). */
+  readonly canOpen?: (world: WorldRecord) => boolean;
   readonly onNew: () => void;
   readonly corner: HTMLElement;
   readonly banner: HTMLElement | null;
@@ -56,7 +58,15 @@ export function createGallery(ctx: UiContext, opts: GalleryOptions): Screen {
     }, [
       thumbnail(ctx, world, urls),
     ]);
+    const openable = opts.canOpen?.(world) ?? true;
+    if (!openable) btn.classList.add('cannot-open');
     btn.addEventListener('click', () => {
+      if (!openable) {
+        // Picture-only, soft response: nothing opens, nothing changes.
+        pulse(btn, 'wiggle');
+        ctx.audio.sfx('tap');
+        return;
+      }
       pulse(btn);
       ctx.audio.sfx('whoosh');
       opts.onOpen(world);

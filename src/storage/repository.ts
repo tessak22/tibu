@@ -1,4 +1,4 @@
-import type { PlayMode, Profile, SavedWorld, Settings, WorldRecord } from '../core/types';
+import type { PlayMode, Profile, SavedExploreState, SavedWorld, Settings, WorldRecord } from '../core/types';
 import { openTibuDB, SETTINGS_KEY, type OpenOptions, type TibuDatabase } from './db';
 import { newId } from './ids';
 import { DEFAULT_PROFILE_ANIMAL, isPlayMode, normalizeProfile, withMode, withSticker } from './profiles';
@@ -12,12 +12,15 @@ export interface NewWorldInput {
   readonly name: string;
   readonly data: SavedWorld;
   readonly thumbnail?: Blob | null;
+  readonly explore?: SavedExploreState;
 }
 
 export interface WorldPatch {
   readonly data?: SavedWorld;
   readonly thumbnail?: Blob | null;
   readonly name?: string;
+  /** Adventure worlds: spawn, animal spots and the character's last cell. */
+  readonly explore?: SavedExploreState;
 }
 
 export interface Repository {
@@ -124,6 +127,7 @@ export async function createRepository(
       ...(patch.data !== undefined ? { data: patch.data } : {}),
       ...(patch.thumbnail !== undefined ? { thumbnail: patch.thumbnail } : {}),
       ...(patch.name !== undefined ? { name: cleanName(patch.name, current.name) } : {}),
+      ...(patch.explore !== undefined ? { explore: patch.explore } : {}),
       updatedAt: patch.data !== undefined || patch.name !== undefined ? now() : current.updatedAt,
     };
     await tx.store.put(next);
@@ -141,6 +145,7 @@ export async function createRepository(
       updatedAt: t,
       data: input.data,
       thumbnail: input.thumbnail ?? null,
+      ...(input.explore ? { explore: input.explore } : {}),
     };
     await withDb((db) => db.put('worlds', record));
     return record;
@@ -199,6 +204,7 @@ export async function createRepository(
         name: cleanName(`${source.name} (copy)`),
         data: source.data,
         thumbnail: source.thumbnail,
+        ...(source.explore ? { explore: source.explore } : {}),
       });
     },
     deleteWorld: (id) => withDb((db) => db.delete('worlds', id)),

@@ -315,6 +315,19 @@ export interface WorldRecord {
   readonly data: SavedWorld;
   /** PNG/JPEG snapshot used in the gallery. */
   readonly thumbnail: Blob | null;
+  /**
+   * Adventure worlds only (optional, additive): where the character starts, where animals roam,
+   * and where the character was left. Missing on older records (the app then regenerates).
+   */
+  readonly explore?: SavedExploreState;
+}
+
+/** Saved alongside an explore world's record so reopening does not regenerate the terrain. */
+export interface SavedExploreState {
+  readonly spawn: Cell;
+  readonly animalSpots: readonly Cell[];
+  /** The character's cell when the child last left the world. */
+  readonly lastCell?: Cell;
 }
 
 /** Export file format (one world per file). */
@@ -394,8 +407,14 @@ export interface GameView {
   addActor(object: Object3D, options?: ActorOptions): () => void;
   /** Camera smoothly follows this object (big-kid walk mode); null returns to orbit around it. */
   setFollowTarget(object: Object3D | null): void;
-  /** Per-frame callback while the view is active; dt in seconds (clamped). Returns unsubscribe. */
-  onFrame(callback: (dt: number) => void): () => void;
+  /** The object the camera currently follows, or null (optional for older fakes). */
+  followTarget?(): Object3D | null;
+  /**
+   * Per-frame callback while the view is active; dt in seconds (clamped). Returns unsubscribe.
+   * Called every rendered frame. Return true while something visibly moves (keeps full frame
+   * rate and refreshes actor shadows); return false/nothing when idle (30 fps, no shadow redraw).
+   */
+  onFrame(callback: (dt: number) => boolean | void): () => void;
   /** World-space center of a cell (for positioning actors). */
   cellCenter(cell: Cell): { x: number; y: number; z: number };
   /** Fly the camera back to the default view (instant when reduced motion is on). */

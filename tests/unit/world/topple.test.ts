@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { BIG_WORLD_SIZE, type WorldAction, type WorldModel } from '../../../src/core/types';
 import { createSeedableWorld, createWorld } from '../../../src/world';
+import { MAX_TOPPLE_SEARCH } from '../../../src/world/topple';
 
 const c = (x: number, y: number, z: number) => ({ x, y, z });
 
@@ -137,5 +138,32 @@ describe('smash with topple', () => {
     for (let x = 10; x < 60; x += 5) model.smash(c(x, 4, 40), { topple: true });
     expect(performance.now() - t0).toBeLessThan(500);
     expect(model.get(c(30, 30, 40))).toBe('colors:red');
+  });
+
+  it('keeps the search budget small (about 2,500 cells)', () => {
+    expect(MAX_TOPPLE_SEARCH).toBeLessThanOrEqual(2_500);
+    expect(MAX_TOPPLE_SEARCH).toBeGreaterThanOrEqual(1_000);
+  });
+
+  it('still topples a structure smaller than the budget', () => {
+    const { model, seed } = createSeedableWorld('meadow', { size: BIG_WORLD_SIZE });
+    for (let x = 0; x < 40; x++) for (let z = 0; z < 40; z++) seed(c(x, 0, z), 'nature:grass');
+    seed(c(5, 1, 5), 'colors:red'); // pillar foot
+    // A 20x20 slab (400 cells) floating on the pillar.
+    seed(c(5, 2, 5), 'colors:red');
+    for (let x = 0; x < 20; x++) for (let z = 0; z < 20; z++) if (!(x === 5 && z === 5)) seed(c(x, 3, z), 'colors:blue');
+    seed(c(5, 3, 5), 'colors:blue');
+    expect(batchSize(model.smash(c(5, 1, 5), { topple: true }))).toBe(1 + 1 + 400);
+  });
+
+  it('treats a structure larger than the budget as supported (nothing extra falls)', () => {
+    const { model, seed } = createSeedableWorld('meadow', { size: BIG_WORLD_SIZE });
+    for (let x = 0; x < 96; x++) for (let z = 0; z < 96; z++) seed(c(x, 0, z), 'nature:grass');
+    seed(c(5, 1, 5), 'colors:red');
+    // A 60x60 slab (3,600 cells, past the budget) resting only on that one pillar block.
+    for (let x = 0; x < 60; x++) for (let z = 0; z < 60; z++) seed(c(x, 2, z), 'colors:blue');
+    const action = model.smash(c(5, 1, 5), { topple: true });
+    expect(action?.type).toBe('remove');
+    expect(model.get(c(50, 2, 50))).toBe('colors:blue');
   });
 });

@@ -163,13 +163,20 @@ export class ChunkRenderer {
   }
 
   /** Hides chunk columns farther than `maxDistance` (horizontally) from the camera. */
-  cull(camera: THREE.Vector3, maxDistance: number): void {
+  cull(camera: { readonly x: number; readonly z: number }, maxDistance: number): void {
     const reach = maxDistance + this.layout.width * 0.75;
-    this.meshes.forEach((slot, i) => {
-      const c = this.layout.center(i);
-      const visible = Math.hypot(c.x - camera.x, c.z - camera.z) <= reach;
-      for (const mesh of [slot.solid, slot.glow, slot.glass]) if (mesh) mesh.visible = visible;
-    });
+    const reach2 = reach * reach;
+    const layout = this.layout;
+    // Runs every frame in big worlds: no allocations.
+    for (let i = 0; i < this.meshes.length; i++) {
+      const slot = this.meshes[i] as ChunkMeshes;
+      const dx = layout.centerX(i) - camera.x;
+      const dz = layout.centerZ(i) - camera.z;
+      const visible = dx * dx + dz * dz <= reach2;
+      if (slot.solid) slot.solid.visible = visible;
+      if (slot.glow) slot.glow.visible = visible;
+      if (slot.glass) slot.glass.visible = visible;
+    }
   }
 
   dispose(): void {
