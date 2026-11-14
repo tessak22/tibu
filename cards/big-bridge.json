@@ -1,0 +1,48 @@
+{
+  "$schema": "../schemas/card.schema.json",
+  "id": "big-bridge",
+  "name": "bridge between two towers",
+  "order": 107,
+  "mode": "big",
+  "blocks": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        0,
+        2,
+        0
+      ],
+      "block": "nature:stone"
+    },
+    {
+      "from": [
+        4,
+        0,
+        0
+      ],
+      "to": [
+        4,
+        2,
+        0
+      ],
+      "block": "nature:stone"
+    },
+    {
+      "from": [
+        0,
+        3,
+        0
+      ],
+      "to": [
+        4,
+        3,
+        0
+      ],
+      "block": "building:planks"
+    }
+  ]
+}

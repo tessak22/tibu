@@ -1,4 +1,10 @@
-import { SIZE_X, SIZE_Z } from '../../world/grid';
+/** Footprint of the mask: columns along x and z. Defaults to the little-builder island. */
+export interface MaskSize {
+  readonly x: number;
+  readonly z: number;
+}
+const DEFAULT_MASK: MaskSize = { x: 24, z: 24 };
+const EDGE_CAP = 12;
 
 export interface UndersideArrays {
   readonly positions: Float32Array;
@@ -13,40 +19,45 @@ export function hash2(x: number, z: number): number {
   return s - Math.floor(s);
 }
 
-/** Distance (in cells, capped) from each ground column to the nearest non-ground column. */
-function edgeDistance(mask: Uint8Array): Float32Array {
-  const dist = new Float32Array(SIZE_X * SIZE_Z);
-  const cap = 12;
-  for (let z = 0; z < SIZE_Z; z++) {
-    for (let x = 0; x < SIZE_X; x++) {
-      if (!mask[x + z * SIZE_X]) continue;
-      let best = cap;
-      for (let dz = -cap; dz <= cap; dz++) {
-        for (let dx = -cap; dx <= cap; dx++) {
-          const ox = x + dx;
-          const oz = z + dz;
-          const outside = ox < 0 || oz < 0 || ox >= SIZE_X || oz >= SIZE_Z || !mask[ox + oz * SIZE_X];
-          if (outside) best = Math.min(best, Math.hypot(dx, dz));
-        }
-      }
-      dist[x + z * SIZE_X] = best;
+/**
+ * Distance (in cells, capped) from each ground column to the nearest non-ground column.
+ * Two-pass chamfer transform: linear time, so big worlds stay cheap to load.
+ */
+function edgeDistance(mask: Uint8Array, size: MaskSize): Float32Array {
+  const { x: sx, z: sz } = size;
+  const dist = new Float32Array(sx * sz);
+  const D = Math.SQRT2;
+  const at = (x: number, z: number): number => (x < 0 || z < 0 || x >= sx || z >= sz ? 0 : dist[x + z * sx]);
+  for (let i = 0; i < dist.length; i++) dist[i] = mask[i] ? EDGE_CAP : 0;
+  for (let z = 0; z < sz; z++) {
+    for (let x = 0; x < sx; x++) {
+      const i = x + z * sx;
+      if (!dist[i]) continue;
+      dist[i] = Math.min(dist[i], at(x - 1, z) + 1, at(x, z - 1) + 1, at(x - 1, z - 1) + D, at(x + 1, z - 1) + D);
+    }
+  }
+  for (let z = sz - 1; z >= 0; z--) {
+    for (let x = sx - 1; x >= 0; x--) {
+      const i = x + z * sx;
+      if (!dist[i]) continue;
+      dist[i] = Math.min(dist[i], at(x + 1, z) + 1, at(x, z + 1) + 1, at(x + 1, z + 1) + D, at(x - 1, z + 1) + D);
     }
   }
   return dist;
 }
 
 /** Depth (in blocks) of the rock under each column: deep in the middle, shallow at the rim. */
-export function columnDepths(mask: Uint8Array, maxDepth: number): Float32Array {
+export function columnDepths(mask: Uint8Array, maxDepth: number, size: MaskSize = DEFAULT_MASK): Float32Array {
   const depth = Math.max(1, Math.min(32, Math.floor(maxDepth) || 1));
-  const dist = edgeDistance(mask);
+  const dist = edgeDistance(mask, size);
   let maxDist = 1;
   for (const d of dist) maxDist = Math.max(maxDist, d);
-  const out = new Float32Array(SIZE_X * SIZE_Z);
+  const out = new Float32Array(size.x * size.z);
   for (let i = 0; i < out.length; i++) {
     if (!mask[i]) continue;
     const t = Math.min(1, dist[i] / maxDist);
-    const x = i % SIZE_X;
-    const z = Math.floor(i / SIZE_X);
+    const x = i % size.x;
+    const z = Math.floor(i / size.x);
     const jitter = (hash2(x, z) - 0.5) * 0.9;
     out[i] = Math.max(0.6, Math.round((0.6 + Math.sqrt(t) * depth + jitter) * 2) / 2);
   }
@@ -60,8 +71,9 @@ const ROCK_BOTTOM: readonly [number, number, number] = [0.5, 0.44, 0.52];
  * Stepped, softly colored rock under the island (below y = 0). Only exposed faces are emitted.
  * Colors fade from warm earth at the top to a soft lilac at the tip.
  */
-export function buildUnderside(mask: Uint8Array, maxDepth: number): UndersideArrays {
-  const depths = columnDepths(mask, maxDepth);
+export function buildUnderside(mask: Uint8Array, maxDepth: number, size: MaskSize = DEFAULT_MASK): UndersideArrays {
+  const depths = columnDepths(mask, maxDepth, size);
+  const { x: sx, z: sz } = size;
   const positions: number[] = [];
   const normals: number[] = [];
   const colors: number[] = [];
@@ -82,10 +94,10 @@ export function buildUnderside(mask: Uint8Array, maxDepth: number): UndersideArr
     indices.push(base, base + 1, base + 2, base, base + 2, base + 3);
   };
   const depthAt = (x: number, z: number): number =>
-    x < 0 || z < 0 || x >= SIZE_X || z >= SIZE_Z ? 0 : depths[x + z * SIZE_X];
+    x < 0 || z < 0 || x >= sx || z >= sz ? 0 : depths[x + z * sx];
 
-  for (let z = 0; z < SIZE_Z; z++) {
-    for (let x = 0; x < SIZE_X; x++) {
+  for (let z = 0; z < sz; z++) {
+    for (let x = 0; x < sx; x++) {
       const d = depthAt(x, z);
       if (d <= 0) continue;
       const b = -d;

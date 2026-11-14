@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import type { BlockKey, ContentRegistry, FaceName, ResolvedBlock } from '../core/types';
+import type { BlockKey, BlockShape, ContentRegistry, FaceName, ResolvedBlock } from '../core/types';
 import { BOX_FACE_ORDER } from './faces';
 
 /** Cached, registry-backed info about how a block looks. Owns the overlay textures it creates. */
@@ -23,6 +23,19 @@ export class BlockLooks {
     return this.block(key).faces[face];
   }
 
+  /** Geometry of a block; registries that predate parts count as cubes. */
+  shape(key: BlockKey): BlockShape {
+    return this.block(key).shape ?? 'cube';
+  }
+
+  /**
+   * Glass-like (translucent, tinted) blocks. Rule: a 'pane' part whose block id starts with
+   * "pane" or contains "glass" (magnet-tile panes). Other panes, e.g. parts:flag, stay opaque.
+   */
+  isTranslucent(key: BlockKey): boolean {
+    return isGlassLike(this.shape(key), this.block(key).id);
+  }
+
   isGlow(key: BlockKey): boolean {
     const b = this.block(key);
     return Boolean(b.glowColor) || b.behaviors.includes('glow');
@@ -44,7 +57,12 @@ export class BlockLooks {
 
   /** Six textures in BoxGeometry material order, for overlay meshes (preview, bounce). */
   boxTextures(key: BlockKey): THREE.Texture[] {
-    return BOX_FACE_ORDER.map((face) => this.textureFor(this.face(key, face)));
+    return this.texturesIn(key, BOX_FACE_ORDER);
+  }
+
+  /** Six textures in any face order (part overlays use FACE_NAMES order). */
+  texturesIn(key: BlockKey, order: readonly FaceName[]): THREE.Texture[] {
+    return order.map((face) => this.textureFor(this.face(key, face)));
   }
 
   dispose(): void {
@@ -63,6 +81,11 @@ export class BlockLooks {
     }
     return t;
   }
+}
+
+/** See BlockLooks.isTranslucent. Pure for tests. */
+export function isGlassLike(shape: BlockShape, id: string): boolean {
+  return shape === 'pane' && (/^pane/.test(id) || id.includes('glass'));
 }
 
 function sampleAverage(canvas: HTMLCanvasElement): THREE.Color | null {

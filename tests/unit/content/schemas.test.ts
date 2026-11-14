@@ -11,9 +11,9 @@ describe('shipped content matches its JSON Schemas', () => {
     expect(shipped.readIssues).toEqual([]);
   });
 
-  it('ships the eight packs, five themes and at least eight cards', () => {
+  it('ships the eight packs plus parts, five themes and at least eight cards', () => {
     const ids = shipped.bundle.packs.map((p) => p.expectedId).sort();
-    expect(ids).toEqual(['animals', 'building', 'colors', 'letters', 'music', 'nature', 'numbers', 'shapes']);
+    expect(ids).toEqual(['animals', 'building', 'colors', 'letters', 'music', 'nature', 'numbers', 'parts', 'shapes']);
     expect(shipped.bundle.themes.map((t) => t.expectedId).sort()).toEqual(['beach', 'farm', 'meadow', 'snow', 'space']);
     expect(shipped.bundle.cards.length).toBeGreaterThanOrEqual(8);
   });
@@ -28,6 +28,10 @@ describe('shipped content matches its JSON Schemas', () => {
 
   it.each(shipped.bundle.cards.map((c) => [c.file, c.data] as const))('%s', (file, data) => {
     expect(validateSchema('card', file, data)).toEqual([]);
+  });
+
+  it.each((shipped.bundle.builds ?? []).map((b) => [b.file, b.data] as const))('%s', (file, data) => {
+    expect(validateSchema('build', file, data)).toEqual([]);
   });
 });
 

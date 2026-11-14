@@ -1,0 +1,22 @@
+{
+  "$schema": "../schemas/card.schema.json",
+  "id": "big-tower-five",
+  "name": "tower of five",
+  "order": 104,
+  "mode": "big",
+  "blocks": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        0,
+        4,
+        0
+      ],
+      "block": "colors:green"
+    }
+  ]
+}

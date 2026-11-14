@@ -45,8 +45,8 @@ function readFolders(root: string, dir: string, fileName: string, issues: Valida
   return out;
 }
 
-function readCards(root: string, issues: ValidationIssue[]): SourceFile[] {
-  const dir = join(root, 'cards');
+function readFlat(root: string, folder: string, issues: ValidationIssue[]): SourceFile[] {
+  const dir = join(root, folder);
   if (!existsSync(dir)) return [];
   return readdirSync(dir)
     .filter((n) => n.endsWith('.json'))
@@ -55,13 +55,14 @@ function readCards(root: string, issues: ValidationIssue[]): SourceFile[] {
     .filter((s): s is SourceFile => s !== null);
 }
 
-/** Loads packs/, themes/ and cards/ under `root` (the repo root). */
+/** Loads packs/, themes/, cards/ and builds/ under `root` (the repo root). */
 export function readContentFromDisk(root: string): DiskContent {
   const readIssues: ValidationIssue[] = [];
   const bundle: ContentBundle = {
     packs: readFolders(root, 'packs', 'pack.json', readIssues),
     themes: readFolders(root, 'themes', 'theme.json', readIssues),
-    cards: readCards(root, readIssues),
+    cards: readFlat(root, 'cards', readIssues),
+    builds: readFlat(root, 'builds', readIssues),
   };
   const exists: FileExists = (repoPath) => existsSync(join(root, ...repoPath.split('/')));
   return { bundle, exists, readIssues };

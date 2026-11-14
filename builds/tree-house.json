@@ -1,0 +1,83 @@
+{
+  "$schema": "../schemas/build.schema.json",
+  "id": "tree-house",
+  "name": "tree house",
+  "order": 10,
+  "difficulty": 3,
+  "steps": [
+    {
+      "blocks": [
+        {"x": 2, "y": 0, "z": 2, "block": "nature:wood"},
+        {"x": 2, "y": 1, "z": 2, "block": "nature:wood"},
+        {"x": 2, "y": 2, "z": 2, "block": "nature:wood"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 2, "y": 3, "z": 2, "block": "nature:wood"},
+        {"x": 1, "y": 3, "z": 2, "block": "building:planks"},
+        {"x": 3, "y": 3, "z": 2, "block": "building:planks"},
+        {"x": 2, "y": 3, "z": 1, "block": "building:planks"},
+        {"x": 2, "y": 3, "z": 3, "block": "building:planks"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 1, "y": 3, "z": 1, "block": "building:planks"},
+        {"x": 3, "y": 3, "z": 1, "block": "building:planks"},
+        {"x": 1, "y": 3, "z": 3, "block": "building:planks"},
+        {"x": 3, "y": 3, "z": 3, "block": "building:planks"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 1, "y": 4, "z": 1, "block": "building:planks"},
+        {"x": 2, "y": 4, "z": 1, "block": "building:planks"},
+        {"x": 3, "y": 4, "z": 1, "block": "building:planks"},
+        {"x": 1, "y": 4, "z": 2, "block": "building:planks"},
+        {"x": 3, "y": 4, "z": 2, "block": "building:planks"},
+        {"x": 1, "y": 4, "z": 3, "block": "building:planks"},
+        {"x": 2, "y": 4, "z": 3, "block": "building:door"},
+        {"x": 3, "y": 4, "z": 3, "block": "building:planks"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 1, "y": 5, "z": 1, "block": "building:planks"},
+        {"x": 2, "y": 5, "z": 1, "block": "building:window"},
+        {"x": 3, "y": 5, "z": 1, "block": "building:planks"},
+        {"x": 1, "y": 5, "z": 2, "block": "building:window"},
+        {"x": 3, "y": 5, "z": 2, "block": "building:window"},
+        {"x": 1, "y": 5, "z": 3, "block": "building:planks"},
+        {"x": 2, "y": 5, "z": 3, "block": "building:planks"},
+        {"x": 3, "y": 5, "z": 3, "block": "building:planks"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 1, "y": 6, "z": 1, "block": "parts:roof-green", "rot": 2},
+        {"x": 2, "y": 6, "z": 1, "block": "parts:roof-green", "rot": 2},
+        {"x": 3, "y": 6, "z": 1, "block": "parts:roof-green", "rot": 2},
+        {"x": 1, "y": 6, "z": 2, "block": "building:roof"},
+        {"x": 2, "y": 6, "z": 2, "block": "building:roof"},
+        {"x": 3, "y": 6, "z": 2, "block": "building:roof"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 1, "y": 6, "z": 3, "block": "parts:roof-green"},
+        {"x": 2, "y": 6, "z": 3, "block": "parts:roof-green"},
+        {"x": 3, "y": 6, "z": 3, "block": "parts:roof-green"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 0, "y": 4, "z": 2, "block": "nature:leaves"},
+        {"x": 4, "y": 4, "z": 2, "block": "nature:leaves"},
+        {"x": 0, "y": 5, "z": 2, "block": "nature:leaves"},
+        {"x": 4, "y": 5, "z": 2, "block": "nature:leaves"},
+        {"x": 2, "y": 7, "z": 2, "block": "nature:leaves"}
+      ]
+    }
+  ]
+}

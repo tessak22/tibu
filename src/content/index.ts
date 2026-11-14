@@ -1,11 +1,12 @@
 /**
- * Content module entry point: loads packs, themes and build cards bundled
- * from packs/, themes/ and cards/, generates their art and returns a registry.
+ * Content module entry point: loads packs, themes, build cards and blueprints
+ * bundled from packs/, themes/, cards/ and builds/, generates their art and returns a registry.
  */
-import type { BuildCard, ContentRegistry, ResolvedPack, ThemeDef } from '../core/types';
+import type { Blueprint, BuildCard, ContentRegistry, ResolvedPack, ThemeDef } from '../core/types';
 import { createArtRenderer } from './art/face';
+import { resolveBlueprint } from './builds';
 import { resolveCard } from './cards';
-import { byOrder, isCardJson, isPackJson, isThemeJson } from './guards';
+import { byOrder, isBuildJson, isCardJson, isPackJson, isThemeJson } from './guards';
 import { preloadImages } from './images';
 import type { BlockJson, PackJson, ThemeJson } from './raw-types';
 import { createRegistry } from './registry';
@@ -14,6 +15,8 @@ import { FALLBACK_THEME_JSON, resolveTheme, type SwatchLookup } from './resolve-
 import { bundledSources } from './sources';
 
 export type { ContentRegistry } from '../core/types';
+export { blueprintPicture } from './blueprint-picture';
+export { cardsForMode, packsForMode } from './modes';
 
 function swatchLookup(packs: readonly PackJson[]): SwatchLookup {
   const byKey = new Map<string, BlockJson>();
@@ -41,9 +44,11 @@ async function buildRegistry(): Promise<ContentRegistry> {
 
   const cards: BuildCard[] = sources.cards.map((s) => s.data).filter(isCardJson).sort(byOrder).map(resolveCard);
 
+  const blueprints: Blueprint[] = sources.builds.map((s) => s.data).filter(isBuildJson).sort(byOrder).map(resolveBlueprint);
+
   let fallback: ThemeDef | null = null;
   const fallbackTheme = (): ThemeDef => (fallback ??= resolveTheme(FALLBACK_THEME_JSON, swatch, undefined));
-  return createRegistry(packs, themes, cards, fallbackTheme);
+  return createRegistry(packs, themes, cards, fallbackTheme, blueprints);
 }
 
 let loading: Promise<ContentRegistry> | null = null;

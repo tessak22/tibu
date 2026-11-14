@@ -1,10 +1,11 @@
-import type { Profile, SavedWorld, Settings, WorldRecord } from '../core/types';
+import type { PlayMode, Profile, SavedWorld, Settings, WorldRecord } from '../core/types';
 import { openTibuDB, SETTINGS_KEY, type OpenOptions, type TibuDatabase } from './db';
 import { newId } from './ids';
+import { DEFAULT_PROFILE_ANIMAL, isPlayMode, normalizeProfile, withMode, withSticker } from './profiles';
 import { mergeSettings } from './settings';
 
 export const MAX_NAME_LENGTH = 60;
-export const DEFAULT_PROFILE_ANIMAL = 'cat';
+export { DEFAULT_PROFILE_ANIMAL };
 
 export interface NewWorldInput {
   readonly profileId: string;
@@ -30,7 +31,12 @@ export interface Repository {
   deleteWorld(id: string): Promise<void>;
   listProfiles(): Promise<Profile[]>;
   getProfile(id: string): Promise<Profile | null>;
-  createProfile(animal: string): Promise<Profile>;
+  /** New players start in little mode unless the grown-up picks big. */
+  createProfile(animal: string, mode?: PlayMode): Promise<Profile>;
+  /** Switches a player's mode. Stickers and worlds are kept. Resolves the updated profile. */
+  setProfileMode(id: string, mode: PlayMode): Promise<Profile | null>;
+  /** Records a found sticker for a player (idempotent). Resolves the updated profile. */
+  addSticker(profileId: string, stickerId: string): Promise<Profile | null>;
   /** Deletes the profile and all of its worlds. */
   deleteProfile(id: string): Promise<void>;
   /** Returns the existing profiles, creating a default one if there are none. */
@@ -140,14 +146,42 @@ export async function createRepository(
     return record;
   };
 
-  const createProfile = async (animal: string): Promise<Profile> => {
-    const profile: Profile = { id: newId(), animal: animal || DEFAULT_PROFILE_ANIMAL, createdAt: now() };
+  const createProfile = async (animal: string, mode: PlayMode = 'little'): Promise<Profile> => {
+    const profile: Profile = {
+      id: newId(),
+      animal: animal || DEFAULT_PROFILE_ANIMAL,
+      mode: isPlayMode(mode) ? mode : 'little',
+      stickers: [],
+      createdAt: now(),
+    };
     await withDb((db) => db.put('profiles', profile));
     return profile;
   };
 
+  /** Older profiles (before big-kid mode) are migrated on read; nothing is rewritten until changed. */
   const listProfiles = async (): Promise<Profile[]> =>
-    (await withDb((db) => db.getAll('profiles'))).sort((a, b) => a.createdAt - b.createdAt);
+    (await withDb((db) => db.getAll('profiles')))
+      .map(normalizeProfile)
+      .filter((p): p is Profile => p !== null)
+      .sort((a, b) => a.createdAt - b.createdAt);
+
+  const getProfile = async (id: string): Promise<Profile | null> =>
+    normalizeProfile(await withDb((db) => db.get('profiles', id)));
+
+  /** Read-modify-write in one transaction so concurrent sticker finds never lose one. */
+  const patchProfile = (id: string, change: (p: Profile) => Profile): Promise<Profile | null> =>
+    withDb(async (db) => {
+      const tx = db.transaction('profiles', 'readwrite');
+      const current = normalizeProfile(await tx.store.get(id));
+      if (!current) {
+        await tx.done;
+        return null;
+      }
+      const next = change(current);
+      await tx.store.put(next);
+      await tx.done;
+      return next;
+    });
 
   return {
     listWorlds: async (profileId) =>
@@ -169,8 +203,11 @@ export async function createRepository(
     },
     deleteWorld: (id) => withDb((db) => db.delete('worlds', id)),
     listProfiles,
-    getProfile: async (id) => (await withDb((db) => db.get('profiles', id))) ?? null,
+    getProfile,
     createProfile,
+    setProfileMode: (id, mode) =>
+      isPlayMode(mode) ? patchProfile(id, (p) => withMode(p, mode)) : Promise.resolve(null),
+    addSticker: (profileId, stickerId) => patchProfile(profileId, (p) => withSticker(p, stickerId)),
     deleteProfile: (id) =>
       withDb(async (db) => {
         const tx = db.transaction(['profiles', 'worlds'], 'readwrite');

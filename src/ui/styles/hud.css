@@ -167,3 +167,85 @@
     transform: none;
   }
 }
+
+/* Big-kid mode extras (walk, builds, sticker book) are hidden in little mode. */
+.hud [hidden],
+.hud-group[hidden] {
+  display: none !important;
+}
+
+.builds-btn {
+  background: #e3f2fd;
+}
+
+.stickers-btn {
+  background: #f3e5f5;
+}
+
+/* Walk mode: the tray fades like in smash mode; tapping a block still switches to build. */
+.hud[data-mode='walk'] .tray {
+  opacity: 0.8;
+}
+
+/* Step-by-step build indicator, top center. */
+.hud-top-center {
+  top: calc(var(--safe-top) + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  align-items: center;
+  padding: 6px 6px 6px 10px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.85);
+  box-shadow: 0 6px 18px rgb(0 0 0 / 0.12);
+}
+
+.build-steps-pic {
+  width: var(--btn);
+  height: var(--btn);
+  flex: none;
+}
+
+.build-steps-pic .pic {
+  width: 100%;
+  height: 100%;
+}
+
+.build-steps-dots {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 40vw;
+  gap: 8px;
+  align-items: center;
+  padding-inline: 6px;
+}
+
+.build-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #cfd8dc;
+}
+
+.build-dot.done {
+  background: #66bb6a;
+}
+
+.build-dot.current {
+  width: 24px;
+  height: 24px;
+  background: #ffca28;
+  box-shadow: 0 0 0 4px #fff3c4;
+}
+
+/* The "x" keeps a 64 px touch target but reads as small and quiet. */
+.build-steps-stop {
+  background: transparent;
+  box-shadow: none;
+  padding: 14px;
+}
+
+@media (orientation: portrait) {
+  .hud-top-center {
+    top: calc(var(--safe-top) + var(--btn) + 24px);
+  }
+}

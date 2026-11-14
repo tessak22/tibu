@@ -1,4 +1,4 @@
-import type { CardJson, PackJson, ThemeJson } from '../raw-types';
+import type { BuildJson, CardJson, PackJson, ThemeJson } from '../raw-types';
 
 /** One validation problem, tied to the file it came from. */
 export interface ValidationIssue {
@@ -19,12 +19,15 @@ export interface ContentBundle {
   readonly packs: readonly SourceFile[];
   readonly themes: readonly SourceFile[];
   readonly cards: readonly SourceFile[];
+  /** builds/<id>.json (optional so older callers keep working). */
+  readonly builds?: readonly SourceFile[];
 }
 
 export interface TypedBundle {
   readonly packs: readonly SourceFile<PackJson>[];
   readonly themes: readonly SourceFile<ThemeJson>[];
   readonly cards: readonly SourceFile<CardJson>[];
+  readonly builds?: readonly SourceFile<BuildJson>[];
 }
 
 /** Answers whether a repo-relative path exists (disk in Node, glob keys in the browser). */

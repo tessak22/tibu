@@ -7,6 +7,7 @@ export {
   type NewWorldInput,
   type WorldPatch,
 } from './repository';
+export { normalizeProfile, profileMode, isPlayMode, isStickerId, PLAY_MODES } from './profiles';
 export { mergeSettings, normalizeWord, PLAY_TIMER_CHOICES, MAX_CUSTOM_WORDS } from './settings';
 export { requestPersistence, persistenceStatus, type PersistStatus } from './persist';
 export {

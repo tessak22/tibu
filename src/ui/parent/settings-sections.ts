@@ -113,5 +113,7 @@ export function playSection(deps: ParentAreaDeps, s: Settings): HTMLElement {
     h('p', { class: 'hint' }, ['When time is up, the blocks go to sleep gently. Waking them needs this grown-up check.']),
     toggle('Left-handed controls', s.leftHanded, (on) => void deps.updateSettings((c) => ({ ...c, leftHanded: on }))),
     toggle('Reduced motion', s.reducedMotion, (on) => void deps.updateSettings((c) => ({ ...c, reducedMotion: on }))),
+    toggle('Smash knocks down towers', s.toppleTowers, (on) => void deps.updateSettings((c) => ({ ...c, toppleTowers: on }))),
+    h('p', { class: 'hint' }, ['For big builders: smashing a block also tumbles what rests on it. Undo puts it all back.']),
   ]);
 }

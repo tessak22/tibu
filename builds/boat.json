@@ -1,0 +1,45 @@
+{
+  "$schema": "../schemas/build.schema.json",
+  "id": "boat",
+  "name": "boat",
+  "order": 3,
+  "difficulty": 1,
+  "steps": [
+    {
+      "blocks": [
+        {"x": 0, "y": 0, "z": 0, "block": "building:planks"},
+        {"x": 1, "y": 0, "z": 0, "block": "building:planks"},
+        {"x": 0, "y": 0, "z": 1, "block": "building:planks"},
+        {"x": 1, "y": 0, "z": 1, "block": "building:planks"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 0, "y": 0, "z": 2, "block": "building:planks"},
+        {"x": 1, "y": 0, "z": 2, "block": "building:planks"},
+        {"x": 0, "y": 0, "z": 3, "block": "parts:roof-red"},
+        {"x": 1, "y": 0, "z": 3, "block": "parts:roof-red"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 0, "y": 1, "z": 0, "block": "building:planks"},
+        {"x": 1, "y": 1, "z": 0, "block": "building:planks"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 0, "y": 1, "z": 1, "block": "parts:pillar-white"},
+        {"x": 0, "y": 2, "z": 1, "block": "parts:pillar-white"},
+        {"x": 0, "y": 3, "z": 1, "block": "parts:pillar-white"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 1, "y": 2, "z": 1, "block": "parts:pane-yellow"},
+        {"x": 1, "y": 3, "z": 1, "block": "parts:pane-yellow"},
+        {"x": 0, "y": 4, "z": 1, "block": "parts:flag"}
+      ]
+    }
+  ]
+}

@@ -21,3 +21,8 @@ export const SLEEP_FADE_MS = 2500;
 export const SLEEP_FADE_REDUCED_MS = 800;
 /** The resting screen's own CSS fade-in (screens.css .resting-screen). */
 export const RESTING_FADE_IN_MS = 1600;
+/**
+ * Autosave pacing for big adventure worlds: serializing 96x32x96 is heavier, so saves wait
+ * for a pause in building (and an idle moment) instead of running every 2 s while tapping.
+ */
+export const BIG_WORLD_AUTOSAVE = { delayMs: 1500, maxWaitMs: 10_000, idleTimeoutMs: 1000 } as const;

@@ -60,7 +60,30 @@ describe('theme picker', () => {
     const ctx = fakeCtx();
     const p = pickTheme(ctx);
     ctx.overlayRoot.querySelectorAll<HTMLButtonElement>('.picture-btn')[1]!.click();
-    expect((await p)?.id).toBe('beach');
+    expect(await p).toMatchObject({ theme: { id: 'beach' }, kind: 'island' });
+  });
+  it('offers only islands to little builders', () => {
+    const ctx = fakeCtx();
+    void pickTheme(ctx, 'little');
+    const kinds = [...ctx.overlayRoot.querySelectorAll<HTMLButtonElement>('.picture-btn')].map((b) => b.dataset.kind);
+    expect(kinds).toEqual(['island', 'island']);
+  });
+  it('offers each theme as an island and as a big adventure to big builders', async () => {
+    const ctx = fakeCtx();
+    const p = pickTheme(ctx, 'big');
+    const buttons = [...ctx.overlayRoot.querySelectorAll<HTMLButtonElement>('.picture-btn')];
+    expect(buttons.map((b) => b.dataset.testid)).toEqual([
+      'theme-meadow',
+      'theme-beach',
+      'theme-meadow-explore',
+      'theme-beach-explore',
+    ]);
+    for (const b of buttons) {
+      expect(b.textContent).toBe('');
+      expect(b.querySelector('canvas')).not.toBeNull();
+    }
+    buttons[3]!.click();
+    expect(await p).toMatchObject({ theme: { id: 'beach' }, kind: 'explore' });
   });
   it('resolves null when closed', async () => {
     const ctx = fakeCtx();

@@ -4,7 +4,7 @@
  * are the source of truth; these types describe data that passed them.
  */
 import type { MarkName, PatternName, SynthPreset } from './constants';
-import type { BehaviorName } from '../core/types';
+import type { BehaviorName, BlockShape, PlayMode, Rotation } from '../core/types';
 
 export type ParamValue = string | number | boolean;
 
@@ -48,6 +48,8 @@ export interface BlockJson {
   readonly sound?: SoundSpec;
   readonly behaviors?: readonly BehaviorName[];
   readonly glowColor?: string;
+  /** Geometry; missing means 'cube'. */
+  readonly shape?: BlockShape;
 }
 
 export type PackIconSpec = { readonly block: string } | ArtSpec;
@@ -59,6 +61,8 @@ export interface PackJson {
   readonly description?: string;
   readonly icon?: PackIconSpec;
   readonly tileColor?: string;
+  /** Only offered in this play mode; missing means every mode. */
+  readonly mode?: PlayMode;
   readonly blocks: readonly BlockJson[];
 }
 
@@ -94,5 +98,25 @@ export interface CardJson {
   readonly id: string;
   readonly name: string;
   readonly order?: number;
+  /** Missing means 'little'. */
+  readonly mode?: PlayMode;
   readonly blocks: readonly SceneEntry[];
+}
+
+/** One block of a blueprint step (cells relative to the build anchor). */
+export interface BuildBlockJson {
+  readonly x: number;
+  readonly y: number;
+  readonly z: number;
+  readonly block: string;
+  readonly rot?: Rotation;
+}
+
+/** builds/<id>.json: a step-by-step build for big-kid mode. */
+export interface BuildJson {
+  readonly id: string;
+  readonly name: string;
+  readonly order?: number;
+  readonly difficulty: 1 | 2 | 3;
+  readonly steps: readonly { readonly blocks: readonly BuildBlockJson[] }[];
 }

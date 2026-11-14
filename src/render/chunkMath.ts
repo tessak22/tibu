@@ -1,37 +1,67 @@
-import type { Cell } from '../core/types';
-import { SIZE_X, SIZE_Y, SIZE_Z } from '../world/grid';
+import { WORLD_SIZE, type Cell, type WorldSize } from '../core/types';
 
-/** Chunks span the full world height: 8 x 16 x 8 cells, 3 x 3 chunk columns. */
-export const CHUNK_X = 8;
-export const CHUNK_Y = SIZE_Y;
-export const CHUNK_Z = 8;
-export const CHUNKS_X = Math.ceil(SIZE_X / CHUNK_X);
-export const CHUNKS_Z = Math.ceil(SIZE_Z / CHUNK_Z);
-export const CHUNK_COUNT = CHUNKS_X * CHUNKS_Z;
-
-export function chunkIndexOf(x: number, z: number): number {
-  return Math.floor(x / CHUNK_X) + Math.floor(z / CHUNK_Z) * CHUNKS_X;
-}
-
-export function chunkOrigin(index: number): Cell {
-  const cx = index % CHUNKS_X;
-  const cz = Math.floor(index / CHUNKS_X);
-  return { x: cx * CHUNK_X, y: 0, z: cz * CHUNK_Z };
-}
+/** Chunk column width for little worlds (24 wide -> 3 x 3 columns). */
+export const SMALL_CHUNK = 8;
+/** Big worlds use wider columns: fewer draw calls, still cheap to rebuild. */
+export const BIG_CHUNK = 16;
 
 /**
- * Chunks whose meshes can change when `cell` changes: its own chunk plus any neighbor whose
- * boundary face (or corner ambient occlusion) depends on it.
+ * Chunks are columns spanning the full world height. Small worlds: 8 x H x 8; big worlds
+ * (wider than 32): 16 x H x 16.
  */
-export function chunksAffectedBy(cell: Cell): number[] {
-  const out = new Set<number>();
-  for (const dx of [-1, 0, 1]) {
-    for (const dz of [-1, 0, 1]) {
-      const x = cell.x + dx;
-      const z = cell.z + dz;
-      if (x < 0 || z < 0 || x >= SIZE_X || z >= SIZE_Z) continue;
-      out.add(chunkIndexOf(x, z));
-    }
+export class ChunkLayout {
+  readonly sizeX: number;
+  readonly sizeZ: number;
+  readonly chunksX: number;
+  readonly chunksZ: number;
+  readonly count: number;
+
+  constructor(
+    readonly size: WorldSize = WORLD_SIZE,
+    readonly width: number = Math.max(size.x, size.z) > 32 ? BIG_CHUNK : SMALL_CHUNK,
+  ) {
+    this.sizeX = size.x;
+    this.sizeZ = size.z;
+    this.chunksX = Math.ceil(size.x / width);
+    this.chunksZ = Math.ceil(size.z / width);
+    this.count = this.chunksX * this.chunksZ;
   }
-  return [...out].sort((a, b) => a - b);
+
+  /** Height of every chunk column. */
+  get height(): number {
+    return this.size.y;
+  }
+
+  indexOf(x: number, z: number): number {
+    return Math.floor(x / this.width) + Math.floor(z / this.width) * this.chunksX;
+  }
+
+  origin(index: number): Cell {
+    const cx = index % this.chunksX;
+    const cz = Math.floor(index / this.chunksX);
+    return { x: cx * this.width, y: 0, z: cz * this.width };
+  }
+
+  /** World-space center of a chunk column (for culling and build priority). */
+  center(index: number): { x: number; y: number; z: number } {
+    const o = this.origin(index);
+    return { x: o.x + this.width / 2, y: this.size.y / 2, z: o.z + this.width / 2 };
+  }
+
+  /**
+   * Chunks whose meshes can change when `cell` changes: its own chunk plus any neighbor whose
+   * boundary face (or corner ambient occlusion) depends on it.
+   */
+  affectedBy(cell: Cell): number[] {
+    const out = new Set<number>();
+    for (const dx of [-1, 0, 1]) {
+      for (const dz of [-1, 0, 1]) {
+        const x = cell.x + dx;
+        const z = cell.z + dz;
+        if (x < 0 || z < 0 || x >= this.sizeX || z >= this.sizeZ) continue;
+        out.add(this.indexOf(x, z));
+      }
+    }
+    return [...out].sort((a, b) => a - b);
+  }
 }

@@ -1,0 +1,10 @@
+{
+  "id": "bad-schema",
+  "name": "bad",
+  "difficulty": 4,
+  "steps": [
+    { "blocks": [] },
+    { "blocks": [{ "x": 9, "y": 0, "z": 0, "block": "colors:red", "rot": 5 }] }
+  ],
+  "wobble": true
+}

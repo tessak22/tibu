@@ -1,0 +1,105 @@
+{
+  "$schema": "../schemas/card.schema.json",
+  "id": "big-checkerboard",
+  "name": "checkerboard",
+  "order": 108,
+  "mode": "big",
+  "blocks": [
+    {
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "block": "colors:white"
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "z": 1,
+      "block": "colors:black"
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "z": 2,
+      "block": "colors:white"
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "z": 3,
+      "block": "colors:black"
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "z": 0,
+      "block": "colors:black"
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "z": 1,
+      "block": "colors:white"
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "z": 2,
+      "block": "colors:black"
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "z": 3,
+      "block": "colors:white"
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "z": 0,
+      "block": "colors:white"
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "z": 1,
+      "block": "colors:black"
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "z": 2,
+      "block": "colors:white"
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "z": 3,
+      "block": "colors:black"
+    },
+    {
+      "x": 3,
+      "y": 0,
+      "z": 0,
+      "block": "colors:black"
+    },
+    {
+      "x": 3,
+      "y": 0,
+      "z": 1,
+      "block": "colors:white"
+    },
+    {
+      "x": 3,
+      "y": 0,
+      "z": 2,
+      "block": "colors:black"
+    },
+    {
+      "x": 3,
+      "y": 0,
+      "z": 3,
+      "block": "colors:white"
+    }
+  ]
+}

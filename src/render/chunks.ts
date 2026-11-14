@@ -1,16 +1,22 @@
 import * as THREE from 'three';
-import type { Cell } from '../core/types';
-import { cellIndex, inBounds } from '../world/grid';
-import { CHUNK_COUNT, chunkOrigin, chunksAffectedBy } from './chunkMath';
+import type { Cell, WorldSize } from '../core/types';
+import { isBigWorld } from '../input/orbit';
+import { ChunkLayout } from './chunkMath';
 import { meshChunk, type MeshArrays } from './chunkMesher';
 import type { TextureAtlas } from './atlas';
 import type { BlockLooks } from './blockLook';
+import { cellKey } from './voxelGrid';
 import type { VoxelMirror } from './voxelMirror';
 
 interface ChunkMeshes {
   solid: THREE.Mesh | null;
   glow: THREE.Mesh | null;
+  glass: THREE.Mesh | null;
+  built: boolean;
 }
+
+/** Background (lazy) chunk building may use this much of a frame. */
+export const BUILD_BUDGET_MS = 5;
 
 function toGeometry(arrays: MeshArrays): THREE.BufferGeometry | null {
   if (arrays.indices.length === 0) return null;
@@ -24,16 +30,22 @@ function toGeometry(arrays: MeshArrays): THREE.BufferGeometry | null {
   return g;
 }
 
+const emptySlot = (): ChunkMeshes => ({ solid: null, glow: null, glass: null, built: false });
+
 /**
- * Owns the merged block meshes (3x3 chunk columns). Only chunks marked dirty by a world change
- * are rebuilt. Glowing blocks go to a separate emissive mesh per chunk.
+ * Owns the merged block meshes, one set per chunk column. Edits rebuild their chunks at once
+ * ("urgent"); a freshly loaded big world builds lazily, nearest chunks first, a few per frame.
+ * Three.js frustum-culls each chunk mesh by its bounding sphere; `cull` also hides far chunks.
  */
 export class ChunkRenderer {
   readonly group = new THREE.Group();
   readonly solidMaterial: THREE.MeshLambertMaterial;
   readonly glowMaterial: THREE.MeshLambertMaterial;
-  private readonly meshes: ChunkMeshes[] = Array.from({ length: CHUNK_COUNT }, () => ({ solid: null, glow: null }));
-  private readonly dirty = new Set<number>();
+  readonly glassMaterial: THREE.MeshLambertMaterial;
+  private layout = new ChunkLayout();
+  private meshes: ChunkMeshes[] = [];
+  private readonly urgent = new Set<number>();
+  private readonly background = new Set<number>();
   private readonly hidden = new Set<number>();
   private builtAtlasVersion = -1;
   private shadows = true;
@@ -53,27 +65,63 @@ export class ChunkRenderer {
       emissiveIntensity: 0.85,
       vertexColors: true,
     });
-    this.offAtlas = atlas.onReplace((t) => {
-      this.solidMaterial.map = t;
-      this.glowMaterial.map = t;
-      this.glowMaterial.emissiveMap = t;
-      this.solidMaterial.needsUpdate = true;
-      this.glowMaterial.needsUpdate = true;
+    // Magnet-tile panes: candy-glass, lightly lit from within so they stay bright.
+    this.glassMaterial = new THREE.MeshLambertMaterial({
+      map: atlas.texture,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.6,
+      depthWrite: false,
+      emissive: new THREE.Color('#ffffff'),
+      emissiveIntensity: 0.14,
     });
+    this.offAtlas = atlas.onReplace((t) => {
+      for (const m of [this.solidMaterial, this.glowMaterial, this.glassMaterial]) {
+        m.map = t;
+        m.needsUpdate = true;
+      }
+      this.glowMaterial.emissiveMap = t;
+    });
+    this.setSize(mirror.size);
   }
 
+  /** Re-lays out chunks for a world size (drops all meshes). */
+  setSize(size: WorldSize): void {
+    for (const m of this.meshes) this.disposeChunk(m);
+    this.layout = new ChunkLayout(size);
+    this.meshes = Array.from({ length: this.layout.count }, emptySlot);
+    this.urgent.clear();
+    this.background.clear();
+    this.hidden.clear();
+  }
+
+  get chunkLayout(): ChunkLayout {
+    return this.layout;
+  }
+
+  /** Everything needs (re)building: little worlds at once, big worlds lazily. */
   markAll(): void {
-    for (let i = 0; i < CHUNK_COUNT; i++) this.dirty.add(i);
+    const target = isBigWorld(this.layout.size) ? this.background : this.urgent;
+    for (let i = 0; i < this.layout.count; i++) target.add(i);
   }
 
   markCell(c: Cell): void {
-    for (const i of chunksAffectedBy(c)) this.dirty.add(i);
+    for (const i of this.layout.affectedBy(c)) {
+      this.urgent.add(i);
+      this.background.delete(i);
+    }
+  }
+
+  /** Chunks still waiting for their first lazy build. */
+  pendingCount(): number {
+    return this.background.size + this.urgent.size;
   }
 
   /** Temporarily hide a cell (e.g. while an overlay animates it). */
   setHidden(c: Cell, hidden: boolean): void {
-    if (!inBounds(c)) return;
-    const key = cellIndex(c.x, c.y, c.z);
+    const size = this.layout.size;
+    if (c.x < 0 || c.y < 0 || c.z < 0 || c.x >= size.x || c.y >= size.y || c.z >= size.z) return;
+    const key = cellKey(size, c.x, c.y, c.z);
     if (hidden === this.hidden.has(key)) return; // No change: no rebuild.
     if (hidden) this.hidden.add(key);
     else this.hidden.delete(key);
@@ -81,6 +129,7 @@ export class ChunkRenderer {
   }
 
   setShadows(on: boolean): void {
+    this.shadows = on;
     for (const m of this.meshes) {
       for (const mesh of [m.solid, m.glow]) {
         if (!mesh) continue;
@@ -88,25 +137,39 @@ export class ChunkRenderer {
         mesh.receiveShadow = on;
       }
     }
-    this.shadows = on;
   }
 
-  /** Rebuild every dirty chunk. Returns true when anything changed. */
-  update(): boolean {
-    if (this.dirty.size === 0 && this.builtAtlasVersion === this.atlas.version) return false;
-    if (this.builtAtlasVersion !== this.atlas.version) this.markAll();
-    // Building may add atlas tiles and grow the atlas; if so, rebuild everything once more.
+  /**
+   * Rebuilds urgent chunks, then lazy ones nearest `focus` within the time budget
+   * (all of them when `force`). Returns true when any mesh changed.
+   */
+  update(focus: { x: number; z: number } | null = null, force = false, budgetMs = BUILD_BUDGET_MS): boolean {
+    if (this.builtAtlasVersion !== this.atlas.version) this.markBuiltUrgent();
+    if (this.urgent.size === 0 && this.background.size === 0) return false;
+    const start = now();
+    // Building may add atlas tiles and grow the atlas; if so, rebuild already built chunks once more.
     for (let attempt = 0; attempt < 3; attempt++) {
       const version = this.atlas.version;
-      const pending = [...this.dirty];
-      this.dirty.clear();
+      const pending = [...this.urgent];
+      this.urgent.clear();
       for (const i of pending) this.rebuild(i);
+      if (attempt === 0) this.buildBackground(focus, force, start, budgetMs);
       if (this.atlas.version === version) break;
-      this.markAll();
+      this.markBuiltUrgent();
     }
     this.builtAtlasVersion = this.atlas.version;
     this.atlas.flush();
     return true;
+  }
+
+  /** Hides chunk columns farther than `maxDistance` (horizontally) from the camera. */
+  cull(camera: THREE.Vector3, maxDistance: number): void {
+    const reach = maxDistance + this.layout.width * 0.75;
+    this.meshes.forEach((slot, i) => {
+      const c = this.layout.center(i);
+      const visible = Math.hypot(c.x - camera.x, c.z - camera.z) <= reach;
+      for (const mesh of [slot.solid, slot.glow, slot.glass]) if (mesh) mesh.visible = visible;
+    });
   }
 
   dispose(): void {
@@ -114,47 +177,95 @@ export class ChunkRenderer {
     for (const m of this.meshes) this.disposeChunk(m);
     this.solidMaterial.dispose();
     this.glowMaterial.dispose();
+    this.glassMaterial.dispose();
+  }
+
+  private markBuiltUrgent(): void {
+    this.meshes.forEach((m, i) => {
+      if (m.built) this.urgent.add(i);
+    });
+  }
+
+  private buildBackground(focus: { x: number; z: number } | null, force: boolean, start: number, budgetMs: number): void {
+    if (this.background.size === 0) return;
+    const order = [...this.background];
+    if (focus) {
+      const d = (i: number): number => {
+        const c = this.layout.center(i);
+        return (c.x - focus.x) ** 2 + (c.z - focus.z) ** 2;
+      };
+      order.sort((a, b) => d(a) - d(b));
+    }
+    for (const i of order) {
+      this.background.delete(i);
+      this.rebuild(i);
+      if (!force && now() - start >= budgetMs) break;
+    }
   }
 
   private rebuild(index: number): void {
     const grid = this.mirror.grid;
+    const looks = this.looks;
     const arrays = meshChunk({
       idAt: (x, y, z) => grid.idAt(x, y, z),
-      origin: chunkOrigin(index),
+      rotAt: (x, y, z) => grid.rotAt(x, y, z),
+      origin: this.layout.origin(index),
+      size: this.layout.size,
+      width: this.layout.width,
       uvRect: (id, face) => {
         const key = grid.keyOf(id);
-        return key ? this.atlas.uvFor(this.looks.face(key, face)) : [0, 0, 0, 0];
+        return key ? this.atlas.uvFor(looks.face(key, face)) : [0, 0, 0, 0];
       },
       isGlow: (id) => {
         const key = grid.keyOf(id);
-        return key ? this.looks.isGlow(key) : false;
+        return key ? looks.isGlow(key) : false;
+      },
+      isTranslucent: (id) => {
+        const key = grid.keyOf(id);
+        return key ? looks.isTranslucent(key) : false;
+      },
+      shapeOf: (id) => {
+        const key = grid.keyOf(id);
+        return key ? looks.shape(key) : 'cube';
       },
       hidden: this.hidden,
     });
     const slot = this.meshes[index];
     this.disposeChunk(slot);
-    slot.solid = this.makeMesh(toGeometry(arrays.solid), this.solidMaterial, `chunk-${index}`);
-    slot.glow = this.makeMesh(toGeometry(arrays.glow), this.glowMaterial, `chunk-${index}-glow`);
+    slot.built = true; // After disposeChunk, which resets it.
+    slot.solid = this.makeMesh(toGeometry(arrays.solid), this.solidMaterial, `chunk-${index}`, this.shadows);
+    slot.glow = this.makeMesh(toGeometry(arrays.glow), this.glowMaterial, `chunk-${index}-glow`, this.shadows);
+    slot.glass = this.makeMesh(toGeometry(arrays.glass), this.glassMaterial, `chunk-${index}-glass`, false);
+    if (slot.glass) slot.glass.renderOrder = 2;
   }
 
-  private makeMesh(geometry: THREE.BufferGeometry | null, material: THREE.Material, name: string): THREE.Mesh | null {
+  private makeMesh(
+    geometry: THREE.BufferGeometry | null,
+    material: THREE.Material,
+    name: string,
+    shadows: boolean,
+  ): THREE.Mesh | null {
     if (!geometry) return null;
     const mesh = new THREE.Mesh(geometry, material);
     mesh.name = name;
-    mesh.castShadow = this.shadows;
-    mesh.receiveShadow = this.shadows;
+    mesh.castShadow = shadows;
+    mesh.receiveShadow = shadows || material === this.glassMaterial;
     mesh.matrixAutoUpdate = false;
     this.group.add(mesh);
     return mesh;
   }
 
   private disposeChunk(slot: ChunkMeshes): void {
-    for (const mesh of [slot.solid, slot.glow]) {
+    for (const mesh of [slot.solid, slot.glow, slot.glass]) {
       if (!mesh) continue;
       this.group.remove(mesh);
       mesh.geometry.dispose();
     }
     slot.solid = null;
     slot.glow = null;
+    slot.glass = null;
+    slot.built = false;
   }
 }
+
+const now = (): number => (typeof performance !== 'undefined' ? performance.now() : Date.now());

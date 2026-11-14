@@ -1,6 +1,8 @@
-import type { BlockKey, Mode, ResolvedPack } from '../core/types';
+import type { BlockKey, Mode, PlayMode, ResolvedPack } from '../core/types';
+import { createBuildSteps } from './build-steps';
 import { canvasCopy, clear, h, iconButton, isolatePointer } from './dom';
 import { ICONS } from './icons';
+import { BIG_ICONS } from './icons-big';
 import { createTray } from './tray';
 
 export interface HudActions {
@@ -13,6 +15,19 @@ export interface HudActions {
   onPhoto(): void;
   onToggleMute(): void;
   onCard(): void;
+  /** Big-kid mode: open the step-by-step builds grid. */
+  onBuilds?(): void;
+  /** Big-kid mode, explore worlds: open the sticker book. */
+  onStickers?(): void;
+  /** Big-kid mode: stop following the current build. */
+  onStopBlueprint?(): void;
+}
+
+/** Which extra controls the HUD shows. Little mode shows exactly the original HUD. */
+export interface HudLayout {
+  readonly playMode: PlayMode;
+  /** An explore (big adventure) world: walk mode and the sticker book. */
+  readonly explore: boolean;
 }
 
 export interface Hud {
@@ -25,6 +40,11 @@ export interface Hud {
   /** Shows the active build card picture on the card button, or the plain card icon. */
   setCardPicture(picture: HTMLCanvasElement | null): void;
   setUndoAvailable(on: boolean): void;
+  setLayout(layout: HudLayout): void;
+  /** Step indicator for a step-by-step build; null hides it. */
+  setBlueprintProgress(progress: { picture: HTMLCanvasElement | null; step: number; count: number } | null): void;
+  /** Highlights a tray block without telling the app (e.g. a build's suggested block). */
+  setSelected(key: BlockKey): void;
 }
 
 const group = (cls: string, children: Node[]): HTMLElement => {
@@ -37,10 +57,23 @@ const group = (cls: string, children: Node[]): HTMLElement => {
 export function createHud(actions: HudActions, corner: HTMLElement): Hud {
   const build = iconButton({ icon: ICONS.block, label: 'Build', className: 'mode-btn', onTap: () => actions.onMode('build') });
   const smash = iconButton({ icon: ICONS.hammer, label: 'Smash', className: 'mode-btn', onTap: () => actions.onMode('smash') });
+  const walk = iconButton({ icon: BIG_ICONS.feet, label: 'Walk', className: 'mode-btn', onTap: () => actions.onMode('walk') });
   build.dataset.mode = 'build';
   smash.dataset.mode = 'smash';
+  walk.dataset.mode = 'walk';
   build.dataset.testid = 'mode-build';
   smash.dataset.testid = 'mode-smash';
+  walk.dataset.testid = 'mode-walk';
+  const builds = iconButton({ icon: BIG_ICONS.blueprint, label: 'Builds', className: 'builds-btn', onTap: () => actions.onBuilds?.() });
+  const stickers = iconButton({
+    icon: BIG_ICONS.stickerBook,
+    label: 'Sticker book',
+    className: 'stickers-btn',
+    onTap: () => actions.onStickers?.(),
+  });
+  builds.dataset.testid = 'builds';
+  stickers.dataset.testid = 'sticker-book';
+  const steps = createBuildSteps(() => actions.onStopBlueprint?.());
   const undo = iconButton({ icon: ICONS.undo, label: 'Undo', className: 'undo-btn big', onTap: actions.onUndo });
   const back = iconButton({ icon: ICONS.gallery, label: 'My worlds', className: 'back-btn', onTap: actions.onBack });
   const home = iconButton({ icon: ICONS.home, label: 'Find my island', className: 'home-btn', onTap: actions.onHome });
@@ -54,8 +87,9 @@ export function createHud(actions: HudActions, corner: HTMLElement): Hud {
 
   const el = h('div', { class: 'hud', dir: 'ltr', 'data-testid': 'hud' }, [
     group('hud-top-start', [back, home]),
-    group('hud-top-end', [photo, mute, card]),
-    group('hud-side-start', [build, smash]),
+    group('hud-top-end', [photo, mute, card, builds, stickers]),
+    group('hud-side-start', [build, smash, walk]),
+    steps.el,
     group('hud-side-end', [undo]),
     group('hud-bottom', [packBtn, tray.el]),
     corner,
@@ -66,10 +100,27 @@ export function createHud(actions: HudActions, corner: HTMLElement): Hud {
     packBtn.append(canvasCopy(pack.icon, 128));
   };
 
+  const setLayout = (layout: HudLayout): void => {
+    const big = layout.playMode === 'big';
+    walk.hidden = !(big && layout.explore);
+    stickers.hidden = !(big && layout.explore);
+    builds.hidden = !big;
+    if (!big) steps.hide();
+    el.dataset.playMode = layout.playMode;
+    el.dataset.world = layout.explore ? 'explore' : 'island';
+  };
+  setLayout({ playMode: 'little', explore: false });
+
   return {
     el,
+    setLayout,
+    setBlueprintProgress(progress) {
+      if (progress) steps.show(progress.picture, progress.step, progress.count);
+      else steps.hide();
+    },
+    setSelected: (key) => tray.setSelected(key),
     setMode(mode) {
-      for (const b of [build, smash]) {
+      for (const b of [build, smash, walk]) {
         const on = b.dataset.mode === mode;
         b.classList.toggle('active', on);
         b.setAttribute('aria-pressed', String(on));

@@ -1,0 +1,104 @@
+{
+  "$schema": "../schemas/card.schema.json",
+  "id": "big-two-floors",
+  "name": "two floor house",
+  "order": 103,
+  "mode": "big",
+  "blocks": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        0,
+        3,
+        0
+      ],
+      "block": "building:wall"
+    },
+    {
+      "from": [
+        0,
+        0,
+        2
+      ],
+      "to": [
+        0,
+        3,
+        2
+      ],
+      "block": "building:wall"
+    },
+    {
+      "from": [
+        2,
+        0,
+        0
+      ],
+      "to": [
+        2,
+        3,
+        0
+      ],
+      "block": "building:wall"
+    },
+    {
+      "from": [
+        2,
+        0,
+        2
+      ],
+      "to": [
+        2,
+        3,
+        2
+      ],
+      "block": "building:wall"
+    },
+    {
+      "x": 1,
+      "y": 2,
+      "z": 0,
+      "block": "building:planks"
+    },
+    {
+      "x": 1,
+      "y": 2,
+      "z": 2,
+      "block": "building:planks"
+    },
+    {
+      "x": 0,
+      "y": 2,
+      "z": 1,
+      "block": "building:planks"
+    },
+    {
+      "x": 2,
+      "y": 2,
+      "z": 1,
+      "block": "building:planks"
+    },
+    {
+      "x": 1,
+      "y": 2,
+      "z": 1,
+      "block": "building:planks"
+    },
+    {
+      "from": [
+        0,
+        4,
+        0
+      ],
+      "to": [
+        2,
+        4,
+        2
+      ],
+      "block": "building:roof"
+    }
+  ]
+}

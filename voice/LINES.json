@@ -641,6 +641,504 @@
     },
     "block.placeholder": {
       "en": "mystery block"
+    },
+    "pack.parts": {
+      "en": "Parts"
+    },
+    "block.parts.wheel-red": {
+      "en": "red wheel"
+    },
+    "block.parts.wheel-blue": {
+      "en": "blue wheel"
+    },
+    "block.parts.wheel-yellow": {
+      "en": "yellow wheel"
+    },
+    "block.parts.roof-red": {
+      "en": "red roof"
+    },
+    "block.parts.roof-blue": {
+      "en": "blue roof"
+    },
+    "block.parts.roof-green": {
+      "en": "green roof"
+    },
+    "block.parts.slab-yellow": {
+      "en": "yellow half block"
+    },
+    "block.parts.slab-white": {
+      "en": "white half block"
+    },
+    "block.parts.slab-orange": {
+      "en": "orange half block"
+    },
+    "block.parts.plate-green": {
+      "en": "green plate"
+    },
+    "block.parts.plate-blue": {
+      "en": "blue plate"
+    },
+    "block.parts.plate-pink": {
+      "en": "pink plate"
+    },
+    "block.parts.cone-orange": {
+      "en": "orange cone"
+    },
+    "block.parts.cone-red": {
+      "en": "red cone"
+    },
+    "block.parts.arch-red": {
+      "en": "red arch"
+    },
+    "block.parts.arch-stone": {
+      "en": "stone arch"
+    },
+    "block.parts.pane-blue": {
+      "en": "blue glass"
+    },
+    "block.parts.pane-green": {
+      "en": "green glass"
+    },
+    "block.parts.pane-pink": {
+      "en": "pink glass"
+    },
+    "block.parts.pane-yellow": {
+      "en": "yellow glass"
+    },
+    "block.parts.pillar-white": {
+      "en": "white pillar"
+    },
+    "block.parts.pillar-red": {
+      "en": "red pillar"
+    },
+    "block.parts.pillar-blue": {
+      "en": "blue pillar"
+    },
+    "block.parts.steering": {
+      "en": "steering wheel"
+    },
+    "block.parts.flag": {
+      "en": "flag"
+    },
+    "card.big-bridge": {
+      "en": "bridge between two towers"
+    },
+    "card.big-checkerboard": {
+      "en": "checkerboard"
+    },
+    "card.big-pattern": {
+      "en": "red and blue pattern"
+    },
+    "card.big-rainbow-wall": {
+      "en": "rainbow wall"
+    },
+    "card.big-staircase": {
+      "en": "staircase"
+    },
+    "card.big-tower-five": {
+      "en": "tower of five"
+    },
+    "card.big-traffic-light": {
+      "en": "traffic light"
+    },
+    "card.big-two-floors": {
+      "en": "two floor house"
+    },
+    "card.big-word-sun": {
+      "en": "the word sun"
+    },
+    "build.boat": {
+      "en": "boat"
+    },
+    "built.boat": {
+      "en": "You built a boat!"
+    },
+    "build.bridge": {
+      "en": "bridge"
+    },
+    "built.bridge": {
+      "en": "You built a bridge!"
+    },
+    "build.car": {
+      "en": "car"
+    },
+    "built.car": {
+      "en": "You built a car!"
+    },
+    "build.castle-tower": {
+      "en": "castle tower"
+    },
+    "built.castle-tower": {
+      "en": "You built a castle tower!"
+    },
+    "build.fire-station": {
+      "en": "fire station"
+    },
+    "built.fire-station": {
+      "en": "You built a fire station!"
+    },
+    "build.house": {
+      "en": "house"
+    },
+    "built.house": {
+      "en": "You built a house!"
+    },
+    "build.robot": {
+      "en": "robot"
+    },
+    "built.robot": {
+      "en": "You built a robot!"
+    },
+    "build.rocket": {
+      "en": "rocket"
+    },
+    "built.rocket": {
+      "en": "You built a rocket!"
+    },
+    "build.train": {
+      "en": "train"
+    },
+    "built.train": {
+      "en": "You built a train!"
+    },
+    "build.tree-house": {
+      "en": "tree house"
+    },
+    "built.tree-house": {
+      "en": "You built a tree house!"
+    },
+    "build.truck": {
+      "en": "truck"
+    },
+    "built.truck": {
+      "en": "You built a truck!"
+    },
+    "word.book": {
+      "en": "Book!"
+    },
+    "word.door": {
+      "en": "Door!"
+    },
+    "word.farm": {
+      "en": "Farm!"
+    },
+    "word.jump": {
+      "en": "Jump!"
+    },
+    "word.kite": {
+      "en": "Kite!"
+    },
+    "word.lion": {
+      "en": "Lion!"
+    },
+    "word.milk": {
+      "en": "Milk!"
+    },
+    "word.nest": {
+      "en": "Nest!"
+    },
+    "word.park": {
+      "en": "Park!"
+    },
+    "word.rain": {
+      "en": "Rain!"
+    },
+    "word.rock": {
+      "en": "Rock!"
+    },
+    "word.ship": {
+      "en": "Ship!"
+    },
+    "word.snow": {
+      "en": "Snow!"
+    },
+    "word.sock": {
+      "en": "Sock!"
+    },
+    "word.bike": {
+      "en": "Bike!"
+    },
+    "word.camp": {
+      "en": "Camp!"
+    },
+    "word.gift": {
+      "en": "Gift!"
+    },
+    "word.hand": {
+      "en": "Hand!"
+    },
+    "word.lamp": {
+      "en": "Lamp!"
+    },
+    "word.roof": {
+      "en": "Roof!"
+    },
+    "word.sand": {
+      "en": "Sand!"
+    },
+    "word.wind": {
+      "en": "Wind!"
+    },
+    "word.play": {
+      "en": "Play!"
+    },
+    "word.block": {
+      "en": "Block!"
+    },
+    "word.truck": {
+      "en": "Truck!"
+    },
+    "word.house": {
+      "en": "House!"
+    },
+    "word.robot": {
+      "en": "Robot!"
+    },
+    "word.plant": {
+      "en": "Plant!"
+    },
+    "word.happy": {
+      "en": "Happy!"
+    },
+    "word.train": {
+      "en": "Train!"
+    },
+    "word.horse": {
+      "en": "Horse!"
+    },
+    "word.apple": {
+      "en": "Apple!"
+    },
+    "word.bread": {
+      "en": "Bread!"
+    },
+    "word.cloud": {
+      "en": "Cloud!"
+    },
+    "word.smile": {
+      "en": "Smile!"
+    },
+    "word.tiger": {
+      "en": "Tiger!"
+    },
+    "word.zebra": {
+      "en": "Zebra!"
+    },
+    "word.lemon": {
+      "en": "Lemon!"
+    },
+    "word.music": {
+      "en": "Music!"
+    },
+    "word.pizza": {
+      "en": "Pizza!"
+    },
+    "word.brick": {
+      "en": "Brick!"
+    },
+    "word.tower": {
+      "en": "Tower!"
+    },
+    "word.water": {
+      "en": "Water!"
+    },
+    "word.green": {
+      "en": "Green!"
+    },
+    "word.plane": {
+      "en": "Plane!"
+    },
+    "word.sheep": {
+      "en": "Sheep!"
+    },
+    "word.mouse": {
+      "en": "Mouse!"
+    },
+    "word.build": {
+      "en": "Build!"
+    },
+    "word.chair": {
+      "en": "Chair!"
+    },
+    "word.table": {
+      "en": "Table!"
+    },
+    "word.beach": {
+      "en": "Beach!"
+    },
+    "word.snake": {
+      "en": "Snake!"
+    },
+    "word.wheel": {
+      "en": "Wheel!"
+    },
+    "step.cheer.1": {
+      "en": "Great job!"
+    },
+    "step.cheer.2": {
+      "en": "Well done!"
+    },
+    "step.cheer.3": {
+      "en": "Nice building!"
+    },
+    "step.next": {
+      "en": "Next step!"
+    },
+    "step.last": {
+      "en": "Last step!"
+    },
+    "blueprint.start": {
+      "en": "Let's build it, step by step!"
+    },
+    "crash.1": {
+      "en": "Timber!"
+    },
+    "crash.2": {
+      "en": "Crash!"
+    },
+    "crash.3": {
+      "en": "Ka-boom!"
+    },
+    "crash.4": {
+      "en": "Down it goes!"
+    },
+    "explore.sticker": {
+      "en": "You found a sticker!"
+    },
+    "explore.treasure": {
+      "en": "Treasure!"
+    },
+    "explore.go": {
+      "en": "Let's go exploring!"
+    },
+    "explore.look": {
+      "en": "Look at that!"
+    },
+    "count.17": {
+      "en": "Seventeen!"
+    },
+    "count.18": {
+      "en": "Eighteen!"
+    },
+    "count.19": {
+      "en": "Nineteen!"
+    },
+    "count.20": {
+      "en": "Twenty!"
+    },
+    "count.21": {
+      "en": "Twenty-one!"
+    },
+    "count.22": {
+      "en": "Twenty-two!"
+    },
+    "count.23": {
+      "en": "Twenty-three!"
+    },
+    "count.24": {
+      "en": "Twenty-four!"
+    },
+    "count.25": {
+      "en": "Twenty-five!"
+    },
+    "count.26": {
+      "en": "Twenty-six!"
+    },
+    "count.27": {
+      "en": "Twenty-seven!"
+    },
+    "count.28": {
+      "en": "Twenty-eight!"
+    },
+    "count.29": {
+      "en": "Twenty-nine!"
+    },
+    "count.30": {
+      "en": "Thirty!"
+    },
+    "count.31": {
+      "en": "Thirty-one!"
+    },
+    "count.32": {
+      "en": "Thirty-two!"
+    },
+    "explore.sticker-found": {
+      "en": "You found a sticker!"
+    },
+    "sticker.rainbow": {
+      "en": "rainbow"
+    },
+    "sticker.rocket": {
+      "en": "rocket"
+    },
+    "sticker.star": {
+      "en": "star"
+    },
+    "sticker.sun": {
+      "en": "sun"
+    },
+    "sticker.moon": {
+      "en": "moon"
+    },
+    "sticker.heart": {
+      "en": "heart"
+    },
+    "sticker.dino": {
+      "en": "dinosaur"
+    },
+    "sticker.whale": {
+      "en": "whale"
+    },
+    "sticker.butterfly": {
+      "en": "butterfly"
+    },
+    "sticker.ice-cream": {
+      "en": "ice cream"
+    },
+    "sticker.cupcake": {
+      "en": "cupcake"
+    },
+    "sticker.balloon": {
+      "en": "balloon"
+    },
+    "sticker.crown": {
+      "en": "crown"
+    },
+    "sticker.flower": {
+      "en": "flower"
+    },
+    "sticker.planet": {
+      "en": "planet"
+    },
+    "sticker.rainbow-fish": {
+      "en": "rainbow fish"
+    },
+    "sticker.magic-horse": {
+      "en": "magic horse"
+    },
+    "sticker.car": {
+      "en": "car"
+    },
+    "sticker.train": {
+      "en": "train"
+    },
+    "sticker.robot": {
+      "en": "robot"
+    },
+    "sticker.ladybug": {
+      "en": "ladybug"
+    },
+    "sticker.snail": {
+      "en": "snail"
+    },
+    "sticker.cloud": {
+      "en": "cloud"
+    },
+    "sticker.lightning": {
+      "en": "lightning"
+    },
+    "sticker.gold-star": {
+      "en": "gold star"
     }
   }
 }

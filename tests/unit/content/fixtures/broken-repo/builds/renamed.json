@@ -1,0 +1,6 @@
+{
+  "id": "other-build",
+  "name": "renamed",
+  "difficulty": 1,
+  "steps": [{ "blocks": [{ "x": 0, "y": 0, "z": 0, "block": "colors:red" }] }]
+}

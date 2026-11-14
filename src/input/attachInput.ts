@@ -9,6 +9,8 @@ export interface InputHandlers {
   onOrbit(dx: number, dy: number): void;
   /** scale > 1 means zoom in. */
   onPinch(scale: number): void;
+  /** Two-finger drag (CSS px). */
+  onPan?(dx: number, dy: number): void;
   /** Mouse hover (no buttons) for desktop highlight. */
   onHover?(x: number, y: number): void;
   onHoverEnd?(): void;
@@ -62,6 +64,9 @@ export function attachInput(canvas: HTMLCanvasElement, handlers: InputHandlers):
           break;
         case 'pinch':
           handlers.onPinch(ev.scale);
+          break;
+        case 'pan':
+          handlers.onPan?.(ev.dx, ev.dy);
           break;
       }
     }

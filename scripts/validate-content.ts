@@ -1,5 +1,5 @@
 /**
- * npm run validate: checks every pack, theme and card against its JSON Schema
+ * npm run validate: checks every pack, theme, card and build against its JSON Schema
  * and cross-checks references. Exits 1 with readable messages on problems.
  */
 import { dirname, resolve } from 'node:path';
@@ -30,5 +30,5 @@ if (issues.length > 0) {
 
 console.log(
   `Content OK: ${bundle.packs.length} packs (${blockCount} blocks), ` +
-    `${bundle.themes.length} themes, ${bundle.cards.length} cards.`,
+    `${bundle.themes.length} themes, ${bundle.cards.length} cards, ${bundle.builds?.length ?? 0} builds.`,
 );

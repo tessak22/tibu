@@ -49,8 +49,10 @@ export class Sky {
     if (theme.sky.stars) this.addStars();
   }
 
-  follow(camera: THREE.Camera, time: number): void {
+  follow(camera: THREE.PerspectiveCamera, time: number): void {
     this.group.position.copy(camera.position);
+    // The dome itself never clips (xyww), but the stars do: keep them inside the far plane.
+    this.group.scale.setScalar(Math.min(1, (camera.far * 0.85) / SKY_RADIUS));
     if (this.stars) {
       const m = this.stars.material as THREE.PointsMaterial;
       m.opacity = 0.75 + Math.sin(time * 1.3) * 0.15;

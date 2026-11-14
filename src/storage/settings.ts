@@ -55,5 +55,6 @@ export function mergeSettings(stored: unknown): Settings {
     playTimerMinutes: mergeTimer(s.playTimerMinutes),
     leftHanded: bool(s.leftHanded, d.leftHanded),
     reducedMotion: bool(s.reducedMotion, d.reducedMotion),
+    toppleTowers: bool(s.toppleTowers, d.toppleTowers),
   };
 }

@@ -1,4 +1,4 @@
-import type { AudioSystem, ContentRegistry, ResolvedBlock, ResolvedPack, ThemeDef } from '../../../src/core/types';
+import type { AudioSystem, Blueprint, ContentRegistry, PlayMode, ResolvedBlock, ResolvedPack, ThemeDef } from '../../../src/core/types';
 import { DEFAULT_SETTINGS } from '../../../src/core/types';
 import type { UiContext } from '../../../src/ui/context';
 
@@ -23,11 +23,13 @@ export const fakeBlock = (packId: string, id: string): ResolvedBlock => {
     faces: { top: face, bottom: face, north: face, south: face, east: face, west: face },
     icon: canvas(),
     behaviors: [],
+    shape: 'cube',
   };
 };
 
-export const fakePack = (id: string, blocks: string[]): ResolvedPack => ({
+export const fakePack = (id: string, blocks: string[], mode?: PlayMode): ResolvedPack => ({
   id,
+  ...(mode ? { mode } : {}),
   name: id,
   voiceLine: `pack.${id}`,
   icon: canvas(),
@@ -45,12 +47,27 @@ export const fakeTheme = (id: string): ThemeDef => ({
   scene: [],
 });
 
-export function fakeRegistry(packs: ResolvedPack[] = [fakePack('colors', ['red', 'blue'])]): ContentRegistry {
+export const fakeBlueprint = (id: string, difficulty: 1 | 2 | 3 = 1): Blueprint => ({
+  id,
+  name: id,
+  voiceLine: `build.${id}`,
+  difficulty,
+  steps: [
+    { blocks: [{ x: 0, y: 0, z: 0, block: 'colors:red' }, { x: 1, y: 0, z: 0, block: 'colors:red' }] },
+    { blocks: [{ x: 0, y: 1, z: 0, block: 'colors:blue' }] },
+  ],
+});
+
+export function fakeRegistry(
+  packs: ResolvedPack[] = [fakePack('colors', ['red', 'blue'])],
+  blueprints: Blueprint[] = [],
+): ContentRegistry {
   const themes = [fakeTheme('meadow'), fakeTheme('beach')];
   return {
     packs,
     themes,
     cards: [],
+    blueprints,
     block: (key) => fakeBlock(key.split(':')[0] ?? 'x', key.split(':')[1] ?? 'y'),
     hasBlock: () => true,
     theme: (id) => themes.find((t) => t.id === id) ?? themes[0]!,

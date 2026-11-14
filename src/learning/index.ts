@@ -1,20 +1,27 @@
 /**
- * Learning features layered on play: naming, counting, spelling, build cards
- * and celebrations. Always optional (Settings.learning) and never a failure.
+ * Learning features layered on play: naming, counting, spelling, build cards,
+ * step-by-step builds (big-kid mode), topple fun and celebrations. Always optional (Settings.learning) and never a failure.
  */
-import type { AudioSystem, BuildCard, Cell, ContentRegistry, GameView, GameViewEvents, Settings, WorldModel } from '../core/types';
-import { countLine, randomCelebrateLine, wordLine } from '../audio/lineIds';
+import type { AudioSystem, BuildCard, Cell, ContentRegistry, GameView, GameViewEvents, PlayMode, Settings, WorldModel } from '../core/types';
+import { randomCelebrateLine, wordLine } from '../audio/lineIds';
+import { blueprintPicture } from '../content/blueprint-picture';
+import { createBlueprintController } from './blueprint-controller';
 import { drawCardPicture } from './cardPicture';
+import { createCrashGate } from './crash';
 import { lookupFromWorld } from './grid';
 import { reactionsFor, type Reaction } from './react';
-import { createSpeechScheduler } from './scheduler';
+import { countLineUpTo, maxCountFor, randomCrashLine } from './lines';
+import { createSpeechScheduler, PRIORITY } from './scheduler';
 import { buildWordSet } from './spelling';
 import type { LearningSystem } from './types';
-import { BUILTIN_WORDS } from './words';
+import { ALL_BUILTIN_WORDS, builtInWordsFor } from './words';
 
-export type { LearningSystem } from './types';
+export type { BlueprintProgressListener, LearningSystem } from './types';
 export { createPlayTimer, type PlayTimer } from './sleep';
-export { BUILTIN_WORDS } from './words';
+export { BIG_WORDS, BUILTIN_WORDS, builtInWordsFor } from './words';
+export { findBlueprintAnchor, evaluateBlueprint, blockMatches } from './blueprint';
+export { BLUEPRINT_START_LINE, EXPLORE_LINES } from './lines';
+export { cardsForMode, packsForMode } from '../content/modes';
 
 export interface LearningDeps {
   readonly view: GameView;
@@ -22,6 +29,8 @@ export interface LearningDeps {
   readonly audio: AudioSystem;
   readonly registry: ContentRegistry;
   readonly getSettings: () => Settings;
+  /** Current child's play mode ('little' keeps the original toddler behaviour). */
+  readonly getMode: () => PlayMode;
 }
 
 /** Pause between the spoken word and the celebration phrase. */
@@ -41,10 +50,13 @@ export function createLearning(deps: LearningDeps): LearningSystem {
   let words: ReadonlySet<string> = new Set();
   let disposed = false;
 
-  const wordSet = (custom: readonly string[]): ReadonlySet<string> => {
-    const key = custom.join(',');
+  const crashGate = createCrashGate();
+  const blueprints = createBlueprintController({ view, audio, getWorld: deps.getWorld, getMode: deps.getMode, scheduler });
+
+  const wordSet = (custom: readonly string[], mode: PlayMode): ReadonlySet<string> => {
+    const key = `${mode}|${custom.join(',')}`;
     if (key !== wordsKey || words.size === 0) {
-      words = buildWordSet(BUILTIN_WORDS, custom);
+      words = buildWordSet(builtInWordsFor(mode), custom);
       wordsKey = key;
     }
     return words;
@@ -69,7 +81,7 @@ export function createLearning(deps: LearningDeps): LearningSystem {
   const speakReaction = (r: Reaction): void => {
     switch (r.kind) {
       case 'spelling': {
-        const known = BUILTIN_WORDS.includes(r.word);
+        const known = ALL_BUILTIN_WORDS.includes(r.word);
         sayThenCheer(() => (known ? audio.speak(wordLine(r.word), r.word.toLowerCase()) : audio.speakText(r.word.toLowerCase())));
         return;
       }
@@ -77,7 +89,7 @@ export function createLearning(deps: LearningDeps): LearningSystem {
         sayThenCheer(null);
         return;
       case 'counting': {
-        const line = countLine(r.n);
+        const line = countLineUpTo(r.n);
         if (line) void audio.speak(line, String(r.n));
         return;
       }
@@ -91,14 +103,16 @@ export function createLearning(deps: LearningDeps): LearningSystem {
     const world = deps.getWorld();
     if (!world || disposed) return;
     const settings = deps.getSettings();
+    const mode = deps.getMode();
     const reactions = reactionsFor({
       get: lookupFromWorld(world),
       cell,
       block,
       info: registry.block(block),
       learning: settings.learning,
-      words: wordSet(settings.customWords),
+      words: wordSet(settings.customWords, mode),
       card: cardMatched ? null : activeCard,
+      maxCount: maxCountFor(mode),
     });
 
     // Visual celebrations and card notifications happen right away.
@@ -115,7 +129,12 @@ export function createLearning(deps: LearningDeps): LearningSystem {
     if (top) scheduler.submit({ priority: top.priority, run: () => speakReaction(top) });
   };
 
-  const unsubscribe = view.on('placed', onPlaced);
+  const onSmashed = ({ collapsed }: GameViewEvents['smashed']): void => {
+    if (disposed || !crashGate.shouldCheer(collapsed)) return;
+    scheduler.submit({ priority: PRIORITY.crash, run: () => void audio.speak(randomCrashLine()) });
+  };
+
+  const unsubscribers = [view.on('placed', onPlaced), view.on('smashed', onSmashed)];
 
   return {
     setActiveCard(card) {
@@ -131,9 +150,22 @@ export function createLearning(deps: LearningDeps): LearningSystem {
     cardPicture(card, size) {
       return drawCardPicture(card.blocks, registry, size);
     },
+    setBlueprint(bp, anchor) {
+      return blueprints.set(bp, anchor);
+    },
+    onBlueprintProgress(listener) {
+      return blueprints.onProgress(listener);
+    },
+    suggestBlock() {
+      return blueprints.suggest();
+    },
+    blueprintPicture(bp, size, upToStep) {
+      return blueprintPicture(bp, size, registry, upToStep);
+    },
     dispose() {
       disposed = true;
-      unsubscribe();
+      for (const off of unsubscribers) off();
+      blueprints.dispose();
       scheduler.dispose();
       cardListeners.clear();
     },

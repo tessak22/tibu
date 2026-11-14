@@ -1,5 +1,6 @@
-import type { AudioSystem, ContentRegistry, GameView, Profile, SavedWorld, ThemeDef, WorldModel, WorldRecord } from '../core/types';
-import { persistenceStatus, readImportFile, requestPersistence, type Repository } from '../storage';
+import type { AudioSystem, ContentRegistry, GameView, Profile, WorldModel, WorldRecord } from '../core/types';
+import { STICKER_IDS } from '../explore/stickers';
+import { persistenceStatus, profileMode, readImportFile, requestPersistence, type Repository } from '../storage';
 import type { UiContext } from '../ui/context';
 import { createGallery } from '../ui/gallery';
 import { createInstallBanner } from '../ui/install-banner';
@@ -26,6 +27,7 @@ import { createProblemLog } from './problem-log';
 import { createSettingsStore } from './settings-store';
 import { createSleepController } from './sleep-flow';
 import type { UpdateGate } from './update-gate';
+import { createNewWorld, exploreSetupFor, stickersToHide, type ExploreSetup, type WorldFactory } from './world-factory';
 
 export interface AppDeps {
   readonly registry: ContentRegistry;
@@ -35,10 +37,7 @@ export interface AppDeps {
   readonly screenRoot: HTMLElement;
   readonly overlayRoot: HTMLElement;
   readonly stage: HTMLElement;
-  readonly worlds: {
-    createWorldFromTheme(theme: ThemeDef): WorldModel;
-    deserializeWorld(data: SavedWorld): WorldModel;
-  };
+  readonly worlds: WorldFactory;
   /** Lets a downloaded app update reload only on calm screens. */
   readonly updates?: UpdateGate | null;
 }
@@ -136,16 +135,37 @@ export async function startApp(deps: AppDeps): Promise<void> {
     );
   };
 
-  const openWorld = async (record: WorldRecord, preloaded?: WorldModel): Promise<void> => {
+  /** Keeps the app's copy of the current player fresh (e.g. a sticker was found). */
+  const onProfileChanged = (next: Profile): void => {
+    if (next.id === profile.id) profile = next;
+    profiles = profiles.map((p) => (p.id === next.id ? next : p));
+  };
+
+  const openWorld = async (
+    record: WorldRecord,
+    preloaded?: { world: WorldModel; explore: ExploreSetup | null },
+  ): Promise<void> => {
     let world: WorldModel;
+    let explore: ExploreSetup | null = null;
+    const playMode = profileMode(profile);
     try {
-      world = preloaded ?? deps.worlds.deserializeWorld(record.data);
+      world = preloaded?.world ?? deps.worlds.deserializeWorld(record.data);
+      if (world.kind === 'explore') {
+        explore =
+          preloaded?.explore ??
+          exploreSetupFor(deps.worlds, world, registry.theme(world.themeId), record.data.seed);
+      }
     } catch {
       toast(overlayRoot, MSG.open);
       return;
     }
     await leavePlay();
     const next = createPlaySession({
+      profile,
+      playMode,
+      // A little builder can still open an older adventure world: it plays as a plain world.
+      explore: playMode === 'big' ? explore : null,
+      onProfileChanged,
       ctx,
       view,
       repo,
@@ -165,21 +185,25 @@ export async function startApp(deps: AppDeps): Promise<void> {
   const newWorld = async (): Promise<void> => {
     void audio.speak('pick-theme');
     deps.updates?.setSafe(false);
-    const theme = await pickTheme(ctx);
-    if (!theme) {
+    const choice = await pickTheme(ctx, profileMode(profile));
+    if (!choice) {
       deps.updates?.setSafe(isCalm());
       return;
     }
+    const { theme, kind } = choice;
     try {
-      const world = deps.worlds.createWorldFromTheme(theme);
-      const count = (await repo.listWorlds(profile.id)).filter((w) => w.data.themeId === theme.id).length;
+      const made = createNewWorld(deps.worlds, theme, kind, stickersToHide(STICKER_IDS, profile));
+      const label = kind === 'explore' ? `${theme.name} adventure` : theme.name;
+      const sameKind = (await repo.listWorlds(profile.id)).filter(
+        (w) => w.data.themeId === theme.id && (w.data.kind ?? 'island') === kind,
+      ).length;
       const record = await repo.createWorld({
         profileId: profile.id,
-        name: `${theme.name} ${count + 1}`,
-        data: world.serialize(),
+        name: `${label} ${sameKind + 1}`,
+        data: made.world.serialize(),
       });
       void audio.speak('new-world');
-      await openWorld(record, world);
+      await openWorld(record, made);
     } catch {
       toast(overlayRoot, MSG.create);
       deps.updates?.setSafe(isCalm());
@@ -238,8 +262,17 @@ export async function startApp(deps: AppDeps): Promise<void> {
       profile = profiles[0] as Profile;
       return profiles.length > 1 ? showProfiles() : showGallery();
     }
+    const modeChanged = profileMode(stillThere) !== profileMode(profile);
+    profile = stillThere;
     if (session) {
-      if (!(await repo.getWorld(session.recordId))) await showGallery();
+      const record = await repo.getWorld(session.recordId);
+      if (!record) await showGallery();
+      // The grown-up switched this child's mode: reopen the world with the new controls.
+      else if (modeChanged) {
+        await leavePlay(); // Save first, so the reopened world has every block.
+        const fresh = await repo.getWorld(record.id);
+        await (fresh ? openWorld(fresh) : showGallery());
+      }
       return;
     }
     if (sleeping) return;

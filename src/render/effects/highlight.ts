@@ -1,7 +1,9 @@
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
-import type { BlockKey, Cell, Mode } from '../../core/types';
+import type { BlockKey, Cell, Mode, Rotation } from '../../core/types';
 import type { BlockLooks } from '../blockLook';
+import { overlayMaterials, type ShapeGeometries } from '../shapeGeometry';
+import { isPart } from '../shapes';
 
 const BUILD_COLOR = '#7ff0c9';
 const SMASH_COLOR = '#ff8fa3';
@@ -10,7 +12,8 @@ const SMASH_HALO = '#ffe066';
 
 /**
  * Kid-friendly target highlight: a soft, rounded, pulsing bubble around the target cell.
- * In build mode a translucent preview of the selected block sits inside it.
+ * In build mode a translucent preview of the selected block (parts rotated as they will be placed)
+ * sits inside it.
  * In smash mode the bubble is coral and wraps the block that will pop.
  */
 export class Highlight {
@@ -39,9 +42,13 @@ export class Highlight {
   private readonly preview: THREE.Mesh;
   private mode: Mode = 'build';
   private selected: BlockKey | null = null;
+  private rotation: Rotation = 0;
   private time = 0;
 
-  constructor(private readonly looks: BlockLooks) {
+  constructor(
+    private readonly looks: BlockLooks,
+    private readonly geometries: ShapeGeometries,
+  ) {
     this.shell = new THREE.Mesh(this.shellGeometry, this.shellMaterial);
     this.shell.renderOrder = 5;
     this.halo = new THREE.Mesh(this.shellGeometry, this.haloMaterial);
@@ -55,9 +62,9 @@ export class Highlight {
 
   setMode(mode: Mode): void {
     this.mode = mode;
-    const color = mode === 'build' ? BUILD_COLOR : SMASH_COLOR;
+    const color = mode === 'smash' ? SMASH_COLOR : BUILD_COLOR;
     this.shellMaterial.color.set(color);
-    this.haloMaterial.color.set(mode === 'build' ? BUILD_HALO : SMASH_HALO);
+    this.haloMaterial.color.set(mode === 'smash' ? SMASH_HALO : BUILD_HALO);
     this.preview.visible = mode === 'build' && this.previewMaterials.length > 0;
   }
 
@@ -65,11 +72,28 @@ export class Highlight {
     if (block === this.selected) return;
     this.selected = block;
     this.disposePreviewMaterials();
-    this.previewMaterials = this.looks.boxTextures(block).map(
-      (map) => new THREE.MeshLambertMaterial({ map, transparent: true, opacity: 0.6, depthWrite: false }),
-    );
+    const part = isPart(this.looks.shape(block));
+    const overlay = this.geometries.get(this.looks.shape(block), this.rotation);
+    const textures = part ? this.looks.texturesIn(block, overlay.faceOrder) : this.looks.boxTextures(block);
+    this.previewMaterials = overlayMaterials(textures, overlay, { transparent: true, opacity: 0.6, depthWrite: false });
     this.preview.material = this.previewMaterials;
+    this.applyPreviewGeometry();
     this.preview.visible = this.mode === 'build';
+  }
+
+  /** Rotation the selected part will be placed with (follows the camera yaw). */
+  setRotation(rot: Rotation): void {
+    if (rot === this.rotation) return;
+    this.rotation = rot;
+    this.applyPreviewGeometry();
+  }
+
+  private applyPreviewGeometry(): void {
+    const part = this.selected !== null && isPart(this.looks.shape(this.selected));
+    this.preview.geometry = part
+      ? this.geometries.get(this.looks.shape(this.selected as BlockKey), this.rotation).geometry
+      : this.previewGeometry;
+    this.preview.scale.setScalar(part ? 0.94 : 1);
   }
 
   show(cell: Cell): void {

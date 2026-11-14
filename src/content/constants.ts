@@ -51,3 +51,14 @@ export const SCENE_MAX_RADIUS = 10;
 
 /** Safety cap on cells produced by one box entry. */
 export const MAX_BOX_CELLS = 400;
+
+/** Block geometries (mirrors BlockShape in src/core/types.ts and the pack schema). */
+export const SHAPES = ['cube', 'slope', 'slab', 'plate', 'wheel', 'cone', 'arch', 'pane', 'cylinder'] as const;
+
+/** Play modes a pack or card can be limited to (mirrors PlayMode). */
+export const PLAY_MODES = ['little', 'big'] as const;
+
+/** Blueprints (builds/<id>.json) must fit in this many cells along each axis. */
+export const BUILD_MAX_SIZE = 8;
+/** Blueprints may have at most this many blocks in total. */
+export const BUILD_MAX_BLOCKS = 80;

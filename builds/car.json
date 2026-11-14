@@ -1,0 +1,42 @@
+{
+  "$schema": "../schemas/build.schema.json",
+  "id": "car",
+  "name": "car",
+  "order": 1,
+  "difficulty": 1,
+  "steps": [
+    {
+      "blocks": [
+        {"x": 0, "y": 0, "z": 0, "block": "parts:wheel-red"},
+        {"x": 1, "y": 0, "z": 0, "block": "parts:wheel-red"},
+        {"x": 0, "y": 0, "z": 2, "block": "parts:wheel-red"},
+        {"x": 1, "y": 0, "z": 2, "block": "parts:wheel-red"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 0, "y": 1, "z": 0, "block": "colors:red"},
+        {"x": 1, "y": 1, "z": 0, "block": "colors:red"},
+        {"x": 0, "y": 1, "z": 1, "block": "colors:red"},
+        {"x": 1, "y": 1, "z": 1, "block": "colors:red"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 0, "y": 1, "z": 2, "block": "colors:red"},
+        {"x": 1, "y": 1, "z": 2, "block": "colors:red"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 0, "y": 2, "z": 0, "block": "parts:pane-blue"},
+        {"x": 1, "y": 2, "z": 0, "block": "parts:pane-blue"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 0, "y": 2, "z": 1, "block": "parts:steering"}
+      ]
+    }
+  ]
+}

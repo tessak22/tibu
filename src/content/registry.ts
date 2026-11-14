@@ -1,5 +1,5 @@
 /** The ContentRegistry implementation. Browser only. */
-import type { BlockKey, BuildCard, ContentRegistry, ResolvedBlock, ResolvedPack, ThemeDef } from '../core/types';
+import type { BlockKey, Blueprint, BuildCard, ContentRegistry, ResolvedBlock, ResolvedPack, ThemeDef } from '../core/types';
 import { paintPlaceholder } from './art/face';
 import { cubeIcon } from './art/icons';
 import { PLACEHOLDER_VOICE_LINE } from './voice-lines';
@@ -23,6 +23,7 @@ function placeholderFactory(): (key: BlockKey) => ResolvedBlock {
       faces: { top: face, bottom: face, north: face, south: face, east: face, west: face },
       icon,
       behaviors: ['bounce'],
+      shape: 'cube',
     };
     made.set(key, block);
     return block;
@@ -34,6 +35,7 @@ export function createRegistry(
   themes: readonly ThemeDef[],
   cards: readonly BuildCard[],
   fallbackTheme: () => ThemeDef,
+  blueprints: readonly Blueprint[] = [],
 ): ContentRegistry {
   const blocks = new Map<BlockKey, ResolvedBlock>();
   for (const pack of packs) for (const b of pack.blocks) blocks.set(b.key, b);
@@ -43,6 +45,7 @@ export function createRegistry(
     packs,
     themes,
     cards,
+    blueprints,
     block: (key) => blocks.get(key) ?? placeholder(key),
     hasBlock: (key) => blocks.has(key),
     theme: (id) => themeById.get(id) ?? themes[0] ?? fallbackTheme(),

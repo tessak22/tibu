@@ -1,10 +1,14 @@
 /**
- * LINES.json sync: adds voice lines for content (packs, themes, cards) and the
- * built-in spelling words. Never removes or rewrites existing lines.
+ * LINES.json sync: adds voice lines for content (packs, themes, cards, builds),
+ * the built-in spelling words and the learning lines (step cheers, crash lines,
+ * counts up to 32, explore lines). Never removes or rewrites existing lines.
  */
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { basename, join } from 'node:path';
 import { blockLine, cardLine, isValidLineId, packLine, themeLine, wordLine } from '../../src/audio/lineIds';
+import { blueprintVoiceLine, builtVoiceLine } from '../../src/content/voice-lines';
+import { LEARNING_LINES } from '../../src/learning/lines';
+import { BIG_WORDS } from '../../src/learning/words';
 
 export interface LinesDoc {
   readonly $comment?: string;
@@ -67,6 +71,28 @@ export function cardLines(json: unknown, fileBase: string): WantedLine[] {
   return name ? [{ id: cardLine(idOf(json, fileBase)), en: name }] : [];
 }
 
+/** "a" or "an" before a spoken name. */
+function article(name: string): string {
+  return /^[aeiou]/i.test(name) ? 'an' : 'a';
+}
+
+/** Blueprint name line plus its "You built a ...!" line. */
+export function buildLines(json: unknown, fileBase: string): WantedLine[] {
+  if (!isRecord(json)) return [];
+  const name = englishName(json.name);
+  if (!name) return [];
+  const id = idOf(json, fileBase);
+  return [
+    { id: blueprintVoiceLine(id), en: name },
+    { id: builtVoiceLine(id), en: `You built ${article(name)} ${name}!` },
+  ];
+}
+
+/** Lines the learning features speak that do not come from content files. */
+export function learningLines(): WantedLine[] {
+  return [...wordLines(BIG_WORDS), ...LEARNING_LINES];
+}
+
 /** "CAT" -> "Cat!" for word lines. */
 export function wordLines(words: readonly string[]): WantedLine[] {
   return words.map((w) => ({ id: wordLine(w), en: `${w.charAt(0).toUpperCase()}${w.slice(1).toLowerCase()}!` }));
@@ -100,7 +126,7 @@ function subdirs(dir: string): string[] {
   return readdirSync(dir).filter((d) => statSync(join(dir, d)).isDirectory()).sort();
 }
 
-/** Scans packs/, themes/ and cards/ under `root`. Missing folders are fine. */
+/** Scans packs/, themes/, cards/ and builds/ under `root`, plus the learning lines. Missing folders are fine. */
 export function scanContent(root: string): WantedLine[] {
   const out: WantedLine[] = [];
   for (const dir of subdirs(join(root, 'packs'))) {
@@ -117,5 +143,12 @@ export function scanContent(root: string): WantedLine[] {
       out.push(...cardLines(readJson(join(cardsDir, f)), basename(f, '.json')));
     }
   }
+  const buildsDir = join(root, 'builds');
+  if (existsSync(buildsDir)) {
+    for (const f of readdirSync(buildsDir).filter((n) => n.endsWith('.json')).sort()) {
+      out.push(...buildLines(readJson(join(buildsDir, f)), basename(f, '.json')));
+    }
+  }
+  out.push(...learningLines());
   return out;
 }

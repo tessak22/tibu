@@ -1,4 +1,5 @@
-import type { ResolvedPack } from '../core/types';
+import type { PlayMode, ResolvedPack } from '../core/types';
+import { packsForMode } from '../content/modes';
 import type { UiContext } from './context';
 import { canvasCopy, h, pulse } from './dom';
 import { openOverlay } from './overlay';
@@ -39,4 +40,13 @@ export function enabledPacks(all: readonly ResolvedPack[], enabledIds: readonly 
   if (enabledIds.length === 0) return all;
   const filtered = all.filter((p) => enabledIds.includes(p.id));
   return filtered.length > 0 ? filtered : all;
+}
+
+/** Enabled packs for a mode (big-only packs such as parts never show in little mode). Never empty when the mode has any packs. */
+export function playablePacks(
+  all: readonly ResolvedPack[],
+  enabledIds: readonly string[],
+  mode: PlayMode,
+): readonly ResolvedPack[] {
+  return enabledPacks(packsForMode(all, mode), enabledIds);
 }

@@ -1,8 +1,11 @@
 import * as THREE from 'three';
-import type { BlockKey, Cell } from '../../core/types';
+import type { BlockKey, Cell, Rotation } from '../../core/types';
 import type { BlockLooks } from '../blockLook';
+import { overlayMaterials, type ShapeGeometries } from '../shapeGeometry';
 
 const DURATION = 0.5;
+/** Undoing a big collapse pops many blocks back at once; only this many get overlays. */
+export const MAX_BOUNCES = 32;
 
 interface ActiveBounce {
   readonly cell: Cell;
@@ -17,18 +20,19 @@ interface ActiveBounce {
  */
 export class BounceEffects {
   readonly group = new THREE.Group();
-  private readonly geometry = new THREE.BoxGeometry(1, 1, 1);
   private readonly active: ActiveBounce[] = [];
 
   constructor(
     private readonly looks: BlockLooks,
+    private readonly geometries: ShapeGeometries,
     private readonly setHidden: (cell: Cell, hidden: boolean) => void,
   ) {}
 
-  start(cell: Cell, block: BlockKey, gentle: boolean): void {
-    if (this.indexOf(cell) !== -1) return;
-    const materials = this.looks.boxTextures(block).map((map) => new THREE.MeshLambertMaterial({ map }));
-    const mesh = new THREE.Mesh(this.geometry, materials);
+  start(cell: Cell, block: BlockKey, gentle: boolean, rot: Rotation = 0): void {
+    if (this.indexOf(cell) !== -1 || this.active.length >= MAX_BOUNCES) return;
+    const overlay = this.geometries.get(this.looks.shape(block), rot);
+    const materials = overlayMaterials(this.looks.texturesIn(block, overlay.faceOrder), overlay);
+    const mesh = new THREE.Mesh(overlay.geometry, materials);
     mesh.castShadow = true;
     mesh.userData.gentle = gentle;
     this.group.add(mesh);
@@ -61,7 +65,6 @@ export class BounceEffects {
 
   dispose(): void {
     while (this.active.length) this.finish(this.active.length - 1);
-    this.geometry.dispose();
   }
 
   private indexOf(cell: Cell): number {

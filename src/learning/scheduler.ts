@@ -3,12 +3,15 @@
  *
  * - Speech is debounced: only the latest utterance in a short window runs.
  * - Within the window a lower-priority utterance never replaces a higher one
- *   (spelling > card > counting > naming), so a celebration is not lost to a
- *   block placed right after it.
+ *   (finished build > spelling > card > build step > topple crash > counting > naming),
+ *   so a celebration is not lost to a block placed right after it.
  * - After a celebration starts, lower-priority speech is dropped for a while so
  *   the phrase is not cut off.
  */
-export const PRIORITY = { naming: 0, counting: 1, card: 2, spelling: 3 } as const;
+export const PRIORITY = { naming: 0, counting: 1, crash: 2, step: 3, card: 4, spelling: 5, blueprint: 6 } as const;
+
+/** Utterances at or above this priority briefly block lower ones so they are not cut off. */
+const LOCKING = PRIORITY.step;
 export type Priority = (typeof PRIORITY)[keyof typeof PRIORITY];
 
 export interface Utterance {
@@ -23,7 +26,7 @@ export interface SpeechScheduler {
 
 export interface SchedulerOptions {
   readonly delayMs?: number;
-  /** How long a card/spelling celebration blocks lower-priority speech. */
+  /** How long a step/card/spelling/build celebration blocks lower-priority speech. */
   readonly celebrationLockMs?: number;
   readonly now?: () => number;
 }
@@ -41,7 +44,7 @@ export function createSpeechScheduler(opts: SchedulerOptions = {}): SpeechSchedu
     const u = pending;
     pending = null;
     if (!u) return;
-    if (u.priority >= PRIORITY.card) lock = { priority: u.priority, until: now() + lockMs };
+    if (u.priority >= LOCKING) lock = { priority: u.priority, until: now() + lockMs };
     u.run();
   };
 

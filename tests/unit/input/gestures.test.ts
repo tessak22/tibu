@@ -40,6 +40,17 @@ describe('GestureTracker', () => {
     expect(g.up(touch(1, 450, 300))).toEqual([]);
   });
 
+  it('two fingers moving together pan', () => {
+    const g = new GestureTracker(() => view);
+    g.down(touch(1, 400, 300));
+    g.down(touch(2, 500, 300));
+    expect(g.move(touch(1, 420, 330))).toEqual([
+      { type: 'pinch', scale: Math.hypot(80, 30) / 100 },
+      { type: 'pan', dx: 10, dy: 15 },
+    ]);
+    expect(g.move(touch(2, 520, 330))).toContainEqual({ type: 'pan', dx: 10, dy: 15 });
+  });
+
   it('cancel never taps', () => {
     const g = new GestureTracker(() => view);
     g.down(touch(1, 100, 100));

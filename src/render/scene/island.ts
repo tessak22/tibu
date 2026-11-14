@@ -1,17 +1,20 @@
 import * as THREE from 'three';
 import type { ThemeDef } from '../../core/types';
-import { islandMask } from '../../world/island';
-import { buildUnderside } from './undersideGeometry';
+import { buildUnderside, type MaskSize } from './undersideGeometry';
 
-/** The decorative rocky underside of the floating island (below the grid, never part of the world). */
+/**
+ * The decorative rocky underside of the floating island(s), below the grid and never part of the
+ * world. Built from the world's floor layer, so explore worlds get a rock under every island.
+ */
 export class IslandUnderside {
   readonly group = new THREE.Group();
   private readonly material = new THREE.MeshLambertMaterial({ vertexColors: true });
   private mesh: THREE.Mesh | null = null;
 
-  setTheme(theme: ThemeDef): void {
+  build(theme: ThemeDef, floorMask: Uint8Array, size: MaskSize): void {
     this.clear();
-    const arrays = buildUnderside(islandMask(theme.island.shape), theme.island.depth);
+    if (!floorMask.some((v) => v !== 0)) return;
+    const arrays = buildUnderside(floorMask, theme.island.depth, size);
     const g = new THREE.BufferGeometry();
     g.setAttribute('position', new THREE.BufferAttribute(arrays.positions, 3));
     g.setAttribute('normal', new THREE.BufferAttribute(arrays.normals, 3));

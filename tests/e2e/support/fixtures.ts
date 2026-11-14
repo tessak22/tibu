@@ -103,15 +103,95 @@ export class TibuApp {
 
   /** Highest solid cell in a column (the block whose top face is visible from above). */
   async topOf(x: number, z: number): Promise<Cell> {
-    const y = await this.page.evaluate(
+    const y = await this.topYOf(x, z);
+    if (y < 0) throw new Error(`column ${x},${z} is empty`);
+    return { x, y, z };
+  }
+
+  /** Highest solid y in a column, or -1 when empty. Works for islands and big worlds. */
+  topYOf(x: number, z: number): Promise<number> {
+    return this.page.evaluate(
       ({ x, z }) => {
-        for (let y = 15; y >= 0; y--) if (window.__tibuTest?.getBlock(x, y, z)) return y;
+        const maxY = window.__tibuTest?.maxY?.() ?? 15;
+        for (let y = maxY; y >= 0; y--) if (window.__tibuTest?.getBlock(x, y, z)) return y;
         return -1;
       },
       { x, z },
     );
-    if (y < 0) throw new Error(`column ${x},${z} is empty`);
-    return { x, y, z };
+  }
+
+  characterCell(): Promise<Cell | null> {
+    return this.page.evaluate(() => window.__tibuTest?.characterCell?.() ?? null);
+  }
+
+  ghosts(): Promise<{ cell: Cell; block: string }[]> {
+    return this.page.evaluate(() =>
+      (window.__tibuTest?.ghosts?.() ?? []).map((g) => ({ cell: { ...g.cell }, block: g.block })),
+    );
+  }
+
+  /** Tap the screen at a point a fraction `t` of the way up a cell's side (0 = bottom, 1 = top). */
+  async tapSideOf(c: Cell, t = 0.15): Promise<void> {
+    const bottom = await this.cellToScreen({ ...c, y: c.y - 1 });
+    const top = await this.cellToScreen(c);
+    if (!bottom || !top) throw new Error(`cell ${JSON.stringify(c)} is behind the camera`);
+    await this.input.tap({ x: bottom.x + (top.x - bottom.x) * t, y: bottom.y + (top.y - bottom.y) * t });
+  }
+
+  /** Grown-up corner: 3 s hold, then answer the sum. */
+  async openGrownUps(): Promise<void> {
+    const lift = await this.input.press(await this.center(this.page.getByTestId('parent-corner')));
+    const question = this.page.getByTestId('gate-question');
+    await expect(question).toBeVisible({ timeout: 8000 });
+    await lift();
+    const match = /(\d+)\s*\+\s*(\d+)/.exec((await question.textContent()) ?? '');
+    if (!match) throw new Error('no sum shown');
+    const answer = String(Number(match[1]) + Number(match[2]));
+    const pad = this.page.locator('.gate-pad');
+    for (const digit of answer) await this.tapElement(pad.locator(`[data-key="${digit}"]`));
+    await this.tapElement(pad.locator('[data-key="ok"]'));
+    await expect(this.page.getByTestId('parent-area')).toBeVisible();
+  }
+
+  /** In the grown-up area: switch the first player to a mode, then close it. */
+  async setPlayerMode(mode: 'little' | 'big'): Promise<void> {
+    await this.openGrownUps();
+    const choice = this.page.locator('.profile-list li').first().locator(`.mode-choice[data-mode="${mode}"]`);
+    await choice.scrollIntoViewIfNeeded();
+    await this.tapElement(choice);
+    await expect(choice).toHaveAttribute('aria-pressed', 'true');
+    await expect(this.page.locator('.profile-list ~ .parent-msg.ok, .parent-msg.ok').first()).toBeVisible();
+    const close = this.page.locator('.parent-overlay .overlay-close');
+    await close.scrollIntoViewIfNeeded();
+    await this.tapElement(close);
+    await this.waitForGallery();
+  }
+
+  /** Gallery "+" -> big adventure picture of a theme -> play screen (big builders only). */
+  async newAdventure(themeId = 'meadow'): Promise<void> {
+    await this.tapElement(this.page.getByTestId('gallery-new'));
+    await this.tapElement(this.page.getByTestId(`theme-${themeId}-explore`));
+    await expect(this.page.getByTestId('hud')).toBeVisible();
+    await expect.poll(() => this.count(), { timeout: 30_000 }).toBeGreaterThan(0);
+    await expect.poll(() => this.characterCell(), { timeout: 30_000 }).not.toBeNull();
+    // Big worlds build their chunks lazily; wait until the ground is all there.
+    await expect
+      .poll(() => this.page.evaluate(() => window.__tibuTest?.pendingChunks?.() ?? 0), { timeout: 30_000 })
+      .toBe(0);
+    await this.waitForStableCamera();
+  }
+
+  /** Projection stops changing (the camera finished flying / following). */
+  async waitForStableCamera(): Promise<void> {
+    await expect
+      .poll(async () => {
+        const probe = (await this.characterCell()) ?? { x: 12, y: 1, z: 12 };
+        const a = await this.cellToScreen(probe);
+        await this.page.evaluate(() => new Promise((r) => setTimeout(r, 120)));
+        const b = await this.cellToScreen(probe);
+        return a !== null && b !== null && Math.hypot(a.x - b.x, a.y - b.y) < 0.5;
+      }, { timeout: 20_000 })
+      .toBe(true);
   }
 
   /** Taps the center of a cell's top face. */
@@ -121,7 +201,7 @@ export class TibuApp {
     await this.input.tap(p);
   }
 
-  async setMode(mode: 'build' | 'smash'): Promise<void> {
+  async setMode(mode: 'build' | 'smash' | 'walk'): Promise<void> {
     await this.tapElement(this.page.getByTestId(`mode-${mode}`));
     await expect(this.page.getByTestId('hud')).toHaveAttribute('data-mode', mode);
   }

@@ -1,5 +1,5 @@
 /** Full content validation: schemas first, then cross-references on the valid documents. */
-import type { CardJson, PackJson, ThemeJson } from '../raw-types';
+import type { BuildJson, CardJson, PackJson, ThemeJson } from '../raw-types';
 import { checkCrossRefs } from './crossref';
 import { validateSchema, type ContentKind } from './schema';
 import type { ContentBundle, FileExists, SourceFile, ValidationIssue } from './types';
@@ -24,6 +24,7 @@ export function validateBundle(bundle: ContentBundle, exists: FileExists): Valid
     packs: partition<PackJson>('pack', bundle.packs, issues),
     themes: partition<ThemeJson>('theme', bundle.themes, issues),
     cards: partition<CardJson>('card', bundle.cards, issues),
+    builds: partition<BuildJson>('build', bundle.builds ?? [], issues),
   };
   return [...issues, ...checkCrossRefs(typed, exists)];
 }

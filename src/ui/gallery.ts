@@ -1,4 +1,5 @@
 import type { Profile, WorldRecord } from '../core/types';
+import { drawAdventurePicture } from './adventure-badge';
 import { animalPicture } from './animals';
 import type { UiContext } from './context';
 import { canvasCopy, h, iconButton, isolatePointer, pulse } from './dom';
@@ -26,7 +27,8 @@ function thumbnail(ctx: UiContext, world: WorldRecord, urls: string[]): HTMLElem
       // Fall through to the theme picture.
     }
   }
-  return canvasCopy(ctx.registry.theme(world.data.themeId).icon, 256);
+  const icon = ctx.registry.theme(world.data.themeId).icon;
+  return world.data.kind === 'explore' ? drawAdventurePicture(icon, 256) : canvasCopy(icon, 256);
 }
 
 /** Home screen: big world thumbnails and a big "+" button. Nothing here deletes. */
@@ -45,7 +47,13 @@ export function createGallery(ctx: UiContext, opts: GalleryOptions): Screen {
   plus.dataset.testid = 'gallery-new';
   grid.append(plus);
   for (const world of opts.worlds) {
-    const btn = h('button', { type: 'button', class: 'gallery-item', 'aria-label': world.name, 'data-testid': 'gallery-item' }, [
+    const btn = h('button', {
+      type: 'button',
+      class: 'gallery-item',
+      'aria-label': world.name,
+      'data-testid': 'gallery-item',
+      'data-kind': world.data.kind ?? 'island',
+    }, [
       thumbnail(ctx, world, urls),
     ]);
     btn.addEventListener('click', () => {

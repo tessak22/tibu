@@ -2,6 +2,7 @@
 import type { BehaviorName, FaceName, ResolvedBlock, ResolvedPack, SoundRef } from '../core/types';
 import { artColor, type ArtRenderer } from './art/face';
 import { cubeIcon, packIcon } from './art/icons';
+import { shapeIcon } from './art/shape-icon';
 import { byOrder, isBlockLike } from './guards';
 import type { ArtSpec, BlockJson, PackJson, SoundSpec } from './raw-types';
 import { blockVoiceLine, packVoiceLine } from './voice-lines';
@@ -35,6 +36,7 @@ function resolveBlock(packId: string, folder: string, json: BlockJson, env: Reso
   const faces: Record<FaceName, HTMLCanvasElement> = { top, bottom, north: side, south: side, east: side, west: side };
   const behaviors = json.behaviors ?? DEFAULT_BEHAVIORS;
   const tapSound = toSoundRef(json.sound, folder, env.assets);
+  const shape = json.shape ?? 'cube';
   const glowColor = behaviors.includes('glow') ? (json.glowColor ?? artColor(json.art)) : undefined;
   return {
     key: `${packId}:${json.id}`,
@@ -43,8 +45,9 @@ function resolveBlock(packId: string, folder: string, json: BlockJson, env: Reso
     name: json.name,
     voiceLine: blockVoiceLine(packId, json.id),
     faces,
-    icon: cubeIcon(top, side, side),
+    icon: shape === 'cube' ? cubeIcon(top, side, side) : shapeIcon(shape, faces),
     behaviors,
+    shape,
     ...(tapSound ? { tapSound } : {}),
     ...(glowColor ? { glowColor } : {}),
   };
@@ -73,6 +76,7 @@ export function resolvePack(json: PackJson, env: ResolveEnv): ResolvedPack | nul
     voiceLine: packVoiceLine(json.id),
     icon: packIcon(showcaseIcon(json, blocks, env, folder), json.tileColor ?? DEFAULT_TILE),
     blocks,
+    ...(json.mode ? { mode: json.mode } : {}),
   };
 }
 

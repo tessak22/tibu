@@ -1,0 +1,38 @@
+{
+  "$schema": "../schemas/build.schema.json",
+  "id": "rocket",
+  "name": "rocket",
+  "order": 2,
+  "difficulty": 1,
+  "steps": [
+    {
+      "blocks": [
+        {"x": 1, "y": 0, "z": 1, "block": "parts:pillar-white"},
+        {"x": 0, "y": 0, "z": 1, "block": "parts:roof-red", "rot": 1},
+        {"x": 2, "y": 0, "z": 1, "block": "parts:roof-red", "rot": 3}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 1, "y": 0, "z": 0, "block": "parts:roof-red", "rot": 2},
+        {"x": 1, "y": 0, "z": 2, "block": "parts:roof-red"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 1, "y": 1, "z": 1, "block": "parts:pillar-white"},
+        {"x": 1, "y": 2, "z": 1, "block": "parts:pillar-blue"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 1, "y": 3, "z": 1, "block": "parts:pillar-white"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 1, "y": 4, "z": 1, "block": "parts:cone-red"}
+      ]
+    }
+  ]
+}

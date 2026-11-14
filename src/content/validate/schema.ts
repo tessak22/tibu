@@ -3,11 +3,12 @@ import Ajv, { type ErrorObject, type ValidateFunction } from 'ajv';
 import packSchema from '../../../schemas/pack.schema.json';
 import themeSchema from '../../../schemas/theme.schema.json';
 import cardSchema from '../../../schemas/card.schema.json';
+import buildSchema from '../../../schemas/build.schema.json';
 import type { ValidationIssue } from './types';
 
-export type ContentKind = 'pack' | 'theme' | 'card';
+export type ContentKind = 'pack' | 'theme' | 'card' | 'build';
 
-export const SCHEMAS = { pack: packSchema, theme: themeSchema, card: cardSchema } as const;
+export const SCHEMAS = { pack: packSchema, theme: themeSchema, card: cardSchema, build: buildSchema } as const;
 
 let compiled: Record<ContentKind, ValidateFunction> | null = null;
 
@@ -18,6 +19,7 @@ function validators(): Record<ContentKind, ValidateFunction> {
     pack: ajv.compile(packSchema),
     theme: ajv.compile(themeSchema),
     card: ajv.compile(cardSchema),
+    build: ajv.compile(buildSchema),
   };
   return compiled;
 }

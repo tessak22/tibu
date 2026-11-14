@@ -1,0 +1,100 @@
+{
+  "$schema": "../schemas/card.schema.json",
+  "id": "big-rainbow-wall",
+  "name": "rainbow wall",
+  "order": 105,
+  "mode": "big",
+  "blocks": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        0,
+        1,
+        0
+      ],
+      "block": "colors:red"
+    },
+    {
+      "from": [
+        1,
+        0,
+        0
+      ],
+      "to": [
+        1,
+        1,
+        0
+      ],
+      "block": "colors:orange"
+    },
+    {
+      "from": [
+        2,
+        0,
+        0
+      ],
+      "to": [
+        2,
+        1,
+        0
+      ],
+      "block": "colors:yellow"
+    },
+    {
+      "from": [
+        3,
+        0,
+        0
+      ],
+      "to": [
+        3,
+        1,
+        0
+      ],
+      "block": "colors:green"
+    },
+    {
+      "from": [
+        4,
+        0,
+        0
+      ],
+      "to": [
+        4,
+        1,
+        0
+      ],
+      "block": "colors:blue"
+    },
+    {
+      "from": [
+        5,
+        0,
+        0
+      ],
+      "to": [
+        5,
+        1,
+        0
+      ],
+      "block": "colors:purple"
+    },
+    {
+      "from": [
+        6,
+        0,
+        0
+      ],
+      "to": [
+        6,
+        1,
+        0
+      ],
+      "block": "colors:pink"
+    }
+  ]
+}

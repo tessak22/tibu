@@ -212,3 +212,30 @@ select,
   font-weight: 600;
   line-height: 2;
 }
+
+/* Player mode: Little builder / Big builder */
+.mode-switch {
+  display: inline-flex;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid #e0d6c3;
+  margin: 6px 0;
+}
+
+.mode-choice {
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 0;
+  background: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
+.mode-choice.selected {
+  background: #ffe9a8;
+  font-weight: 700;
+}
+
+.mode-choice:disabled {
+  opacity: 0.6;
+}

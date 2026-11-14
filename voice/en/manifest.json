@@ -450,6 +450,131 @@
       "hash": "ea214a9ba656de2b",
       "text": "nine"
     },
+    "block.parts.arch-red": {
+      "file": "block.parts.arch-red.m4a",
+      "hash": "e1355061d4ea111b",
+      "text": "red arch"
+    },
+    "block.parts.arch-stone": {
+      "file": "block.parts.arch-stone.m4a",
+      "hash": "fd5acd8e61af0964",
+      "text": "stone arch"
+    },
+    "block.parts.cone-orange": {
+      "file": "block.parts.cone-orange.m4a",
+      "hash": "6e3afd821e832cee",
+      "text": "orange cone"
+    },
+    "block.parts.cone-red": {
+      "file": "block.parts.cone-red.m4a",
+      "hash": "625cc493d1c27239",
+      "text": "red cone"
+    },
+    "block.parts.flag": {
+      "file": "block.parts.flag.m4a",
+      "hash": "f7fef27e2ae6f26a",
+      "text": "flag"
+    },
+    "block.parts.pane-blue": {
+      "file": "block.parts.pane-blue.m4a",
+      "hash": "2e8d2a31199f82e7",
+      "text": "blue glass"
+    },
+    "block.parts.pane-green": {
+      "file": "block.parts.pane-green.m4a",
+      "hash": "0387af8259e79ea8",
+      "text": "green glass"
+    },
+    "block.parts.pane-pink": {
+      "file": "block.parts.pane-pink.m4a",
+      "hash": "516f2bdf03c52a61",
+      "text": "pink glass"
+    },
+    "block.parts.pane-yellow": {
+      "file": "block.parts.pane-yellow.m4a",
+      "hash": "4b37ec4a3dbdb3d7",
+      "text": "yellow glass"
+    },
+    "block.parts.pillar-blue": {
+      "file": "block.parts.pillar-blue.m4a",
+      "hash": "92820fb29ea00baf",
+      "text": "blue pillar"
+    },
+    "block.parts.pillar-red": {
+      "file": "block.parts.pillar-red.m4a",
+      "hash": "2adf57a789841264",
+      "text": "red pillar"
+    },
+    "block.parts.pillar-white": {
+      "file": "block.parts.pillar-white.m4a",
+      "hash": "9b9bff8b6c477988",
+      "text": "white pillar"
+    },
+    "block.parts.plate-blue": {
+      "file": "block.parts.plate-blue.m4a",
+      "hash": "45bc457f77cd66e0",
+      "text": "blue plate"
+    },
+    "block.parts.plate-green": {
+      "file": "block.parts.plate-green.m4a",
+      "hash": "5a4328b126b691ac",
+      "text": "green plate"
+    },
+    "block.parts.plate-pink": {
+      "file": "block.parts.plate-pink.m4a",
+      "hash": "f6df82f8ff80ef48",
+      "text": "pink plate"
+    },
+    "block.parts.roof-blue": {
+      "file": "block.parts.roof-blue.m4a",
+      "hash": "4cb5b2c115eabb2d",
+      "text": "blue roof"
+    },
+    "block.parts.roof-green": {
+      "file": "block.parts.roof-green.m4a",
+      "hash": "fdfb48c4d4c6052a",
+      "text": "green roof"
+    },
+    "block.parts.roof-red": {
+      "file": "block.parts.roof-red.m4a",
+      "hash": "05c1e775de02cb74",
+      "text": "red roof"
+    },
+    "block.parts.slab-orange": {
+      "file": "block.parts.slab-orange.m4a",
+      "hash": "a284a2e79c687ef4",
+      "text": "orange half block"
+    },
+    "block.parts.slab-white": {
+      "file": "block.parts.slab-white.m4a",
+      "hash": "dc55e9101722756a",
+      "text": "white half block"
+    },
+    "block.parts.slab-yellow": {
+      "file": "block.parts.slab-yellow.m4a",
+      "hash": "8e27d361f18d2ede",
+      "text": "yellow half block"
+    },
+    "block.parts.steering": {
+      "file": "block.parts.steering.m4a",
+      "hash": "938f4fab8fe104c2",
+      "text": "steering wheel"
+    },
+    "block.parts.wheel-blue": {
+      "file": "block.parts.wheel-blue.m4a",
+      "hash": "827175397021abaf",
+      "text": "blue wheel"
+    },
+    "block.parts.wheel-red": {
+      "file": "block.parts.wheel-red.m4a",
+      "hash": "1c44df285e9fe881",
+      "text": "red wheel"
+    },
+    "block.parts.wheel-yellow": {
+      "file": "block.parts.wheel-yellow.m4a",
+      "hash": "4c13ed51a9d903c1",
+      "text": "yellow wheel"
+    },
     "block.placeholder": {
       "file": "block.placeholder.m4a",
       "hash": "b3d6eac4d57cd7e1",
@@ -520,10 +645,125 @@
       "hash": "b4cbfdb58d3117d5",
       "text": "triangle"
     },
+    "blueprint.start": {
+      "file": "blueprint.start.m4a",
+      "hash": "4d5ddc1d6b1f529a",
+      "text": "Let's build it, step by step!"
+    },
     "build-mode": {
       "file": "build-mode.m4a",
       "hash": "e2195c94c584ebe0",
       "text": "Build!"
+    },
+    "build.boat": {
+      "file": "build.boat.m4a",
+      "hash": "628f0072afa6db23",
+      "text": "boat"
+    },
+    "build.bridge": {
+      "file": "build.bridge.m4a",
+      "hash": "16fc283f7d1de499",
+      "text": "bridge"
+    },
+    "build.car": {
+      "file": "build.car.m4a",
+      "hash": "117af307d7e73489",
+      "text": "car"
+    },
+    "build.castle-tower": {
+      "file": "build.castle-tower.m4a",
+      "hash": "9db715444bc56ab1",
+      "text": "castle tower"
+    },
+    "build.fire-station": {
+      "file": "build.fire-station.m4a",
+      "hash": "883b5ea84c3ad6ff",
+      "text": "fire station"
+    },
+    "build.house": {
+      "file": "build.house.m4a",
+      "hash": "505835dfd2cb7467",
+      "text": "house"
+    },
+    "build.robot": {
+      "file": "build.robot.m4a",
+      "hash": "eccdfb633e9cd2db",
+      "text": "robot"
+    },
+    "build.rocket": {
+      "file": "build.rocket.m4a",
+      "hash": "b4489cb39f414879",
+      "text": "rocket"
+    },
+    "build.train": {
+      "file": "build.train.m4a",
+      "hash": "1a7f342ca1143941",
+      "text": "train"
+    },
+    "build.tree-house": {
+      "file": "build.tree-house.m4a",
+      "hash": "fba7d7e1049ba36f",
+      "text": "tree house"
+    },
+    "build.truck": {
+      "file": "build.truck.m4a",
+      "hash": "218764691a6f4632",
+      "text": "truck"
+    },
+    "built.boat": {
+      "file": "built.boat.m4a",
+      "hash": "636a2f38b0f6aa00",
+      "text": "You built a boat!"
+    },
+    "built.bridge": {
+      "file": "built.bridge.m4a",
+      "hash": "d22ef65167327e47",
+      "text": "You built a bridge!"
+    },
+    "built.car": {
+      "file": "built.car.m4a",
+      "hash": "cf2894e0c5447719",
+      "text": "You built a car!"
+    },
+    "built.castle-tower": {
+      "file": "built.castle-tower.m4a",
+      "hash": "c4af634eb38b89cc",
+      "text": "You built a castle tower!"
+    },
+    "built.fire-station": {
+      "file": "built.fire-station.m4a",
+      "hash": "a0569c7ceca6967d",
+      "text": "You built a fire station!"
+    },
+    "built.house": {
+      "file": "built.house.m4a",
+      "hash": "360ce9917d7d9385",
+      "text": "You built a house!"
+    },
+    "built.robot": {
+      "file": "built.robot.m4a",
+      "hash": "22446db79d9f42a4",
+      "text": "You built a robot!"
+    },
+    "built.rocket": {
+      "file": "built.rocket.m4a",
+      "hash": "287c56e643a269ff",
+      "text": "You built a rocket!"
+    },
+    "built.train": {
+      "file": "built.train.m4a",
+      "hash": "7f9a14ca02dc1b42",
+      "text": "You built a train!"
+    },
+    "built.tree-house": {
+      "file": "built.tree-house.m4a",
+      "hash": "c5280c694aedd4ee",
+      "text": "You built a tree house!"
+    },
+    "built.truck": {
+      "file": "built.truck.m4a",
+      "hash": "9d8e1929bf6d70bc",
+      "text": "You built a truck!"
     },
     "card-done": {
       "file": "card-done.m4a",
@@ -539,6 +779,51 @@
       "file": "card.abc.m4a",
       "hash": "0b9f7e2092056116",
       "text": "A B C"
+    },
+    "card.big-bridge": {
+      "file": "card.big-bridge.m4a",
+      "hash": "b595fb8d9656159d",
+      "text": "bridge between two towers"
+    },
+    "card.big-checkerboard": {
+      "file": "card.big-checkerboard.m4a",
+      "hash": "f101ba8072d95be9",
+      "text": "checkerboard"
+    },
+    "card.big-pattern": {
+      "file": "card.big-pattern.m4a",
+      "hash": "9989a5cefb99f658",
+      "text": "red and blue pattern"
+    },
+    "card.big-rainbow-wall": {
+      "file": "card.big-rainbow-wall.m4a",
+      "hash": "01975be5a9fe508d",
+      "text": "rainbow wall"
+    },
+    "card.big-staircase": {
+      "file": "card.big-staircase.m4a",
+      "hash": "4c63ec560adbced4",
+      "text": "staircase"
+    },
+    "card.big-tower-five": {
+      "file": "card.big-tower-five.m4a",
+      "hash": "198ec70805351e01",
+      "text": "tower of five"
+    },
+    "card.big-traffic-light": {
+      "file": "card.big-traffic-light.m4a",
+      "hash": "1995b5a73606fef5",
+      "text": "traffic light"
+    },
+    "card.big-two-floors": {
+      "file": "card.big-two-floors.m4a",
+      "hash": "f5ed4f82a205f4a2",
+      "text": "two floor house"
+    },
+    "card.big-word-sun": {
+      "file": "card.big-word-sun.m4a",
+      "hash": "d7bb61aa97c4b2ce",
+      "text": "the word sun"
     },
     "card.bridge": {
       "file": "card.bridge.m4a",
@@ -670,15 +955,95 @@
       "hash": "c962e0253fc8a5ac",
       "text": "Sixteen!"
     },
+    "count.17": {
+      "file": "count.17.m4a",
+      "hash": "2d7b7ddf1a02d188",
+      "text": "Seventeen!"
+    },
+    "count.18": {
+      "file": "count.18.m4a",
+      "hash": "001dce32db09674f",
+      "text": "Eighteen!"
+    },
+    "count.19": {
+      "file": "count.19.m4a",
+      "hash": "79a7413ba973498f",
+      "text": "Nineteen!"
+    },
     "count.2": {
       "file": "count.2.m4a",
       "hash": "f19a1b9db4c4e6d0",
       "text": "Two!"
     },
+    "count.20": {
+      "file": "count.20.m4a",
+      "hash": "477767580ae8fd62",
+      "text": "Twenty!"
+    },
+    "count.21": {
+      "file": "count.21.m4a",
+      "hash": "4d70a3cdbe6e81f5",
+      "text": "Twenty-one!"
+    },
+    "count.22": {
+      "file": "count.22.m4a",
+      "hash": "3541b3cb73ae878d",
+      "text": "Twenty-two!"
+    },
+    "count.23": {
+      "file": "count.23.m4a",
+      "hash": "5e34e6f63bead64b",
+      "text": "Twenty-three!"
+    },
+    "count.24": {
+      "file": "count.24.m4a",
+      "hash": "7ed51ff502b51912",
+      "text": "Twenty-four!"
+    },
+    "count.25": {
+      "file": "count.25.m4a",
+      "hash": "e7faeabb8652cebc",
+      "text": "Twenty-five!"
+    },
+    "count.26": {
+      "file": "count.26.m4a",
+      "hash": "cd7104e8d376e79f",
+      "text": "Twenty-six!"
+    },
+    "count.27": {
+      "file": "count.27.m4a",
+      "hash": "3204288ed56a542b",
+      "text": "Twenty-seven!"
+    },
+    "count.28": {
+      "file": "count.28.m4a",
+      "hash": "21abcefee4300c77",
+      "text": "Twenty-eight!"
+    },
+    "count.29": {
+      "file": "count.29.m4a",
+      "hash": "b1c6e1103de4e806",
+      "text": "Twenty-nine!"
+    },
     "count.3": {
       "file": "count.3.m4a",
       "hash": "f761629307f49936",
       "text": "Three!"
+    },
+    "count.30": {
+      "file": "count.30.m4a",
+      "hash": "38076a9b308a696a",
+      "text": "Thirty!"
+    },
+    "count.31": {
+      "file": "count.31.m4a",
+      "hash": "1103aeb1a46be73b",
+      "text": "Thirty-one!"
+    },
+    "count.32": {
+      "file": "count.32.m4a",
+      "hash": "0cdbf5a544c8cc0a",
+      "text": "Thirty-two!"
     },
     "count.4": {
       "file": "count.4.m4a",
@@ -709,6 +1074,51 @@
       "file": "count.9.m4a",
       "hash": "d0f042d01038ecfb",
       "text": "Nine!"
+    },
+    "crash.1": {
+      "file": "crash.1.m4a",
+      "hash": "3da3437e1469ed80",
+      "text": "Timber!"
+    },
+    "crash.2": {
+      "file": "crash.2.m4a",
+      "hash": "5df5b8927d2e985c",
+      "text": "Crash!"
+    },
+    "crash.3": {
+      "file": "crash.3.m4a",
+      "hash": "c63011f7a3d9d0ba",
+      "text": "Ka-boom!"
+    },
+    "crash.4": {
+      "file": "crash.4.m4a",
+      "hash": "e1e7085c9f17541d",
+      "text": "Down it goes!"
+    },
+    "explore.go": {
+      "file": "explore.go.m4a",
+      "hash": "a955f548f0cce439",
+      "text": "Let's go exploring!"
+    },
+    "explore.look": {
+      "file": "explore.look.m4a",
+      "hash": "e5024202405b8a5c",
+      "text": "Look at that!"
+    },
+    "explore.sticker": {
+      "file": "explore.sticker.m4a",
+      "hash": "9f8382a840305117",
+      "text": "You found a sticker!"
+    },
+    "explore.sticker-found": {
+      "file": "explore.sticker-found.m4a",
+      "hash": "9f8382a840305117",
+      "text": "You found a sticker!"
+    },
+    "explore.treasure": {
+      "file": "explore.treasure.m4a",
+      "hash": "e034cf443929e2b4",
+      "text": "Treasure!"
     },
     "hello": {
       "file": "hello.m4a",
@@ -760,6 +1170,11 @@
       "hash": "0d1b45316c2fdee2",
       "text": "Numbers"
     },
+    "pack.parts": {
+      "file": "pack.parts.m4a",
+      "hash": "63f041e67589fd97",
+      "text": "Parts"
+    },
     "pack.shapes": {
       "file": "pack.shapes.m4a",
       "hash": "1db91bfda5b3c13b",
@@ -784,6 +1199,156 @@
       "file": "smash-mode.m4a",
       "hash": "747f8c091238c433",
       "text": "Smash!"
+    },
+    "step.cheer.1": {
+      "file": "step.cheer.1.m4a",
+      "hash": "bc1ec7f73f23b732",
+      "text": "Great job!"
+    },
+    "step.cheer.2": {
+      "file": "step.cheer.2.m4a",
+      "hash": "2d5805cc1b9e680b",
+      "text": "Well done!"
+    },
+    "step.cheer.3": {
+      "file": "step.cheer.3.m4a",
+      "hash": "9ee7e815043d780f",
+      "text": "Nice building!"
+    },
+    "step.last": {
+      "file": "step.last.m4a",
+      "hash": "e0a89697178bf184",
+      "text": "Last step!"
+    },
+    "step.next": {
+      "file": "step.next.m4a",
+      "hash": "8303bf6a86e26627",
+      "text": "Next step!"
+    },
+    "sticker.balloon": {
+      "file": "sticker.balloon.m4a",
+      "hash": "ed63fbc99c4923a8",
+      "text": "balloon"
+    },
+    "sticker.butterfly": {
+      "file": "sticker.butterfly.m4a",
+      "hash": "558f1c0696843d7f",
+      "text": "butterfly"
+    },
+    "sticker.car": {
+      "file": "sticker.car.m4a",
+      "hash": "117af307d7e73489",
+      "text": "car"
+    },
+    "sticker.cloud": {
+      "file": "sticker.cloud.m4a",
+      "hash": "edfc356b63446032",
+      "text": "cloud"
+    },
+    "sticker.crown": {
+      "file": "sticker.crown.m4a",
+      "hash": "967192fb215de77e",
+      "text": "crown"
+    },
+    "sticker.cupcake": {
+      "file": "sticker.cupcake.m4a",
+      "hash": "7bf0150ed51fe1ee",
+      "text": "cupcake"
+    },
+    "sticker.dino": {
+      "file": "sticker.dino.m4a",
+      "hash": "10225852d58dcfd3",
+      "text": "dinosaur"
+    },
+    "sticker.flower": {
+      "file": "sticker.flower.m4a",
+      "hash": "82d75a20861579cd",
+      "text": "flower"
+    },
+    "sticker.gold-star": {
+      "file": "sticker.gold-star.m4a",
+      "hash": "7c9f43641f65f58e",
+      "text": "gold star"
+    },
+    "sticker.heart": {
+      "file": "sticker.heart.m4a",
+      "hash": "6c111e8aad84e609",
+      "text": "heart"
+    },
+    "sticker.ice-cream": {
+      "file": "sticker.ice-cream.m4a",
+      "hash": "ebcf7f7f7b8c5700",
+      "text": "ice cream"
+    },
+    "sticker.ladybug": {
+      "file": "sticker.ladybug.m4a",
+      "hash": "35f307123ea4c8cf",
+      "text": "ladybug"
+    },
+    "sticker.lightning": {
+      "file": "sticker.lightning.m4a",
+      "hash": "e44db9c07d6af52a",
+      "text": "lightning"
+    },
+    "sticker.magic-horse": {
+      "file": "sticker.magic-horse.m4a",
+      "hash": "ff7ed228a308eb1d",
+      "text": "magic horse"
+    },
+    "sticker.moon": {
+      "file": "sticker.moon.m4a",
+      "hash": "fa53bc5981373611",
+      "text": "moon"
+    },
+    "sticker.planet": {
+      "file": "sticker.planet.m4a",
+      "hash": "5c37f5f5ccb0023d",
+      "text": "planet"
+    },
+    "sticker.rainbow": {
+      "file": "sticker.rainbow.m4a",
+      "hash": "f8dc325cf59aa6ed",
+      "text": "rainbow"
+    },
+    "sticker.rainbow-fish": {
+      "file": "sticker.rainbow-fish.m4a",
+      "hash": "d66acefc02c66bbb",
+      "text": "rainbow fish"
+    },
+    "sticker.robot": {
+      "file": "sticker.robot.m4a",
+      "hash": "eccdfb633e9cd2db",
+      "text": "robot"
+    },
+    "sticker.rocket": {
+      "file": "sticker.rocket.m4a",
+      "hash": "b4489cb39f414879",
+      "text": "rocket"
+    },
+    "sticker.snail": {
+      "file": "sticker.snail.m4a",
+      "hash": "19ac2b39178d0d6c",
+      "text": "snail"
+    },
+    "sticker.star": {
+      "file": "sticker.star.m4a",
+      "hash": "0da78c982d860dfe",
+      "text": "star"
+    },
+    "sticker.sun": {
+      "file": "sticker.sun.m4a",
+      "hash": "b5cd6e6da8ec2b33",
+      "text": "sun"
+    },
+    "sticker.train": {
+      "file": "sticker.train.m4a",
+      "hash": "1a7f342ca1143941",
+      "text": "train"
+    },
+    "sticker.whale": {
+      "file": "sticker.whale.m4a",
+      "hash": "0a64f43989c37802",
+      "text": "whale"
     },
     "theme.beach": {
       "file": "theme.beach.m4a",
@@ -825,6 +1390,11 @@
       "hash": "75e0211a184a0331",
       "text": "Ant!"
     },
+    "word.apple": {
+      "file": "word.apple.m4a",
+      "hash": "8cddad4008882e9d",
+      "text": "Apple!"
+    },
     "word.baby": {
       "file": "word.baby.m4a",
       "hash": "caed65c3f511efad",
@@ -839,6 +1409,11 @@
       "file": "word.bat.m4a",
       "hash": "cfdd6202c05895c0",
       "text": "Bat!"
+    },
+    "word.beach": {
+      "file": "word.beach.m4a",
+      "hash": "26d84e59b812e017",
+      "text": "Beach!"
     },
     "word.bear": {
       "file": "word.bear.m4a",
@@ -860,10 +1435,20 @@
       "hash": "a3f88f904b028e04",
       "text": "Big!"
     },
+    "word.bike": {
+      "file": "word.bike.m4a",
+      "hash": "78154492e2cb16ca",
+      "text": "Bike!"
+    },
     "word.bird": {
       "file": "word.bird.m4a",
       "hash": "ab0ce4ec96777adc",
       "text": "Bird!"
+    },
+    "word.block": {
+      "file": "word.block.m4a",
+      "hash": "3cdac1a2fff4f5ee",
+      "text": "Block!"
     },
     "word.blue": {
       "file": "word.blue.m4a",
@@ -875,10 +1460,30 @@
       "hash": "9157d5404d8482b4",
       "text": "Boat!"
     },
+    "word.book": {
+      "file": "word.book.m4a",
+      "hash": "1fd04a00591d6afb",
+      "text": "Book!"
+    },
     "word.box": {
       "file": "word.box.m4a",
       "hash": "a019965589a0beb0",
       "text": "Box!"
+    },
+    "word.bread": {
+      "file": "word.bread.m4a",
+      "hash": "0187c66e0255a6c3",
+      "text": "Bread!"
+    },
+    "word.brick": {
+      "file": "word.brick.m4a",
+      "hash": "6b414de8324fa26c",
+      "text": "Brick!"
+    },
+    "word.build": {
+      "file": "word.build.m4a",
+      "hash": "e2195c94c584ebe0",
+      "text": "Build!"
     },
     "word.bus": {
       "file": "word.bus.m4a",
@@ -890,6 +1495,11 @@
       "hash": "a7d7cb8d02fab36f",
       "text": "Cake!"
     },
+    "word.camp": {
+      "file": "word.camp.m4a",
+      "hash": "ca344d1b171c3327",
+      "text": "Camp!"
+    },
     "word.car": {
       "file": "word.car.m4a",
       "hash": "df6707ce7beaa4a8",
@@ -899,6 +1509,16 @@
       "file": "word.cat.m4a",
       "hash": "ee765d491d54dea9",
       "text": "Cat!"
+    },
+    "word.chair": {
+      "file": "word.chair.m4a",
+      "hash": "86517d5957944219",
+      "text": "Chair!"
+    },
+    "word.cloud": {
+      "file": "word.cloud.m4a",
+      "hash": "856fde342a9b3ce7",
+      "text": "Cloud!"
     },
     "word.cow": {
       "file": "word.cow.m4a",
@@ -920,6 +1540,11 @@
       "hash": "9818b30c51ebc22d",
       "text": "Dog!"
     },
+    "word.door": {
+      "file": "word.door.m4a",
+      "hash": "5f558cfeecd18e08",
+      "text": "Door!"
+    },
     "word.duck": {
       "file": "word.duck.m4a",
       "hash": "73a91d6259c50c82",
@@ -929,6 +1554,11 @@
       "file": "word.egg.m4a",
       "hash": "e64617d07fb95008",
       "text": "Egg!"
+    },
+    "word.farm": {
+      "file": "word.farm.m4a",
+      "hash": "d4e29c3d419476d3",
+      "text": "Farm!"
     },
     "word.fish": {
       "file": "word.fish.m4a",
@@ -945,10 +1575,30 @@
       "hash": "45b4b256446980a0",
       "text": "Frog!"
     },
+    "word.gift": {
+      "file": "word.gift.m4a",
+      "hash": "576fea971d152dd2",
+      "text": "Gift!"
+    },
     "word.go": {
       "file": "word.go.m4a",
       "hash": "3c0f69daf4fef1c2",
       "text": "Go!"
+    },
+    "word.green": {
+      "file": "word.green.m4a",
+      "hash": "075c8377aee5684c",
+      "text": "Green!"
+    },
+    "word.hand": {
+      "file": "word.hand.m4a",
+      "hash": "ea8718c4b70f0f7e",
+      "text": "Hand!"
+    },
+    "word.happy": {
+      "file": "word.happy.m4a",
+      "hash": "ca9ace9029aeb50d",
+      "text": "Happy!"
     },
     "word.hat": {
       "file": "word.hat.m4a",
@@ -970,10 +1620,45 @@
       "hash": "b086782519c98053",
       "text": "Home!"
     },
+    "word.horse": {
+      "file": "word.horse.m4a",
+      "hash": "82fb40f6d94f829c",
+      "text": "Horse!"
+    },
+    "word.house": {
+      "file": "word.house.m4a",
+      "hash": "07c3110cc1b8c871",
+      "text": "House!"
+    },
     "word.hug": {
       "file": "word.hug.m4a",
       "hash": "64522b5694308d49",
       "text": "Hug!"
+    },
+    "word.jump": {
+      "file": "word.jump.m4a",
+      "hash": "ae9285d80806b369",
+      "text": "Jump!"
+    },
+    "word.kite": {
+      "file": "word.kite.m4a",
+      "hash": "abd8b6582f0180e7",
+      "text": "Kite!"
+    },
+    "word.lamp": {
+      "file": "word.lamp.m4a",
+      "hash": "f377a00be445d1ce",
+      "text": "Lamp!"
+    },
+    "word.lemon": {
+      "file": "word.lemon.m4a",
+      "hash": "f6e133cd52e5410d",
+      "text": "Lemon!"
+    },
+    "word.lion": {
+      "file": "word.lion.m4a",
+      "hash": "f682d9177fe884c3",
+      "text": "Lion!"
     },
     "word.love": {
       "file": "word.love.m4a",
@@ -985,6 +1670,11 @@
       "hash": "079f69b9e860159d",
       "text": "Map!"
     },
+    "word.milk": {
+      "file": "word.milk.m4a",
+      "hash": "57b4d67471dd0c69",
+      "text": "Milk!"
+    },
     "word.mom": {
       "file": "word.mom.m4a",
       "hash": "3a324952160eee18",
@@ -994,6 +1684,21 @@
       "file": "word.moon.m4a",
       "hash": "f04eb1c571d79738",
       "text": "Moon!"
+    },
+    "word.mouse": {
+      "file": "word.mouse.m4a",
+      "hash": "c9ab1d8fae601b5d",
+      "text": "Mouse!"
+    },
+    "word.music": {
+      "file": "word.music.m4a",
+      "hash": "b8613ea9d09c0604",
+      "text": "Music!"
+    },
+    "word.nest": {
+      "file": "word.nest.m4a",
+      "hash": "ab5368bd74aca3fe",
+      "text": "Nest!"
     },
     "word.no": {
       "file": "word.no.m4a",
@@ -1005,20 +1710,100 @@
       "hash": "ed32ffd56aa17c8c",
       "text": "Owl!"
     },
+    "word.park": {
+      "file": "word.park.m4a",
+      "hash": "199a41ff33946957",
+      "text": "Park!"
+    },
     "word.pig": {
       "file": "word.pig.m4a",
       "hash": "87e86e0876f76fa4",
       "text": "Pig!"
+    },
+    "word.pizza": {
+      "file": "word.pizza.m4a",
+      "hash": "06141b30bb683114",
+      "text": "Pizza!"
+    },
+    "word.plane": {
+      "file": "word.plane.m4a",
+      "hash": "b817cdf4b84171d4",
+      "text": "Plane!"
+    },
+    "word.plant": {
+      "file": "word.plant.m4a",
+      "hash": "a536cb964cdd1ffe",
+      "text": "Plant!"
+    },
+    "word.play": {
+      "file": "word.play.m4a",
+      "hash": "1ef3d071088bdf57",
+      "text": "Play!"
+    },
+    "word.rain": {
+      "file": "word.rain.m4a",
+      "hash": "2fa4921cb0987d8e",
+      "text": "Rain!"
     },
     "word.red": {
       "file": "word.red.m4a",
       "hash": "236953a468911d7b",
       "text": "Red!"
     },
+    "word.robot": {
+      "file": "word.robot.m4a",
+      "hash": "8b14ccd65bfae6ab",
+      "text": "Robot!"
+    },
+    "word.rock": {
+      "file": "word.rock.m4a",
+      "hash": "31d644ebc03b907a",
+      "text": "Rock!"
+    },
+    "word.roof": {
+      "file": "word.roof.m4a",
+      "hash": "89a0145a26057e92",
+      "text": "Roof!"
+    },
     "word.run": {
       "file": "word.run.m4a",
       "hash": "173b10a85d8aace7",
       "text": "Run!"
+    },
+    "word.sand": {
+      "file": "word.sand.m4a",
+      "hash": "4d8f46a2fe57186b",
+      "text": "Sand!"
+    },
+    "word.sheep": {
+      "file": "word.sheep.m4a",
+      "hash": "7306d18f37f241df",
+      "text": "Sheep!"
+    },
+    "word.ship": {
+      "file": "word.ship.m4a",
+      "hash": "47dd1ae2fde0f737",
+      "text": "Ship!"
+    },
+    "word.smile": {
+      "file": "word.smile.m4a",
+      "hash": "32f102263416f2dc",
+      "text": "Smile!"
+    },
+    "word.snake": {
+      "file": "word.snake.m4a",
+      "hash": "3e56ddffd07f93c5",
+      "text": "Snake!"
+    },
+    "word.snow": {
+      "file": "word.snow.m4a",
+      "hash": "329fd8ae1740618e",
+      "text": "Snow!"
+    },
+    "word.sock": {
+      "file": "word.sock.m4a",
+      "hash": "2012c6617d8bd8b4",
+      "text": "Sock!"
     },
     "word.star": {
       "file": "word.star.m4a",
@@ -1030,25 +1815,70 @@
       "hash": "16fd1bca7569489d",
       "text": "Sun!"
     },
+    "word.table": {
+      "file": "word.table.m4a",
+      "hash": "ed33d31d74e390f4",
+      "text": "Table!"
+    },
+    "word.tiger": {
+      "file": "word.tiger.m4a",
+      "hash": "7da026b4e394b435",
+      "text": "Tiger!"
+    },
     "word.top": {
       "file": "word.top.m4a",
       "hash": "a29571434a8703fd",
       "text": "Top!"
+    },
+    "word.tower": {
+      "file": "word.tower.m4a",
+      "hash": "a30370c2500d4021",
+      "text": "Tower!"
+    },
+    "word.train": {
+      "file": "word.train.m4a",
+      "hash": "27238f5549087926",
+      "text": "Train!"
     },
     "word.tree": {
       "file": "word.tree.m4a",
       "hash": "4727739bc6bd3fca",
       "text": "Tree!"
     },
+    "word.truck": {
+      "file": "word.truck.m4a",
+      "hash": "02089fc42fa655a9",
+      "text": "Truck!"
+    },
     "word.up": {
       "file": "word.up.m4a",
       "hash": "127c9be7ee22a200",
       "text": "Up!"
     },
+    "word.water": {
+      "file": "word.water.m4a",
+      "hash": "bec78ec95dc33eea",
+      "text": "Water!"
+    },
+    "word.wheel": {
+      "file": "word.wheel.m4a",
+      "hash": "42ed90180a31db1a",
+      "text": "Wheel!"
+    },
+    "word.wind": {
+      "file": "word.wind.m4a",
+      "hash": "d7da53aaf164944e",
+      "text": "Wind!"
+    },
     "word.yes": {
       "file": "word.yes.m4a",
       "hash": "98a1f2b9c08b6bcc",
       "text": "Yes!"
+    },
+    "word.zebra": {
+      "file": "word.zebra.m4a",
+      "hash": "4e41b648be2c086d",
+      "text": "Zebra!"
     }
   },
   "encoding": "aac-mono-32k-v2",

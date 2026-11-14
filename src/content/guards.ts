@@ -2,7 +2,7 @@
  * Light runtime shape guards. Full schema validation runs at build time
  * (npm run validate); these only keep a malformed file from crashing play.
  */
-import type { CardJson, PackJson, ThemeJson } from './raw-types';
+import type { BuildJson, CardJson, PackJson, ThemeJson } from './raw-types';
 
 const isObject = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v);
 const isString = (v: unknown): v is string => typeof v === 'string' && v.length > 0;
@@ -20,6 +20,14 @@ export function isThemeJson(v: unknown): v is ThemeJson {
 
 export function isCardJson(v: unknown): v is CardJson {
   return isObject(v) && isString(v.id) && isString(v.name) && Array.isArray(v.blocks) && v.blocks.length > 0;
+}
+
+export function isBuildJson(v: unknown): v is BuildJson {
+  return (
+    isObject(v) && isString(v.id) && isString(v.name) && [1, 2, 3].includes(v.difficulty as number) &&
+    Array.isArray(v.steps) && v.steps.length > 0 &&
+    v.steps.every((s) => isObject(s) && Array.isArray(s.blocks) && s.blocks.length > 0)
+  );
 }
 
 export function isBlockLike(v: unknown): boolean {

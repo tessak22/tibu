@@ -2,7 +2,7 @@ import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { cardLines, englishName, mergeLines, packLines, scanContent, themeLines, wordLines } from '../../../scripts/voice/sync';
+import { buildLines, cardLines, englishName, learningLines, mergeLines, packLines, scanContent, themeLines, wordLines } from '../../../scripts/voice/sync';
 
 describe('voice sync', () => {
   it('reads English names from strings or maps', () => {
@@ -40,13 +40,36 @@ describe('voice sync', () => {
 
   it('scans content folders and tolerates missing ones', () => {
     const root = mkdtempSync(join(tmpdir(), 'tibu-voice-'));
-    expect(scanContent(root)).toEqual([]);
+    const learning = learningLines();
+    expect(scanContent(root)).toEqual(learning);
     mkdirSync(join(root, 'packs', 'animals'), { recursive: true });
     writeFileSync(join(root, 'packs', 'animals', 'pack.json'), JSON.stringify({ id: 'animals', name: 'Animals', blocks: [{ id: 'cow', name: 'cow' }] }));
     mkdirSync(join(root, 'cards'));
     writeFileSync(join(root, 'cards', 'tower.json'), JSON.stringify({ id: 'tower', name: 'tower' }));
     writeFileSync(join(root, 'cards', 'broken.json'), '{nope');
+    mkdirSync(join(root, 'builds'));
+    writeFileSync(join(root, 'builds', 'igloo.json'), JSON.stringify({ id: 'igloo', name: 'igloo' }));
     const ids = scanContent(root).map((l) => l.id);
-    expect(ids).toEqual(['pack.animals', 'block.animals.cow', 'card.tower']);
+    expect(ids.slice(0, ids.length - learning.length)).toEqual([
+      'pack.animals', 'block.animals.cow', 'card.tower', 'build.igloo', 'built.igloo',
+    ]);
+  });
+
+  it('derives blueprint lines with a friendly article', () => {
+    expect(buildLines({ id: 'house', name: 'house' }, 'house')).toEqual([
+      { id: 'build.house', en: 'house' },
+      { id: 'built.house', en: 'You built a house!' },
+    ]);
+    expect(buildLines({ name: 'igloo' }, 'igloo')[1]?.en).toBe('You built an igloo!');
+    expect(buildLines(null, 'x')).toEqual([]);
+  });
+
+  it('includes the learning lines: big words, counts to 32, cheers, crashes and explore', () => {
+    const ids = learningLines().map((l) => l.id);
+    for (const id of ['word.truck', 'word.happy', 'count.17', 'count.32', 'step.next', 'crash.1', 'explore.sticker']) {
+      expect(ids).toContain(id);
+    }
+    expect(learningLines().find((l) => l.id === 'count.21')?.en).toBe('Twenty-one!');
+    expect(new Set(ids).size).toBe(ids.length);
   });
 });

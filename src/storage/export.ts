@@ -3,8 +3,8 @@ import { validateSavedWorld } from '../world/index';
 import { cleanName } from './repository';
 
 export const EXPORT_EXTENSION = '.tibu.json';
-/** Generous upper bound: a full 24x24x16 world is well under this. */
-export const MAX_IMPORT_BYTES = 5 * 1024 * 1024;
+/** Generous upper bound: a packed 96x32x96 adventure world is well under this. */
+export const MAX_IMPORT_BYTES = 24 * 1024 * 1024;
 
 export type ImportResult =
   | { readonly ok: true; readonly name: string; readonly world: SavedWorld }

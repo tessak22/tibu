@@ -1,0 +1,69 @@
+{
+  "$schema": "../schemas/build.schema.json",
+  "id": "house",
+  "name": "house",
+  "order": 5,
+  "difficulty": 2,
+  "steps": [
+    {
+      "blocks": [
+        {"x": 0, "y": 0, "z": 0, "block": "building:brick"},
+        {"x": 1, "y": 0, "z": 0, "block": "building:brick"},
+        {"x": 2, "y": 0, "z": 0, "block": "building:brick"},
+        {"x": 3, "y": 0, "z": 0, "block": "building:brick"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 0, "y": 0, "z": 1, "block": "building:brick"},
+        {"x": 3, "y": 0, "z": 1, "block": "building:brick"},
+        {"x": 0, "y": 0, "z": 2, "block": "building:brick"},
+        {"x": 1, "y": 0, "z": 2, "block": "building:door"},
+        {"x": 2, "y": 0, "z": 2, "block": "building:brick"},
+        {"x": 3, "y": 0, "z": 2, "block": "building:brick"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 0, "y": 1, "z": 0, "block": "building:brick"},
+        {"x": 1, "y": 1, "z": 0, "block": "building:brick"},
+        {"x": 2, "y": 1, "z": 0, "block": "building:brick"},
+        {"x": 3, "y": 1, "z": 0, "block": "building:brick"},
+        {"x": 0, "y": 1, "z": 1, "block": "building:window"},
+        {"x": 3, "y": 1, "z": 1, "block": "building:window"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 0, "y": 1, "z": 2, "block": "building:brick"},
+        {"x": 1, "y": 1, "z": 2, "block": "building:window"},
+        {"x": 2, "y": 1, "z": 2, "block": "building:window"},
+        {"x": 3, "y": 1, "z": 2, "block": "building:brick"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 0, "y": 2, "z": 0, "block": "parts:roof-red", "rot": 2},
+        {"x": 1, "y": 2, "z": 0, "block": "parts:roof-red", "rot": 2},
+        {"x": 2, "y": 2, "z": 0, "block": "parts:roof-red", "rot": 2},
+        {"x": 3, "y": 2, "z": 0, "block": "parts:roof-red", "rot": 2}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 0, "y": 2, "z": 1, "block": "building:roof"},
+        {"x": 1, "y": 2, "z": 1, "block": "building:roof"},
+        {"x": 2, "y": 2, "z": 1, "block": "building:roof"},
+        {"x": 3, "y": 2, "z": 1, "block": "building:roof"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 0, "y": 2, "z": 2, "block": "parts:roof-red"},
+        {"x": 1, "y": 2, "z": 2, "block": "parts:roof-red"},
+        {"x": 2, "y": 2, "z": 2, "block": "parts:roof-red"},
+        {"x": 3, "y": 2, "z": 2, "block": "parts:roof-red"}
+      ]
+    }
+  ]
+}

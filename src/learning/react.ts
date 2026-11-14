@@ -21,6 +21,8 @@ export interface PlacementContext {
   readonly words: ReadonlySet<string>;
   /** Active card that has not been matched yet. */
   readonly card: BuildCard | null;
+  /** Highest number counted aloud (16 little mode, 32 big mode). */
+  readonly maxCount?: number;
 }
 
 /** Every learning reaction to one placement, highest priority first (pure). */
@@ -34,7 +36,7 @@ export function reactionsFor(p: PlacementContext): Reaction[] {
     out.push({ kind: 'card', priority: PRIORITY.card, card: p.card });
   }
   if (p.learning.counting) {
-    const n = countToSay(p.get, p.cell);
+    const n = countToSay(p.get, p.cell, p.maxCount);
     if (n !== null) out.push({ kind: 'counting', priority: PRIORITY.counting, n });
   }
   if (p.learning.naming && shouldNameBlock(p.info)) {

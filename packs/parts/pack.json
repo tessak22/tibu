@@ -1,0 +1,377 @@
+{
+  "$schema": "../../schemas/pack.schema.json",
+  "id": "parts",
+  "name": "Parts",
+  "order": 9,
+  "description": "Chunky toy parts for big builders: wheels, roofs, half blocks, plates, cones, arches, glass, pillars, a steering wheel and a flag.",
+  "mode": "big",
+  "icon": {
+    "block": "wheel-red"
+  },
+  "tileColor": "#e3f1ff",
+  "blocks": [
+    {
+      "id": "wheel-red",
+      "name": "red wheel",
+      "shape": "wheel",
+      "art": {
+        "color": "#2f2d3a",
+        "mark": "circle",
+        "markColor": "#ff4b3e",
+        "markSize": 0.62
+      },
+      "faces": {
+        "top": {
+          "pattern": "stripes",
+          "color": "#2f2d3a",
+          "accent": "#4a4757"
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "wheel-blue",
+      "name": "blue wheel",
+      "shape": "wheel",
+      "art": {
+        "color": "#2f2d3a",
+        "mark": "circle",
+        "markColor": "#2f8cff",
+        "markSize": 0.62
+      },
+      "faces": {
+        "top": {
+          "pattern": "stripes",
+          "color": "#2f2d3a",
+          "accent": "#4a4757"
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "wheel-yellow",
+      "name": "yellow wheel",
+      "shape": "wheel",
+      "art": {
+        "color": "#2f2d3a",
+        "mark": "circle",
+        "markColor": "#ffd23f",
+        "markSize": 0.62
+      },
+      "faces": {
+        "top": {
+          "pattern": "stripes",
+          "color": "#2f2d3a",
+          "accent": "#4a4757"
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "roof-red",
+      "name": "red roof",
+      "shape": "slope",
+      "art": {
+        "pattern": "roof",
+        "color": "#ff5a4e",
+        "accent": "#c9362d"
+      },
+      "faces": {
+        "side": {
+          "color": "#ff5a4e"
+        },
+        "bottom": {
+          "color": "#c9362d"
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "roof-blue",
+      "name": "blue roof",
+      "shape": "slope",
+      "art": {
+        "pattern": "roof",
+        "color": "#3d8bff",
+        "accent": "#245fc0"
+      },
+      "faces": {
+        "side": {
+          "color": "#3d8bff"
+        },
+        "bottom": {
+          "color": "#245fc0"
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "roof-green",
+      "name": "green roof",
+      "shape": "slope",
+      "art": {
+        "pattern": "roof",
+        "color": "#3cc46b",
+        "accent": "#23914a"
+      },
+      "faces": {
+        "side": {
+          "color": "#3cc46b"
+        },
+        "bottom": {
+          "color": "#23914a"
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "slab-yellow",
+      "name": "yellow half block",
+      "shape": "slab",
+      "art": {
+        "color": "#ffd23f"
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "slab-white",
+      "name": "white half block",
+      "shape": "slab",
+      "art": {
+        "color": "#f6f3ee"
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "slab-orange",
+      "name": "orange half block",
+      "shape": "slab",
+      "art": {
+        "color": "#ff9f2e"
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "plate-green",
+      "name": "green plate",
+      "shape": "plate",
+      "art": {
+        "color": "#4fd17a"
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "plate-blue",
+      "name": "blue plate",
+      "shape": "plate",
+      "art": {
+        "color": "#4aa8ff"
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "plate-pink",
+      "name": "pink plate",
+      "shape": "plate",
+      "art": {
+        "color": "#ff7eb6"
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "cone-orange",
+      "name": "orange cone",
+      "shape": "cone",
+      "art": {
+        "pattern": "stripes",
+        "color": "#ff8a2a",
+        "accent": "#fff3e0"
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "cone-red",
+      "name": "red cone",
+      "shape": "cone",
+      "art": {
+        "color": "#ff4b3e"
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "arch-red",
+      "name": "red arch",
+      "shape": "arch",
+      "art": {
+        "color": "#ff5a4e"
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "arch-stone",
+      "name": "stone arch",
+      "shape": "arch",
+      "art": {
+        "pattern": "stone",
+        "color": "#c9c4d6",
+        "accent": "#a7a1b8"
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "pane-blue",
+      "name": "blue glass",
+      "shape": "pane",
+      "art": {
+        "pattern": "glass",
+        "color": "#7cc8ff",
+        "accent": "#ffffff"
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "pane-green",
+      "name": "green glass",
+      "shape": "pane",
+      "art": {
+        "pattern": "glass",
+        "color": "#7fe0a4",
+        "accent": "#ffffff"
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "pane-pink",
+      "name": "pink glass",
+      "shape": "pane",
+      "art": {
+        "pattern": "glass",
+        "color": "#ff9fd0",
+        "accent": "#ffffff"
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "pane-yellow",
+      "name": "yellow glass",
+      "shape": "pane",
+      "art": {
+        "pattern": "glass",
+        "color": "#ffe57a",
+        "accent": "#ffffff"
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "pillar-white",
+      "name": "white pillar",
+      "shape": "cylinder",
+      "art": {
+        "color": "#f6f3ee"
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "pillar-red",
+      "name": "red pillar",
+      "shape": "cylinder",
+      "art": {
+        "color": "#ff5a4e"
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "pillar-blue",
+      "name": "blue pillar",
+      "shape": "cylinder",
+      "art": {
+        "color": "#3d8bff"
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "steering",
+      "name": "steering wheel",
+      "shape": "cube",
+      "art": {
+        "color": "#4a4757",
+        "mark": "ring",
+        "markColor": "#ffd23f",
+        "markSize": 0.75
+      },
+      "faces": {
+        "top": {
+          "color": "#4a4757",
+          "mark": "circle",
+          "markColor": "#ff4b3e",
+          "markSize": 0.4
+        }
+      },
+      "behaviors": [
+        "speak",
+        "bounce"
+      ]
+    },
+    {
+      "id": "flag",
+      "name": "flag",
+      "shape": "pane",
+      "art": {
+        "color": "#ff4d6d",
+        "mark": "star",
+        "markColor": "#fff6c2",
+        "markSize": 0.6
+      },
+      "behaviors": [
+        "speak",
+        "bounce"
+      ]
+    }
+  ]
+}

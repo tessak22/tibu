@@ -116,10 +116,11 @@ Here is a complete, valid example:
 | `id` | yes | Matches the folder name |
 | `name` | yes | Spoken when the pack is chosen |
 | `blocks` | yes | 1 to 64 blocks |
-| `order` | no | Position in the pack picker, lower first. Shipped packs use 1 to 8 |
+| `order` | no | Position in the pack picker, lower first. Shipped packs use 1 to 9 |
 | `icon` | no | `{ "block": "<block id>" }`, or any face art (see below) |
 | `tileColor` | no | Background color of the pack picker tile |
 | `description` | no | For humans reading the file. Not shown to children |
+| `mode` | no | `"big"` offers the pack only in big-kid mode (like the shipped `parts` pack), `"little"` only in toddler mode. Missing means both |
 
 Each block has:
 
@@ -132,6 +133,24 @@ Each block has:
 | `sound` | no | Played on tap. Needs the `sound` behavior |
 | `behaviors` | no | Any of `speak`, `sound`, `bounce`, `glow` |
 | `glowColor` | no | Light color. Needs the `glow` behavior |
+| `shape` | no | Geometry: `cube` (default), `slope`, `slab`, `plate`, `wheel`, `cone`, `arch`, `pane` or `cylinder`. Non-cube blocks are "parts" and turn with the camera when placed |
+
+#### Parts (shaped blocks)
+
+The `parts` pack (big-kid mode) shows how shapes use face art. All shapes sit in one
+cell. At rotation 0:
+
+| Shape | Looks like | Faces used |
+| --- | --- | --- |
+| `slope` | a roof wedge, high along the north side, sloping down to the south | `top` is the sloped face, `side` the triangles and back |
+| `slab` / `plate` | a half-height / third-height block | as a cube |
+| `wheel` | a disc with its axle along x, rolling along z | `side` is the hub (put a `circle` mark on it), `top` is the tyre |
+| `cone`, `cylinder` | upright, centered | `side` wraps around, `top` is the cylinder lid |
+| `arch` | two legs with an opening you can look through along z | as a cube |
+| `pane` | a thin upright panel (glass, a flag) | as a cube |
+
+Tray icons draw the real silhouette, so a child sees a wheel, not a cube. A
+part's spoken `name` should say what it is, e.g. `"red wheel"` or `"blue glass"`.
 
 ### 2. Choose the art
 
@@ -299,6 +318,53 @@ up). Matching ignores where the build is in the world and allows 90 degree turns
 - `name` is spoken when the card is shown.
 - Keep cards small enough for a four-year-old: 2 to 10 blocks is a good range.
 
+### Big-kid mode cards
+
+Add `"mode": "big"` to a card to show it only in big-kid mode (cards without a
+`mode` are toddler cards). Big cards can be bigger and trickier: patterns of
+alternating colours, a staircase, a two-floor house frame, a word made of letter
+blocks. They use the same matching rules. Shipped examples are the `cards/big-*.json` files.
+
+## Add a step-by-step build
+
+Big-kid mode has step-by-step builds, like toy-brick instructions. The app shows
+one step at a time as see-through "ghost" blocks; when a matching block fills a
+ghost it sparkles, a finished step gets a cheer, and the finished build gets
+confetti and "You built a house!". Ignoring the ghosts is always fine.
+
+Builds are single files: `builds/<id>.json`, where `id` matches the file name.
+
+```json
+{
+  "$schema": "../schemas/build.schema.json",
+  "id": "doghouse",
+  "name": "dog house",
+  "order": 20,
+  "difficulty": 1,
+  "steps": [
+    { "blocks": [{ "x": 0, "y": 0, "z": 0, "block": "building:planks" }, { "x": 1, "y": 0, "z": 0, "block": "building:planks" }] },
+    { "blocks": [{ "x": 0, "y": 1, "z": 0, "block": "parts:roof-red", "rot": 2 }, { "x": 1, "y": 1, "z": 0, "block": "parts:roof-red", "rot": 2 }] }
+  ]
+}
+```
+
+- Coordinates are relative to the build's corner (0 to 7 on each axis, y up). y=0
+  sits on the ground where the app places the build.
+- `difficulty`: `1` = easy (any block from the same pack fills a ghost, so a little
+  builder always finishes), `2` and `3` need the exact block. A wrong block simply
+  stays as a normal block; there is never a failure sound.
+- `rot` (0 to 3) turns a part by quarter turns, e.g. the two sides of a roof are
+  `0` (sloping down to the south) and `2` (sloping down to the north).
+- Keep steps small and in the order a child builds: bottom up, wheels first.
+  1 to 4 blocks per step for difficulty 1, up to about 8 for difficulty 3.
+- Use parts (wheels, roofs, glass, cones) where they make it look like the real thing.
+
+`npm run validate` checks that every block key exists, no cell is used twice, no
+step is empty, every block rests on the ground or on (or beside) a block from an
+earlier or the same step, and that the build fits in 8x8x8 with at most 80 blocks.
+`npm run voice -- --sync-only` adds the spoken name (`build.<id>`) and the
+"You built a ...!" line (`built.<id>`).
+
 ## Add spoken lines for new blocks
 
 Every spoken line lives in [`voice/LINES.json`](voice/LINES.json):
@@ -314,8 +380,9 @@ Every spoken line lives in [`voice/LINES.json`](voice/LINES.json):
 ```
 
 Line ids follow fixed patterns: `block.<pack>.<block>`, `pack.<pack>`,
-`theme.<theme>`, `card.<card>` and `word.<word>`, plus app phrases such as
-`hello`, `celebrate.1` and `count.3`. Clips live at `voice/<lang>/<lineId>.m4a`.
+`theme.<theme>`, `card.<card>`, `build.<build>`, `built.<build>` and `word.<word>`,
+plus app phrases such as `hello`, `celebrate.1`, `count.3` (up to `count.32`),
+`step.next`, `crash.1`, `explore.sticker` and `sticker.<id>`. Clips live at `voice/<lang>/<lineId>.m4a`.
 
 After adding a pack, theme or card:
 
@@ -412,15 +479,18 @@ translations are what Tibu says when a child spells that English word.
 
 `npm run validate` (also part of `npm run build` and of CI) checks:
 
-- **Schemas.** Each `pack.json`, `theme.json` and card file is checked against
+- **Schemas.** Each `pack.json`, `theme.json`, card and build file is checked against
   [`schemas/pack.schema.json`](schemas/pack.schema.json),
-  [`schemas/theme.schema.json`](schemas/theme.schema.json) and
-  [`schemas/card.schema.json`](schemas/card.schema.json). Unknown fields are errors,
+  [`schemas/theme.schema.json`](schemas/theme.schema.json),
+  [`schemas/card.schema.json`](schemas/card.schema.json) and
+  [`schemas/build.schema.json`](schemas/build.schema.json). Unknown fields are errors,
   which catches typos.
 - **Ids.** A pack or theme id must match its folder name and a card id its file
   name. Ids and block ids within a pack must be unique.
 - **References.** Every `<pack>:<block>` key in themes and cards must exist, and a
-  pack's `icon.block` must be one of its blocks.
+  pack's `icon.block` must be one of its blocks. Builds are checked the same way.
+- **Builds.** No duplicate cells, no empty steps, no floating blocks, at most
+  8x8x8 and 80 blocks.
 - **Files.** Every `image` and sound `file` must exist and stay inside its own pack
   or theme folder.
 - **Behaviors.** The `sound` behavior needs a `sound`, and `glowColor` needs the

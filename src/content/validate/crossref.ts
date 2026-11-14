@@ -3,6 +3,7 @@
  * already schema-valid data plus a file-existence callback.
  */
 import { WORLD_SIZE } from '../../core/types';
+import { blueprintKeys, blueprintProblems } from '../builds';
 import { boxVolume, expandCells, isBox } from '../cells';
 import { MAX_BOX_CELLS, SCENE_MAX_RADIUS } from '../constants';
 import type { ArtSpec, BlockJson, PackJson, SceneEntry, ThemeJson } from '../raw-types';
@@ -118,6 +119,12 @@ export function checkCrossRefs(bundle: TypedBundle, exists: FileExists): Validat
   for (const card of bundle.cards) {
     checkKeys(report, card.file, card.data.blocks.map((e) => e.block), known, 'card');
     checkBoxes(report, card.file, card.data.blocks);
+  }
+  const builds = bundle.builds ?? [];
+  checkIds(report, builds, 'build');
+  for (const build of builds) {
+    checkKeys(report, build.file, blueprintKeys(build.data), known, 'build');
+    for (const problem of blueprintProblems(build.data)) report(build.file, problem);
   }
   return issues;
 }

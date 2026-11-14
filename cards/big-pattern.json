@@ -1,0 +1,45 @@
+{
+  "$schema": "../schemas/card.schema.json",
+  "id": "big-pattern",
+  "name": "red and blue pattern",
+  "order": 101,
+  "mode": "big",
+  "blocks": [
+    {
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "block": "colors:red"
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "z": 0,
+      "block": "colors:blue"
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "z": 0,
+      "block": "colors:red"
+    },
+    {
+      "x": 3,
+      "y": 0,
+      "z": 0,
+      "block": "colors:blue"
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "z": 0,
+      "block": "colors:red"
+    },
+    {
+      "x": 5,
+      "y": 0,
+      "z": 0,
+      "block": "colors:blue"
+    }
+  ]
+}

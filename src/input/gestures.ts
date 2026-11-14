@@ -15,7 +15,9 @@ export type GestureEvent =
   | { readonly type: 'tap'; readonly x: number; readonly y: number }
   | { readonly type: 'orbit'; readonly dx: number; readonly dy: number }
   /** scale > 1 means fingers moved apart (zoom in). */
-  | { readonly type: 'pinch'; readonly scale: number };
+  | { readonly type: 'pinch'; readonly scale: number }
+  /** Two-finger drag: movement of the finger centroid in CSS px. */
+  | { readonly type: 'pan'; readonly dx: number; readonly dy: number };
 
 type Phase = 'idle' | 'pending' | 'drag' | 'multi';
 
@@ -28,7 +30,8 @@ interface Point {
  * Turns raw pointer samples into high level gestures:
  * - a single touch that stays within the threshold and lifts is a tap;
  * - moving beyond the threshold turns it into an orbit drag (never a tap);
- * - any second finger makes the whole gesture a pinch (never a tap, even after lifting).
+ * - any second finger makes the whole gesture a pinch (never a tap, even after lifting); moving
+ *   both fingers together also pans (the view decides whether panning is allowed).
  * Rejected pointers (palm, edge while another finger is down) are ignored for their lifetime.
  */
 export class GestureTracker {
@@ -38,6 +41,7 @@ export class GestureTracker {
   private start: Point = { x: 0, y: 0 };
   private last: Point = { x: 0, y: 0 };
   private pinchDistance = 0;
+  private centroid: Point = { x: 0, y: 0 };
   private threshold = DRAG_THRESHOLD_PX;
 
   constructor(private readonly viewport: () => Viewport) {}
@@ -61,7 +65,7 @@ export class GestureTracker {
     }
     const wasPending = this.phase === 'pending';
     this.phase = 'multi';
-    this.pinchDistance = this.currentPinchDistance();
+    this.resetMulti();
     return wasPending ? [{ type: 'pressCancel' }] : [];
   }
 
@@ -88,7 +92,7 @@ export class GestureTracker {
     if (this.ignored.delete(p.id)) return [];
     if (!this.points.delete(p.id)) return [];
     if (this.points.size > 0) {
-      if (this.phase === 'multi') this.pinchDistance = this.currentPinchDistance();
+      if (this.phase === 'multi') this.resetMulti();
       return [];
     }
     const wasPending = this.phase === 'pending';
@@ -111,6 +115,16 @@ export class GestureTracker {
     this.phase = 'idle';
   }
 
+  private resetMulti(): void {
+    this.pinchDistance = this.currentPinchDistance();
+    this.centroid = this.currentCentroid();
+  }
+
+  private currentCentroid(): Point {
+    const [a, b] = [...this.points.values()];
+    return a && b ? { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 } : { x: 0, y: 0 };
+  }
+
   private currentPinchDistance(): number {
     const [a, b] = [...this.points.values()];
     return a && b ? Math.hypot(a.x - b.x, a.y - b.y) : 0;
@@ -121,7 +135,13 @@ export class GestureTracker {
     const distance = this.currentPinchDistance();
     const previous = this.pinchDistance;
     this.pinchDistance = distance;
-    if (previous < 1 || distance < 1) return [];
-    return [{ type: 'pinch', scale: distance / previous }];
+    const center = this.currentCentroid();
+    const dx = center.x - this.centroid.x;
+    const dy = center.y - this.centroid.y;
+    this.centroid = center;
+    const events: GestureEvent[] = [];
+    if (previous >= 1 && distance >= 1) events.push({ type: 'pinch', scale: distance / previous });
+    if (dx !== 0 || dy !== 0) events.push({ type: 'pan', dx, dy });
+    return events;
   }
 }

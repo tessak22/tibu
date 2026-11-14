@@ -1,0 +1,63 @@
+{
+  "$schema": "../schemas/build.schema.json",
+  "id": "truck",
+  "name": "truck",
+  "order": 6,
+  "difficulty": 2,
+  "steps": [
+    {
+      "blocks": [
+        {"x": 0, "y": 0, "z": 0, "block": "parts:wheel-blue"},
+        {"x": 1, "y": 0, "z": 0, "block": "parts:wheel-blue"},
+        {"x": 0, "y": 0, "z": 3, "block": "parts:wheel-blue"},
+        {"x": 1, "y": 0, "z": 3, "block": "parts:wheel-blue"},
+        {"x": 0, "y": 0, "z": 4, "block": "parts:wheel-blue"},
+        {"x": 1, "y": 0, "z": 4, "block": "parts:wheel-blue"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 0, "y": 1, "z": 0, "block": "colors:red"},
+        {"x": 1, "y": 1, "z": 0, "block": "colors:red"},
+        {"x": 0, "y": 1, "z": 1, "block": "colors:red"},
+        {"x": 1, "y": 1, "z": 1, "block": "colors:red"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 0, "y": 1, "z": 2, "block": "colors:blue"},
+        {"x": 1, "y": 1, "z": 2, "block": "colors:blue"},
+        {"x": 0, "y": 1, "z": 3, "block": "colors:blue"},
+        {"x": 1, "y": 1, "z": 3, "block": "colors:blue"},
+        {"x": 0, "y": 1, "z": 4, "block": "colors:blue"},
+        {"x": 1, "y": 1, "z": 4, "block": "colors:blue"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 0, "y": 2, "z": 0, "block": "parts:pane-blue"},
+        {"x": 1, "y": 2, "z": 0, "block": "parts:pane-blue"},
+        {"x": 0, "y": 2, "z": 1, "block": "parts:steering"},
+        {"x": 1, "y": 2, "z": 1, "block": "colors:red"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 0, "y": 3, "z": 0, "block": "colors:red"},
+        {"x": 1, "y": 3, "z": 0, "block": "colors:red"},
+        {"x": 0, "y": 3, "z": 1, "block": "colors:red"},
+        {"x": 1, "y": 3, "z": 1, "block": "colors:red"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 0, "y": 2, "z": 2, "block": "colors:orange"},
+        {"x": 1, "y": 2, "z": 2, "block": "colors:orange"},
+        {"x": 0, "y": 2, "z": 3, "block": "colors:orange"},
+        {"x": 1, "y": 2, "z": 3, "block": "colors:orange"},
+        {"x": 0, "y": 2, "z": 4, "block": "colors:orange"},
+        {"x": 1, "y": 2, "z": 4, "block": "colors:orange"}
+      ]
+    }
+  ]
+}

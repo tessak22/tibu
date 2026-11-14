@@ -1,34 +1,38 @@
-import type { SavedWorld, ThemeDef, WorldModel } from '../core/types';
-import { SIZE_X, SIZE_Y, SIZE_Z, inBoundsXYZ } from './grid';
+import { WORLD_SIZE, type SavedWorld, type ThemeDef, type WorldModel } from '../core/types';
+import { SIZE_X, SIZE_Y, SIZE_Z } from './grid';
 import { islandMask } from './island';
 import { validateSavedWorld } from './serialize';
 import { createSeedableWorld } from './worldModel';
 
 /**
- * Rebuilds a world from saved data. Validates first; malformed, out-of-bounds or duplicate
- * entries are skipped. Never throws: completely invalid data yields an empty world.
- * The loaded state is not undoable.
+ * Rebuilds a world from saved data (v1 or v2). Validates first; malformed, out-of-bounds or
+ * duplicate entries are skipped. Never throws: completely invalid data yields an empty
+ * 24x16x24 world. v1 saves load as a 24x16x24 'island'. The loaded state is not undoable.
  */
 export function deserializeWorld(data: SavedWorld): WorldModel {
   const clean = validateSavedWorld(data);
   if (!clean) {
-    const fallbackTheme = typeof data?.themeId === 'string' ? data.themeId : '';
+    const fallbackTheme = typeof data?.themeId === 'string' ? data.themeId.slice(0, 100) : '';
     return createSeedableWorld(fallbackTheme).model;
   }
-  const { model, seed } = createSeedableWorld(clean.themeId);
-  for (const [x, y, z, paletteIndex] of clean.blocks) {
-    if (!inBoundsXYZ(x, y, z)) continue;
+  const { model, seed } = createSeedableWorld(clean.themeId, {
+    size: clean.size ?? WORLD_SIZE,
+    kind: clean.kind ?? 'island',
+    seed: clean.seed,
+  });
+  for (const [x, y, z, paletteIndex, rot] of clean.blocks) {
     const c = { x, y, z };
-    if (model.get(c) !== null) continue;
-    seed(c, clean.palette[paletteIndex]);
+    if (!model.inBounds(c) || model.get(c) !== null) continue;
+    seed(c, clean.palette[paletteIndex], rot === 1 || rot === 2 || rot === 3 ? rot : 0);
   }
+  for (const entity of clean.entities ?? []) model.setEntity(entity);
   return model;
 }
 
 /**
- * Builds a new world for a theme: ground layers (listed top-down) fill y = 0..n-1 across the
- * island footprint, then the starting scene is added (scene blocks may replace ground).
- * None of this is undoable.
+ * Builds a new little-builder world for a theme: ground layers (listed top-down) fill
+ * y = 0..n-1 across the island footprint, then the starting scene is added (scene blocks may
+ * replace ground). None of this is undoable.
  */
 export function createWorldFromTheme(theme: ThemeDef): WorldModel {
   const { model, seed } = createSeedableWorld(theme.id);

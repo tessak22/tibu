@@ -36,3 +36,16 @@ test('playing needs no reading: gallery, theme picker and play HUD are pictures 
   const hudText = await page.getByTestId('hud').evaluate((el) => (el as HTMLElement).innerText.trim());
   expect(hudText).toBe('');
 });
+
+test('little builders keep the original HUD: no walk, builds or sticker buttons', async ({ app, page }) => {
+  await app.open();
+  await app.newWorld('meadow');
+  await expect(page.getByTestId('hud')).toHaveAttribute('data-play-mode', 'little');
+  for (const id of ['mode-walk', 'builds', 'sticker-book', 'blueprint-steps']) {
+    await expect(page.getByTestId(id)).toBeHidden();
+  }
+  await app.tapElement(page.getByTestId('back'));
+  await app.waitForGallery();
+  await app.tapElement(page.getByTestId('gallery-new'));
+  await expect(page.locator('.theme-overlay [data-kind="explore"]')).toHaveCount(0);
+});

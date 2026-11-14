@@ -1,0 +1,73 @@
+{
+  "$schema": "../schemas/build.schema.json",
+  "id": "bridge",
+  "name": "bridge",
+  "order": 7,
+  "difficulty": 2,
+  "steps": [
+    {
+      "blocks": [
+        {"x": 0, "y": 0, "z": 0, "block": "nature:stone"},
+        {"x": 0, "y": 0, "z": 1, "block": "nature:stone"},
+        {"x": 0, "y": 1, "z": 0, "block": "nature:stone"},
+        {"x": 0, "y": 1, "z": 1, "block": "nature:stone"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 6, "y": 0, "z": 0, "block": "nature:stone"},
+        {"x": 6, "y": 0, "z": 1, "block": "nature:stone"},
+        {"x": 6, "y": 1, "z": 0, "block": "nature:stone"},
+        {"x": 6, "y": 1, "z": 1, "block": "nature:stone"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 3, "y": 0, "z": 0, "block": "parts:arch-stone"},
+        {"x": 3, "y": 0, "z": 1, "block": "parts:arch-stone"},
+        {"x": 3, "y": 1, "z": 0, "block": "nature:stone"},
+        {"x": 3, "y": 1, "z": 1, "block": "nature:stone"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 0, "y": 2, "z": 0, "block": "building:planks"},
+        {"x": 0, "y": 2, "z": 1, "block": "building:planks"},
+        {"x": 1, "y": 2, "z": 0, "block": "building:planks"},
+        {"x": 1, "y": 2, "z": 1, "block": "building:planks"},
+        {"x": 2, "y": 2, "z": 0, "block": "building:planks"},
+        {"x": 2, "y": 2, "z": 1, "block": "building:planks"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 3, "y": 2, "z": 0, "block": "building:planks"},
+        {"x": 3, "y": 2, "z": 1, "block": "building:planks"},
+        {"x": 4, "y": 2, "z": 0, "block": "building:planks"},
+        {"x": 4, "y": 2, "z": 1, "block": "building:planks"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 5, "y": 2, "z": 0, "block": "building:planks"},
+        {"x": 5, "y": 2, "z": 1, "block": "building:planks"},
+        {"x": 6, "y": 2, "z": 0, "block": "building:planks"},
+        {"x": 6, "y": 2, "z": 1, "block": "building:planks"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 0, "y": 3, "z": 0, "block": "parts:pillar-white"},
+        {"x": 0, "y": 3, "z": 1, "block": "parts:pillar-white"},
+        {"x": 6, "y": 3, "z": 0, "block": "parts:pillar-white"},
+        {"x": 6, "y": 3, "z": 1, "block": "parts:pillar-white"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 3, "y": 3, "z": 0, "block": "building:lamp"},
+        {"x": 3, "y": 3, "z": 1, "block": "building:lamp"}
+      ]
+    }
+  ]
+}

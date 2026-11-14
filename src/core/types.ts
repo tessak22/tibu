@@ -171,6 +171,8 @@ export interface ResolvedPack {
   readonly voiceLine: string;
   readonly icon: HTMLCanvasElement;
   readonly blocks: readonly ResolvedBlock[];
+  /** Only offered in this play mode (e.g. the 'parts' pack is 'big'). Missing means every mode. */
+  readonly mode?: PlayMode;
 }
 
 export interface ThemeDef {
@@ -376,6 +378,11 @@ export interface GameView {
   setWorld(world: WorldModel, theme: ThemeDef): void;
   setMode(mode: Mode): void;
   setSelectedBlock(block: BlockKey): void;
+  /**
+   * Smash mode: when on, smashing a block also knocks down everything no longer connected to the
+   * ground (world.smash(cell, { topple })). Mirrors Settings.toppleTowers; defaults to true.
+   */
+  setTopple(on: boolean): void;
   /**
    * Rotation a newly placed part should get: faces away from the camera / follows its yaw,
    * so a slope placed while looking north points north. Used for the tray preview too.

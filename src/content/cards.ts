@@ -13,6 +13,7 @@ export function resolveCard(json: CardJson): BuildCard {
     id: json.id,
     name: json.name,
     voiceLine: cardVoiceLine(json.id),
+    ...(json.mode ? { mode: json.mode } : {}),
     blocks: cells.map((c) => ({ x: c.x - mx, y: c.y - my, z: c.z - mz, block: c.block })),
   };
 }

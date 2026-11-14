@@ -1,0 +1,47 @@
+{
+  "$schema": "../schemas/build.schema.json",
+  "id": "robot",
+  "name": "robot",
+  "order": 4,
+  "difficulty": 1,
+  "steps": [
+    {
+      "blocks": [
+        {"x": 1, "y": 0, "z": 0, "block": "colors:blue"},
+        {"x": 3, "y": 0, "z": 0, "block": "colors:blue"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 1, "y": 1, "z": 0, "block": "colors:blue"},
+        {"x": 3, "y": 1, "z": 0, "block": "colors:blue"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 1, "y": 2, "z": 0, "block": "colors:red"},
+        {"x": 2, "y": 2, "z": 0, "block": "colors:red"},
+        {"x": 3, "y": 2, "z": 0, "block": "colors:red"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 1, "y": 3, "z": 0, "block": "colors:red"},
+        {"x": 2, "y": 3, "z": 0, "block": "colors:red"},
+        {"x": 3, "y": 3, "z": 0, "block": "colors:red"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 0, "y": 3, "z": 0, "block": "colors:yellow"},
+        {"x": 4, "y": 3, "z": 0, "block": "colors:yellow"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 2, "y": 4, "z": 0, "block": "colors:white"},
+        {"x": 2, "y": 5, "z": 0, "block": "parts:cone-orange"}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "id": "floating",
+  "name": "floating thing",
+  "difficulty": 2,
+  "steps": [
+    { "blocks": [{ "x": 0, "y": 0, "z": 0, "block": "colors:red" }, { "x": 0, "y": 0, "z": 0, "block": "colors:red" }] },
+    { "blocks": [{ "x": 3, "y": 2, "z": 3, "block": "colors:red" }, { "x": 1, "y": 0, "z": 0, "block": "nope:missing" }] }
+  ]
+}

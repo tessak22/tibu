@@ -1,13 +1,14 @@
 /**
  * Bundled content via Vite glob imports. JSON is inlined at build time;
  * images and audio come in as hashed URLs so the service worker precaches them.
- * Dropping a new folder into packs/ or themes/ (or a file into cards/) is enough.
+ * Dropping a new folder into packs/ or themes/ (or a file into cards/ or builds/) is enough.
  */
 import type { SourceFile } from './validate/types';
 
 const packModules = import.meta.glob('/packs/*/pack.json', { eager: true, import: 'default' });
 const themeModules = import.meta.glob('/themes/*/theme.json', { eager: true, import: 'default' });
 const cardModules = import.meta.glob('/cards/*.json', { eager: true, import: 'default' });
+const buildModules = import.meta.glob('/builds/*.json', { eager: true, import: 'default' });
 const assetModules = import.meta.glob(
   [
     '/packs/*/icons/**/*.{png,jpg,jpeg,webp,svg}',
@@ -21,6 +22,7 @@ export interface RawSources {
   readonly packs: readonly SourceFile[];
   readonly themes: readonly SourceFile[];
   readonly cards: readonly SourceFile[];
+  readonly builds: readonly SourceFile[];
   /** Repo-relative path (e.g. "packs/animals/audio/moo.ogg") to bundled URL. */
   readonly assets: ReadonlyMap<string, string>;
 }
@@ -48,6 +50,7 @@ export function bundledSources(): RawSources {
     packs: toSources(packModules, true),
     themes: toSources(themeModules, true),
     cards: toSources(cardModules, false),
+    builds: toSources(buildModules, false),
     assets,
   };
 }

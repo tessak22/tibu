@@ -27,6 +27,13 @@
     "order": {
       "type": "number"
     },
+    "mode": {
+      "enum": [
+        "little",
+        "big"
+      ],
+      "description": "Which play mode shows this card. Missing means 'little'."
+    },
     "blocks": {
       "type": "array",
       "minItems": 1,

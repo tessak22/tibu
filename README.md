@@ -164,7 +164,13 @@ There are no redirects or rewrites to configure. Tibu is a single page.
 
 All block art and sound effects are generated in code (canvas drawing and the Web
 Audio API). The spoken lines are AI-generated with the open source Kokoro-82M
-text-to-speech model; there are no human recordings. Sources and licenses for
+text-to-speech model; there are no human recordings.
+
+Content is plain JSON, so parents can add more without touching code: block packs
+in `packs/` (including shaped "parts" such as wheels and roofs for big-kid mode),
+themes in `themes/`, build cards in `cards/` (big-kid cards use `"mode": "big"`)
+and step-by-step builds in `builds/` (a house, truck, rocket, castle tower and more).
+See [CONTRIBUTING.md](CONTRIBUTING.md). Sources and licenses for
 everything are listed in [ASSETS.md](ASSETS.md).
 
 ## Contributing

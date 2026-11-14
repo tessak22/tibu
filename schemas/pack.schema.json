@@ -59,6 +59,13 @@
       "$ref": "#/definitions/color",
       "description": "Background of the pack picker tile."
     },
+    "mode": {
+      "enum": [
+        "little",
+        "big"
+      ],
+      "description": "Only offer this pack in one play mode ('big' = big-kid mode). Missing means every mode."
+    },
     "blocks": {
       "type": "array",
       "minItems": 1,
@@ -509,8 +516,26 @@
         "glowColor": {
           "$ref": "#/definitions/color",
           "description": "Light color for the 'glow' behavior. Defaults to the art color."
+        },
+        "shape": {
+          "$ref": "#/definitions/shape",
+          "description": "Geometry of the block. Defaults to 'cube'."
         }
       }
+    },
+    "shape": {
+      "enum": [
+        "cube",
+        "slope",
+        "slab",
+        "plate",
+        "wheel",
+        "cone",
+        "arch",
+        "pane",
+        "cylinder"
+      ],
+      "description": "Block geometry. Non-cube shapes are 'parts' and turn with the camera when placed."
     }
   }
 }

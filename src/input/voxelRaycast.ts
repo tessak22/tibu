@@ -1,5 +1,4 @@
-import type { Cell } from '../core/types';
-import { SIZE_X, SIZE_Y, SIZE_Z } from '../world/grid';
+import { WORLD_SIZE, type Cell, type WorldSize } from '../core/types';
 
 export interface Vec3Like {
   readonly x: number;
@@ -20,14 +19,19 @@ export type SolidTest = (x: number, y: number, z: number) => boolean;
 
 const EPS = 1e-6;
 
+export interface RaycastOptions {
+  /** Grid size; defaults to the little-builder island. */
+  readonly size?: WorldSize;
+  readonly maxDistance?: number;
+}
+
 /** Slab test against the grid box [0,SIZE]. Returns [tEnter, tExit, enterAxis] or null. */
-function intersectGridBox(o: Vec3Like, d: Vec3Like): [number, number, number] | null {
+function intersectGridBox(o: Vec3Like, d: Vec3Like, size: readonly number[]): [number, number, number] | null {
   let tMin = -Infinity;
   let tMax = Infinity;
   let axisOfMin = -1;
   const origin = [o.x, o.y, o.z];
   const dir = [d.x, d.y, d.z];
-  const size = [SIZE_X, SIZE_Y, SIZE_Z];
   for (let a = 0; a < 3; a++) {
     if (Math.abs(dir[a]) < EPS) {
       if (origin[a] < 0 || origin[a] > size[a]) return null;
@@ -62,18 +66,25 @@ function dominantAxis(d: Vec3Like): number {
  * Amanatides-Woo voxel traversal through the bounded grid. `dir` need not be normalized.
  * Returns the first solid cell and the face it was entered through, or null.
  */
-export function raycastVoxels(origin: Vec3Like, dir: Vec3Like, isSolid: SolidTest, maxDistance = 200): VoxelHit | null {
+export function raycastVoxels(
+  origin: Vec3Like,
+  dir: Vec3Like,
+  isSolid: SolidTest,
+  options: RaycastOptions = {},
+): VoxelHit | null {
   const len = Math.hypot(dir.x, dir.y, dir.z);
   if (!(len > EPS)) return null;
+  const s = options.size ?? WORLD_SIZE;
+  const size = [s.x, s.y, s.z];
+  const maxDistance = options.maxDistance ?? 400;
   const d = { x: dir.x / len, y: dir.y / len, z: dir.z / len };
-  const box = intersectGridBox(origin, d);
+  const box = intersectGridBox(origin, d, size);
   if (!box) return null;
   const [tEnter, tExit, enterAxis] = box;
   const tStart = Math.max(tEnter, 0);
   const startedInside = tEnter <= 0;
   const p = [origin.x + d.x * (tStart + EPS), origin.y + d.y * (tStart + EPS), origin.z + d.z * (tStart + EPS)];
   const dirs = [d.x, d.y, d.z];
-  const size = [SIZE_X, SIZE_Y, SIZE_Z];
   const cellPos = p.map((v, a) => Math.min(size[a] - 1, Math.max(0, Math.floor(v))));
   const step = dirs.map((v) => (v > 0 ? 1 : v < 0 ? -1 : 0));
   const tDelta = dirs.map((v) => (v !== 0 ? Math.abs(1 / v) : Infinity));
@@ -87,7 +98,7 @@ export function raycastVoxels(origin: Vec3Like, dir: Vec3Like, isSolid: SolidTes
   const limit = Math.min(tExit, maxDistance);
   while (t <= limit + EPS) {
     const [x, y, z] = cellPos;
-    if (x < 0 || y < 0 || z < 0 || x >= SIZE_X || y >= SIZE_Y || z >= SIZE_Z) return null;
+    if (x < 0 || y < 0 || z < 0 || x >= size[0] || y >= size[1] || z >= size[2]) return null;
     if (isSolid(x, y, z)) {
       return { cell: { x, y, z }, normal: axisNormal(axis, step[axis] || 1), distance: t };
     }
@@ -100,12 +111,12 @@ export function raycastVoxels(origin: Vec3Like, dir: Vec3Like, isSolid: SolidTes
 }
 
 /** Where a ray meets the horizontal plane y = planeY, inside the grid footprint. */
-export function raycastFloorPlane(origin: Vec3Like, dir: Vec3Like, planeY = 0): Cell | null {
+export function raycastFloorPlane(origin: Vec3Like, dir: Vec3Like, planeY = 0, size: WorldSize = WORLD_SIZE): Cell | null {
   if (dir.y >= -EPS || origin.y <= planeY) return null;
   const t = (planeY - origin.y) / dir.y;
   const x = Math.floor(origin.x + dir.x * t);
   const z = Math.floor(origin.z + dir.z * t);
-  if (x < 0 || z < 0 || x >= SIZE_X || z >= SIZE_Z) return null;
+  if (x < 0 || z < 0 || x >= size.x || z >= size.z) return null;
   return { x, y: planeY, z };
 }
 

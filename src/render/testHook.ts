@@ -3,8 +3,14 @@ import type { BlockKey } from '../core/types';
 export interface TibuTestHook {
   worldCount(): number;
   getBlock(x: number, y: number, z: number): BlockKey | null;
-  /** CSS-pixel (viewport) point of the top-face center of a cell. */
+  /** CSS-pixel (viewport) point of the top-face center of a cell, for any world size. */
   cellToScreen(x: number, y: number, z: number): { x: number; y: number } | null;
+  /** Number of ghost (step-by-step preview) blocks currently shown. */
+  ghostCount(): number;
+  /** Size of the loaded world (24x16x24 little island, 96x32x96 explore world). */
+  worldSize(): { x: number; y: number; z: number };
+  /** Chunk columns still waiting for their lazy first build (0 once a big world is ready). */
+  pendingChunks(): number;
 }
 
 declare global {

@@ -1,0 +1,86 @@
+{
+  "$schema": "../schemas/build.schema.json",
+  "id": "castle-tower",
+  "name": "castle tower",
+  "order": 9,
+  "difficulty": 3,
+  "steps": [
+    {
+      "blocks": [
+        {"x": 0, "y": 0, "z": 0, "block": "nature:stone"},
+        {"x": 1, "y": 0, "z": 0, "block": "nature:stone"},
+        {"x": 2, "y": 0, "z": 0, "block": "nature:stone"},
+        {"x": 3, "y": 0, "z": 0, "block": "nature:stone"},
+        {"x": 0, "y": 0, "z": 1, "block": "nature:stone"},
+        {"x": 3, "y": 0, "z": 1, "block": "nature:stone"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 0, "y": 0, "z": 2, "block": "nature:stone"},
+        {"x": 3, "y": 0, "z": 2, "block": "nature:stone"},
+        {"x": 0, "y": 0, "z": 3, "block": "nature:stone"},
+        {"x": 1, "y": 0, "z": 3, "block": "parts:arch-stone"},
+        {"x": 2, "y": 0, "z": 3, "block": "parts:arch-stone"},
+        {"x": 3, "y": 0, "z": 3, "block": "nature:stone"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 0, "y": 1, "z": 0, "block": "nature:stone"},
+        {"x": 1, "y": 1, "z": 0, "block": "nature:stone"},
+        {"x": 2, "y": 1, "z": 0, "block": "nature:stone"},
+        {"x": 3, "y": 1, "z": 0, "block": "nature:stone"},
+        {"x": 0, "y": 1, "z": 1, "block": "nature:stone"},
+        {"x": 3, "y": 1, "z": 1, "block": "nature:stone"},
+        {"x": 0, "y": 1, "z": 2, "block": "nature:stone"},
+        {"x": 3, "y": 1, "z": 2, "block": "nature:stone"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 0, "y": 1, "z": 3, "block": "nature:stone"},
+        {"x": 1, "y": 1, "z": 3, "block": "nature:stone"},
+        {"x": 2, "y": 1, "z": 3, "block": "nature:stone"},
+        {"x": 3, "y": 1, "z": 3, "block": "nature:stone"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 0, "y": 2, "z": 0, "block": "nature:stone"},
+        {"x": 1, "y": 2, "z": 0, "block": "nature:stone"},
+        {"x": 2, "y": 2, "z": 0, "block": "nature:stone"},
+        {"x": 3, "y": 2, "z": 0, "block": "nature:stone"},
+        {"x": 0, "y": 2, "z": 1, "block": "building:window"},
+        {"x": 3, "y": 2, "z": 1, "block": "nature:stone"},
+        {"x": 0, "y": 2, "z": 2, "block": "nature:stone"},
+        {"x": 3, "y": 2, "z": 2, "block": "building:window"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 0, "y": 2, "z": 3, "block": "nature:stone"},
+        {"x": 1, "y": 2, "z": 3, "block": "building:window"},
+        {"x": 2, "y": 2, "z": 3, "block": "nature:stone"},
+        {"x": 3, "y": 2, "z": 3, "block": "nature:stone"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 0, "y": 3, "z": 0, "block": "nature:stone"},
+        {"x": 2, "y": 3, "z": 0, "block": "nature:stone"},
+        {"x": 3, "y": 3, "z": 1, "block": "nature:stone"},
+        {"x": 3, "y": 3, "z": 3, "block": "nature:stone"},
+        {"x": 1, "y": 3, "z": 3, "block": "nature:stone"},
+        {"x": 0, "y": 3, "z": 2, "block": "nature:stone"}
+      ]
+    },
+    {
+      "blocks": [
+        {"x": 0, "y": 4, "z": 0, "block": "parts:cone-red"},
+        {"x": 3, "y": 4, "z": 3, "block": "parts:pillar-white"},
+        {"x": 3, "y": 5, "z": 3, "block": "parts:flag"}
+      ]
+    }
+  ]
+}
