@@ -1,3 +1,5 @@
+import type { Object3D } from 'three';
+
 /**
  * Shared contracts between Tibu modules.
  *
@@ -10,8 +12,30 @@
 // World geometry
 // ---------------------------------------------------------------------------
 
-/** World bounds. One bounded world per save. */
-export const WORLD_SIZE = { x: 24, y: 16, z: 24 } as const;
+/** Size of a world in cells. Each saved world records its own size. */
+export interface WorldSize {
+  readonly x: number;
+  readonly y: number;
+  readonly z: number;
+}
+
+/** Little-builder world (the original Tibu island). Also the default for v1 saves. */
+export const WORLD_SIZE: WorldSize = { x: 24, y: 16, z: 24 };
+/** Big-kid explore world: several islands joined by bridges. */
+export const BIG_WORLD_SIZE: WorldSize = { x: 96, y: 32, z: 96 };
+
+/**
+ * Play mode, chosen per child profile in the parent area.
+ * - little: the original toddler experience (small island, build cards).
+ * - big: big world to walk around, step-by-step builds, parts, harder challenges.
+ */
+export type PlayMode = 'little' | 'big';
+
+/** Quarter turns about the y axis (0 = default facing). Used by shaped parts. */
+export type Rotation = 0 | 1 | 2 | 3;
+
+/** Geometry of a block. 'cube' is the default; the rest are "parts" (big-kid mode). */
+export type BlockShape = 'cube' | 'slope' | 'slab' | 'plate' | 'wheel' | 'cone' | 'arch' | 'pane' | 'cylinder';
 
 /** Integer cell coordinate. y is up. 0 <= x < 24, 0 <= y < 16, 0 <= z < 24. */
 export interface Cell {
@@ -29,7 +53,8 @@ export type BlockKey = string;
 export type FaceName = 'top' | 'bottom' | 'north' | 'south' | 'east' | 'west';
 export const FACE_NAMES: readonly FaceName[] = ['top', 'bottom', 'north', 'south', 'east', 'west'];
 
-export type Mode = 'build' | 'smash';
+/** 'walk' exists only in big-kid mode: taps move the character. */
+export type Mode = 'build' | 'smash' | 'walk';
 
 // ---------------------------------------------------------------------------
 // World model (implemented in src/world)
@@ -37,28 +62,65 @@ export type Mode = 'build' | 'smash';
 
 /** A single reversible change. Undo applies the inverse. */
 export type WorldAction =
-  | { readonly type: 'place'; readonly cell: Cell; readonly block: BlockKey }
-  | { readonly type: 'remove'; readonly cell: Cell; readonly block: BlockKey };
+  | { readonly type: 'place'; readonly cell: Cell; readonly block: BlockKey; readonly rot?: Rotation }
+  | { readonly type: 'remove'; readonly cell: Cell; readonly block: BlockKey; readonly rot?: Rotation }
+  /**
+   * Several changes applied (and undone) as one step, e.g. a smash that topples a tower.
+   * Listeners receive the batch, never its parts separately.
+   */
+  | { readonly type: 'batch'; readonly reason: 'collapse'; readonly actions: readonly WorldAction[] };
+
+/** World entity that is not a block (big-kid mode). */
+export interface WorldEntity {
+  readonly id: string;
+  readonly kind: 'chest';
+  readonly cell: Cell;
+  /** Sticker id inside the chest. */
+  readonly sticker: string;
+  readonly opened: boolean;
+}
 
 /** Serialized world. This is what storage persists and what export writes. */
 export interface SavedWorld {
   readonly format: 'tibu-world';
-  readonly version: 1;
+  /** 1 = original 24x16x24 island. 2 adds size, kind, rotations and entities. Loaders accept both. */
+  readonly version: 1 | 2;
   readonly themeId: string;
+  /** v2 only. Missing means WORLD_SIZE. */
+  readonly size?: WorldSize;
+  /** v2 only. Missing means 'island'. */
+  readonly kind?: 'island' | 'explore';
+  /** v2 only: seed used to generate an explore world. */
+  readonly seed?: number;
   /** Distinct block keys used in this world. */
   readonly palette: readonly BlockKey[];
-  /** Sparse list of occupied cells: [x, y, z, paletteIndex]. */
-  readonly blocks: readonly (readonly [number, number, number, number])[];
+  /** Sparse list of occupied cells: [x, y, z, paletteIndex] or [x, y, z, paletteIndex, rotation]. */
+  readonly blocks: readonly (readonly number[])[];
+  /** v2 only: chests etc. */
+  readonly entities?: readonly WorldEntity[];
 }
 
 export interface WorldModel {
   readonly themeId: string;
+  readonly size: WorldSize;
+  readonly kind: 'island' | 'explore';
   get(cell: Cell): BlockKey | null;
+  /** Rotation of the block at cell (0 when empty or unrotated). */
+  getRotation(cell: Cell): Rotation;
   inBounds(cell: Cell): boolean;
   /** Returns the applied action, or null if the cell is out of bounds or occupied. */
-  place(cell: Cell, block: BlockKey): WorldAction | null;
+  place(cell: Cell, block: BlockKey, rot?: Rotation): WorldAction | null;
   /** Returns the applied action, or null if the cell is empty. */
   remove(cell: Cell): WorldAction | null;
+  /**
+   * Child smash. With topple, every block no longer connected (through faces) to the
+   * ground floor (y = 0) falls too, returned as one 'batch' action so one undo restores all.
+   * Without a collapse it returns the plain 'remove' action.
+   */
+  smash(cell: Cell, options: { readonly topple: boolean }): WorldAction | null;
+  /** Entities (chests) in this world; mutated via setEntity so they are saved. */
+  entities(): readonly WorldEntity[];
+  setEntity(entity: WorldEntity): void;
   /** Steps back one action (max 50 kept). Returns the inverse action applied, or null. */
   undo(): WorldAction | null;
   canUndo(): boolean;
@@ -96,6 +158,8 @@ export interface ResolvedBlock {
   readonly icon: HTMLCanvasElement;
   readonly tapSound?: SoundRef;
   readonly behaviors: readonly BehaviorName[];
+  /** Geometry; 'cube' unless the pack says otherwise. Non-cube blocks honour Rotation. */
+  readonly shape: BlockShape;
   /** Present when the block has the glow behavior. CSS color string. */
   readonly glowColor?: string;
 }
@@ -129,8 +193,38 @@ export interface ThemeDef {
   readonly cloudColor?: string;
 }
 
+/**
+ * Step-by-step build (like toy-brick instructions), big-kid mode. Defined as data in builds/<id>.json.
+ * Cells are relative to an anchor the app picks in front of the camera / character.
+ */
+export interface Blueprint {
+  readonly id: string;
+  readonly name: string;
+  readonly voiceLine: string;
+  /** 1 = easy ... 3 = tricky. */
+  readonly difficulty: 1 | 2 | 3;
+  readonly steps: readonly {
+    readonly blocks: readonly {
+      readonly x: number;
+      readonly y: number;
+      readonly z: number;
+      readonly block: BlockKey;
+      readonly rot?: Rotation;
+    }[];
+  }[];
+}
+
+/** A ghost (translucent preview) block shown by the renderer. */
+export interface GhostBlock {
+  readonly cell: Cell;
+  readonly block: BlockKey;
+  readonly rot?: Rotation;
+}
+
 export interface BuildCard {
   readonly id: string;
+  /** Which mode shows this card. Missing means 'little'. */
+  readonly mode?: PlayMode;
   readonly name: string;
   readonly voiceLine: string;
   /** Pattern relative to its own origin. Matching ignores translation and allows 90° turns. */
@@ -141,6 +235,7 @@ export interface ContentRegistry {
   readonly packs: readonly ResolvedPack[];
   readonly themes: readonly ThemeDef[];
   readonly cards: readonly BuildCard[];
+  readonly blueprints: readonly Blueprint[];
   /** Never throws: unknown keys (e.g. removed pack) resolve to a friendly placeholder block. */
   block(key: BlockKey): ResolvedBlock;
   hasBlock(key: BlockKey): boolean;
@@ -175,6 +270,8 @@ export interface Settings {
   readonly playTimerMinutes: number | null;
   readonly leftHanded: boolean;
   readonly reducedMotion: boolean;
+  /** Smashing a block knocks down everything resting on it (undo restores it all). */
+  readonly toppleTowers: boolean;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -192,12 +289,17 @@ export const DEFAULT_SETTINGS: Settings = {
   playTimerMinutes: null,
   leftHanded: false,
   reducedMotion: false,
+  toppleTowers: true,
 };
 
 export interface Profile {
   readonly id: string;
   /** Animal picture id, e.g. "cat". */
   readonly animal: string;
+  /** Missing means 'little'. */
+  readonly mode?: PlayMode;
+  /** Sticker ids found in explore worlds (big-kid mode). Never removed by play. */
+  readonly stickers?: readonly string[];
   readonly createdAt: number;
 }
 
@@ -252,12 +354,21 @@ export interface AudioSystem {
 
 export interface GameViewEvents {
   /** Tap on a block face or ground in build mode resolved to a placement target. */
-  placed: { cell: Cell; block: BlockKey; tappedCell: Cell | null };
-  smashed: { cell: Cell; block: BlockKey };
+  placed: { cell: Cell; block: BlockKey; tappedCell: Cell | null; rot: Rotation };
+  /** collapsed = number of extra blocks that toppled with it (0 when none). */
+  smashed: { cell: Cell; block: BlockKey; collapsed: number };
   /** A block was tapped (build mode tap on its face, before the new block is placed). */
   tappedBlock: { cell: Cell; block: BlockKey };
   /** A tap that did nothing useful (e.g. sky, out of bounds) — still gets a soft response. */
   tappedEmpty: Record<string, never>;
+  /** Walk mode: tap on a walkable top surface. `cell` is the empty cell to stand in. */
+  walkTo: { cell: Cell };
+}
+
+/** Options for a non-block object added to the scene (character, animals, chests). */
+export interface ActorOptions {
+  /** Called when the actor is tapped in any mode; the tap then does nothing else. */
+  readonly onTap?: () => void;
 }
 
 export interface GameView {
@@ -265,6 +376,21 @@ export interface GameView {
   setWorld(world: WorldModel, theme: ThemeDef): void;
   setMode(mode: Mode): void;
   setSelectedBlock(block: BlockKey): void;
+  /**
+   * Rotation a newly placed part should get: faces away from the camera / follows its yaw,
+   * so a slope placed while looking north points north. Used for the tray preview too.
+   */
+  placementRotation(): Rotation;
+  /** Show translucent ghost blocks (step-by-step builds); null clears them. */
+  setGhosts(ghosts: readonly GhostBlock[] | null): void;
+  /** Add a non-block object (THREE.Object3D) to the world scene. Returns a remover. */
+  addActor(object: Object3D, options?: ActorOptions): () => void;
+  /** Camera smoothly follows this object (big-kid walk mode); null returns to orbit around it. */
+  setFollowTarget(object: Object3D | null): void;
+  /** Per-frame callback while the view is active; dt in seconds (clamped). Returns unsubscribe. */
+  onFrame(callback: (dt: number) => void): () => void;
+  /** World-space center of a cell (for positioning actors). */
+  cellCenter(cell: Cell): { x: number; y: number; z: number };
   /** Fly the camera back to the default view (instant when reduced motion is on). */
   resetCamera(): void;
   setReducedMotion(on: boolean): void;
