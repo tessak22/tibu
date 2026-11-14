@@ -39,19 +39,108 @@
   background: linear-gradient(180deg, var(--sky) 0%, var(--sky-2) 55%, #e8f9d9 100%);
 }
 
+/* Player chip | Little/Big toggle (centred) | room for the grown-up corner. */
 .gallery-top {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: start;
+  column-gap: 8px;
   min-height: 0;
 }
 
-.gallery-top:empty {
-  display: none;
-}
-
 .profile-chip {
+  grid-column: 1;
+  justify-self: start;
   border-radius: 50%;
   width: 84px;
   height: 84px;
+}
+
+/* Little / Big: two picture buttons, the active one bigger and brighter (like build/smash). */
+.mode-toggle {
+  grid-column: 2;
+  display: flex;
+  gap: 10px;
+  padding: 8px 12px 4px;
+  border-radius: 28px;
+  background: rgb(255 255 255 / 0.5);
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.08);
+}
+
+.mode-toggle-side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+  opacity: 0.55;
+  filter: saturate(0.5);
+  transform: scale(0.92);
+  transition: transform 180ms ease, opacity 180ms ease, filter 180ms ease;
+}
+
+.mode-toggle-side.active {
+  opacity: 1;
+  filter: none;
+  transform: scale(1);
+}
+
+.mode-toggle-btn {
+  --toggle-h: 108px;
+  width: calc(var(--toggle-h) * 1.25);
+  height: var(--toggle-h);
+  padding: 0;
+  border: 0;
+  border-radius: 22px;
+  overflow: hidden;
+  background: var(--sky-2);
+  box-shadow: 0 5px 0 rgb(0 0 0 / 0.1);
+  cursor: pointer;
+}
+
+.mode-toggle-side.active .mode-toggle-btn {
+  background: #fff6c9;
+  box-shadow: 0 0 0 5px var(--sun), 0 8px 18px rgb(0 0 0 / 0.18);
+}
+
+.mode-toggle-btn .pic {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.mode-toggle-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.mode-toggle-side.active .mode-toggle-label {
+  font-size: 15px;
+}
+
+@media (max-width: 700px), (max-height: 520px) {
+  .mode-toggle {
+    gap: 6px;
+    padding: 6px 8px 2px;
+  }
+
+  .mode-toggle-btn {
+    --toggle-h: 72px;
+  }
+
+  .mode-toggle-label,
+  .mode-toggle-side.active .mode-toggle-label {
+    font-size: 12px;
+  }
+
+  .profile-chip {
+    width: 68px;
+    height: 68px;
+  }
 }
 
 .gallery-scroll {

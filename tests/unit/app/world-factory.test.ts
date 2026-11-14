@@ -13,6 +13,7 @@ import {
   stickersToHide,
   type WorldFactory,
 } from '../../../src/app/world-factory';
+import { worldKindFor } from '../../../src/ui/theme-picker';
 import { fakeBlueprint } from '../ui/helpers';
 import { fakeWorld } from './fake-world';
 
@@ -50,6 +51,15 @@ describe('new worlds per kind', () => {
     expect(f.createExploreWorld).toHaveBeenCalledWith(theme, 1234);
     expect(f.placeChests).toHaveBeenCalledWith(made.world, [{ x: 10, y: 1, z: 10 }], ['sun', 'moon'], 1234);
     expect(made.explore).toEqual({ spawn: { x: 40, y: 1, z: 40 }, animalSpots: [{ x: 20, y: 1, z: 20 }] });
+  });
+
+  it('"+" makes the current mode\'s kind: Little an island, Big an adventure', () => {
+    const little = factory();
+    expect(createNewWorld(little, theme, worldKindFor('little'), []).explore).toBeNull();
+    expect(little.createExploreWorld).not.toHaveBeenCalled();
+    const big = factory();
+    expect(createNewWorld(big, theme, worldKindFor('big'), [], 5).explore).not.toBeNull();
+    expect(big.createExploreWorld).toHaveBeenCalledWith(theme, 5);
   });
 
   it('stickersToHide skips found ones', () => {

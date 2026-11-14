@@ -6,8 +6,10 @@ test.describe.configure({ timeout: 120_000 });
 
 test('big builder: a step-by-step build shows ghosts and tapping a ghost places that block', async ({ app, page }) => {
   await app.open();
-  await app.setPlayerMode('big');
+  // An island in big mode: make it as a little builder, then a grown-up switches the
+  // player to big (the parent-area setting) and the island reopens with the big controls.
   await app.newWorld('meadow');
+  await app.setPlayerModeInGrownUps('big');
   const before = await app.count();
 
   await app.tapElement(page.getByTestId('builds'));

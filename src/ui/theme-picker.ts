@@ -13,22 +13,31 @@ export interface ThemeChoice {
 
 const PICTURE_SIZE = 256;
 
-/** Which world kinds a child in this mode can start. Little builders only get islands. */
-export function worldKindsFor(mode: PlayMode): readonly WorldKind[] {
-  return mode === 'big' ? ['island', 'explore'] : ['island'];
+/** The kind of world a mode makes: little builders get islands, big builders get adventures. */
+export function worldKindFor(mode: PlayMode): WorldKind {
+  return mode === 'big' ? 'explore' : 'island';
 }
 
-/** Theme-picker entries in display order: each theme as an island, then each as an adventure. */
+/** Worlds listed in a mode's gallery. The others are only hidden, never removed. */
+export function worldsForMode<W extends { readonly data: { readonly kind?: WorldKind } }>(
+  worlds: readonly W[],
+  mode: PlayMode,
+): W[] {
+  const kind = worldKindFor(mode);
+  return worlds.filter((w) => (w.data.kind ?? 'island') === kind);
+}
+
+/** Theme-picker entries in display order: each theme once, as the mode's world kind. */
 export function themeChoices(themes: readonly ThemeDef[], mode: PlayMode): readonly ThemeChoice[] {
-  return worldKindsFor(mode).flatMap((kind) => themes.map((theme) => ({ theme, kind })));
+  const kind = worldKindFor(mode);
+  return themes.map((theme) => ({ theme, kind }));
 }
 
 const testId = (c: ThemeChoice): string => (c.kind === 'island' ? `theme-${c.theme.id}` : `theme-${c.theme.id}-explore`);
 
 /**
- * Big theme pictures. Little mode: one per theme (as before). Big mode: each theme twice,
- * as an island and as a big adventure (theme picture with a character-on-a-bridge badge).
- * Resolves the choice, or null when closed.
+ * Big theme pictures, one per theme. Little mode: island pictures. Big mode: the same themes
+ * as big adventures (theme picture with Pip on a bridge). Resolves the choice, or null when closed.
  */
 export function pickTheme(ctx: UiContext, mode: PlayMode = 'little'): Promise<ThemeChoice | null> {
   return new Promise((resolve) => {

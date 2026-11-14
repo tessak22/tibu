@@ -153,26 +153,45 @@ export class TibuApp {
     await expect(this.page.getByTestId('parent-area')).toBeVisible();
   }
 
-  /** In the grown-up area: switch the first player to a mode, then close it. */
+  /** Gallery Little / Big toggle: switch the current player's mode (lists that mode's worlds). */
   async setPlayerMode(mode: 'little' | 'big'): Promise<void> {
+    const toggle = this.page.getByTestId('mode-toggle');
+    await this.tapElement(this.page.getByTestId(`mode-toggle-${mode}`));
+    await expect(toggle).toHaveAttribute('data-mode', mode);
+    await expect(this.page.locator('.gallery-grid')).toHaveAttribute('data-mode', mode);
+  }
+
+  /**
+   * In the grown-up area: switch the first player to a mode, then close it. From the gallery it
+   * waits for the fresh gallery; from inside a world it waits for the world to reopen.
+   */
+  async setPlayerModeInGrownUps(mode: 'little' | 'big'): Promise<void> {
+    const inWorld = await this.page.getByTestId('hud').isVisible();
     await this.openGrownUps();
     const choice = this.page.locator('.profile-list li').first().locator(`.mode-choice[data-mode="${mode}"]`);
     await choice.scrollIntoViewIfNeeded();
     await this.tapElement(choice);
     await expect(choice).toHaveAttribute('aria-pressed', 'true');
     await expect(this.page.locator('.profile-list ~ .parent-msg.ok, .parent-msg.ok').first()).toBeVisible();
-    // Closing the grown-up area remounts the gallery; mark the old one so we wait for the new one.
-    await this.page.evaluate(() => document.querySelector('.gallery-screen')?.setAttribute('data-stale', ''));
+    // Closing the grown-up area remounts the screen; mark the old one so we wait for the new one.
+    await this.page.evaluate(() => document.querySelector('.gallery-screen, [data-testid="hud"]')?.setAttribute('data-stale', ''));
     const close = this.page.locator('.parent-overlay .overlay-close');
     await close.scrollIntoViewIfNeeded();
     await this.tapElement(close);
     await expect(this.page.locator('.parent-overlay')).toHaveCount(0);
+    if (inWorld) {
+      await expect(this.page.locator('[data-testid="hud"]:not([data-stale])')).toHaveAttribute('data-play-mode', mode);
+      await this.waitForPlay();
+      return;
+    }
     await expect(this.page.locator('.gallery-screen:not([data-stale])')).toBeVisible();
     await this.waitForGallery();
+    await expect(this.page.getByTestId('mode-toggle')).toHaveAttribute('data-mode', mode);
   }
 
-  /** Gallery "+" -> big adventure picture of a theme -> play screen (big builders only). */
+  /** Gallery toggle "Big" -> "+" -> adventure picture of a theme -> play screen. */
   async newAdventure(themeId = 'meadow'): Promise<void> {
+    await this.setPlayerMode('big');
     await this.tapElement(this.page.getByTestId('gallery-new'));
     await this.tapElement(this.page.getByTestId(`theme-${themeId}-explore`));
     await expect(this.page.getByTestId('hud')).toBeVisible();

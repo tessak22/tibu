@@ -1,4 +1,4 @@
-import type { AudioSystem, ContentRegistry, GameView, Profile, WorldModel, WorldRecord } from '../core/types';
+import type { AudioSystem, ContentRegistry, GameView, PlayMode, Profile, WorldModel, WorldRecord } from '../core/types';
 import { STICKER_IDS } from '../explore/stickers';
 import { persistenceStatus, profileMode, readImportFile, requestPersistence, type Repository } from '../storage';
 import type { UiContext } from '../ui/context';
@@ -46,6 +46,7 @@ export interface AppDeps {
 const MSG = {
   open: 'That world could not be opened. It is still safe in the grown-up area.',
   create: 'A new world could not be made right now. Please try again.',
+  mode: 'The Little / Big choice could not be saved right now. Please try again.',
 } as const;
 
 const UNLOCK_EVENTS = ['pointerdown', 'pointerup', 'touchend', 'click'] as const;
@@ -112,6 +113,8 @@ export async function startApp(deps: AppDeps): Promise<void> {
       createGallery(ctx, {
         profile,
         worlds,
+        mode: profileMode(profile),
+        onModeChange: (mode) => void changeMode(mode),
         onSwitchProfile: profiles.length > 1 ? () => void showProfiles() : null,
         onOpen: (w) => void openWorld(w),
         canOpen: (w) => canOpenRecord(deps.worlds, w),
@@ -122,6 +125,23 @@ export async function startApp(deps: AppDeps): Promise<void> {
       false,
       true,
     );
+  };
+
+  /** The gallery toggle: the same Profile.mode the grown-up area sets. Nothing is deleted. */
+  const changeMode = async (mode: PlayMode): Promise<void> => {
+    const before = profile;
+    // Update first, so a quick "+" right after the toggle already makes the new mode's world.
+    onProfileChanged({ ...before, mode });
+    try {
+      const saved = await repo.setProfileMode(before.id, mode);
+      if (!saved) throw new Error('profile missing');
+      onProfileChanged(saved);
+    } catch (error) {
+      problems.record('save', error);
+      onProfileChanged(before);
+      toast(overlayRoot, MSG.mode);
+      if (isCalm() && host.current()?.el.classList.contains('gallery-screen')) await showGallery();
+    }
   };
 
   const showProfiles = async (): Promise<void> => {
