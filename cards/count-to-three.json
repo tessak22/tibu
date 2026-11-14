@@ -1,0 +1,26 @@
+{
+  "$schema": "../schemas/card.schema.json",
+  "id": "count-to-three",
+  "name": "one two three",
+  "order": 9,
+  "blocks": [
+    {
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "block": "numbers:1"
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "z": 0,
+      "block": "numbers:2"
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "z": 0,
+      "block": "numbers:3"
+    }
+  ]
+}

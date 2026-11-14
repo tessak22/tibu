@@ -1,0 +1,265 @@
+{
+  "$schema": "../../schemas/pack.schema.json",
+  "id": "numbers",
+  "name": "Numbers",
+  "order": 4,
+  "icon": {
+    "block": "3"
+  },
+  "tileColor": "#e5f8e8",
+  "blocks": [
+    {
+      "id": "0",
+      "name": "zero",
+      "art": {
+        "pattern": "dots-count",
+        "color": "#b0bec5",
+        "params": {
+          "count": 0
+        }
+      },
+      "faces": {
+        "top": {
+          "pattern": "glyph",
+          "color": "#b0bec5",
+          "params": {
+            "text": "0"
+          }
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "1",
+      "name": "one",
+      "art": {
+        "pattern": "dots-count",
+        "color": "#ef5350",
+        "params": {
+          "count": 1
+        }
+      },
+      "faces": {
+        "top": {
+          "pattern": "glyph",
+          "color": "#ef5350",
+          "params": {
+            "text": "1"
+          }
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "2",
+      "name": "two",
+      "art": {
+        "pattern": "dots-count",
+        "color": "#ff9838",
+        "params": {
+          "count": 2
+        }
+      },
+      "faces": {
+        "top": {
+          "pattern": "glyph",
+          "color": "#ff9838",
+          "params": {
+            "text": "2"
+          }
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "3",
+      "name": "three",
+      "art": {
+        "pattern": "dots-count",
+        "color": "#f5b800",
+        "params": {
+          "count": 3
+        }
+      },
+      "faces": {
+        "top": {
+          "pattern": "glyph",
+          "color": "#f5b800",
+          "params": {
+            "text": "3"
+          }
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "4",
+      "name": "four",
+      "art": {
+        "pattern": "dots-count",
+        "color": "#5cc96b",
+        "params": {
+          "count": 4
+        }
+      },
+      "faces": {
+        "top": {
+          "pattern": "glyph",
+          "color": "#5cc96b",
+          "params": {
+            "text": "4"
+          }
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "5",
+      "name": "five",
+      "art": {
+        "pattern": "dots-count",
+        "color": "#29b6c6",
+        "params": {
+          "count": 5
+        }
+      },
+      "faces": {
+        "top": {
+          "pattern": "glyph",
+          "color": "#29b6c6",
+          "params": {
+            "text": "5"
+          }
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "6",
+      "name": "six",
+      "art": {
+        "pattern": "dots-count",
+        "color": "#4a9cf0",
+        "params": {
+          "count": 6
+        }
+      },
+      "faces": {
+        "top": {
+          "pattern": "glyph",
+          "color": "#4a9cf0",
+          "params": {
+            "text": "6"
+          }
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "7",
+      "name": "seven",
+      "art": {
+        "pattern": "dots-count",
+        "color": "#9c6ade",
+        "params": {
+          "count": 7
+        }
+      },
+      "faces": {
+        "top": {
+          "pattern": "glyph",
+          "color": "#9c6ade",
+          "params": {
+            "text": "7"
+          }
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "8",
+      "name": "eight",
+      "art": {
+        "pattern": "dots-count",
+        "color": "#ff6fae",
+        "params": {
+          "count": 8
+        }
+      },
+      "faces": {
+        "top": {
+          "pattern": "glyph",
+          "color": "#ff6fae",
+          "params": {
+            "text": "8"
+          }
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "9",
+      "name": "nine",
+      "art": {
+        "pattern": "dots-count",
+        "color": "#8d6e63",
+        "params": {
+          "count": 9
+        }
+      },
+      "faces": {
+        "top": {
+          "pattern": "glyph",
+          "color": "#8d6e63",
+          "params": {
+            "text": "9"
+          }
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "10",
+      "name": "ten",
+      "art": {
+        "pattern": "dots-count",
+        "color": "#26a69a",
+        "params": {
+          "count": 10
+        }
+      },
+      "faces": {
+        "top": {
+          "pattern": "glyph",
+          "color": "#26a69a",
+          "params": {
+            "text": "10"
+          }
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    }
+  ]
+}

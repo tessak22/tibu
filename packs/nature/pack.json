@@ -1,0 +1,201 @@
+{
+  "$schema": "../../schemas/pack.schema.json",
+  "id": "nature",
+  "name": "Nature",
+  "order": 6,
+  "icon": {
+    "block": "grass"
+  },
+  "tileColor": "#dff5d8",
+  "blocks": [
+    {
+      "id": "grass",
+      "name": "grass",
+      "art": {
+        "pattern": "grass",
+        "color": "#7ccf5a",
+        "accent": "#5fb946"
+      },
+      "sound": {
+        "synth": "rustle"
+      },
+      "behaviors": [
+        "speak",
+        "sound"
+      ]
+    },
+    {
+      "id": "dirt",
+      "name": "dirt",
+      "art": {
+        "pattern": "dirt",
+        "color": "#b98556",
+        "accent": "#9a6a40"
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "sand",
+      "name": "sand",
+      "art": {
+        "pattern": "sand",
+        "color": "#f6dc98",
+        "accent": "#e8c473"
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "water",
+      "name": "water",
+      "art": {
+        "pattern": "water-waves",
+        "color": "#5bb8f2",
+        "accent": "#a9defd"
+      },
+      "sound": {
+        "synth": "splash"
+      },
+      "behaviors": [
+        "speak",
+        "sound",
+        "bounce"
+      ]
+    },
+    {
+      "id": "wood",
+      "name": "wood",
+      "art": {
+        "pattern": "wood-grain",
+        "color": "#c08a55",
+        "accent": "#9e6b3c"
+      },
+      "faces": {
+        "top": {
+          "pattern": "wood-rings",
+          "color": "#e2b47d",
+          "accent": "#b9844f"
+        },
+        "bottom": {
+          "pattern": "wood-rings",
+          "color": "#e2b47d",
+          "accent": "#b9844f"
+        }
+      },
+      "sound": {
+        "synth": "knock"
+      },
+      "behaviors": [
+        "speak",
+        "sound"
+      ]
+    },
+    {
+      "id": "leaves",
+      "name": "leaves",
+      "art": {
+        "pattern": "leaves",
+        "color": "#5cbf5a",
+        "accent": "#8fdc6e"
+      },
+      "sound": {
+        "synth": "rustle"
+      },
+      "behaviors": [
+        "speak",
+        "sound",
+        "bounce"
+      ]
+    },
+    {
+      "id": "flowers",
+      "name": "flowers",
+      "art": {
+        "pattern": "flowers",
+        "color": "#82d36a",
+        "accent": "#ff8fc7"
+      },
+      "sound": {
+        "synth": "chime"
+      },
+      "behaviors": [
+        "speak",
+        "sound",
+        "bounce"
+      ]
+    },
+    {
+      "id": "stone",
+      "name": "stone",
+      "art": {
+        "pattern": "stone",
+        "color": "#b8b6c4",
+        "accent": "#9e9bad"
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "snow",
+      "name": "snow",
+      "art": {
+        "pattern": "snow",
+        "color": "#fbfdff",
+        "accent": "#d7e9fa"
+      },
+      "behaviors": [
+        "speak",
+        "bounce"
+      ]
+    },
+    {
+      "id": "ice",
+      "name": "ice",
+      "art": {
+        "pattern": "ice",
+        "color": "#bfe8fb",
+        "accent": "#ffffff"
+      },
+      "sound": {
+        "synth": "ding"
+      },
+      "behaviors": [
+        "speak",
+        "sound"
+      ]
+    },
+    {
+      "id": "hay",
+      "name": "hay",
+      "art": {
+        "pattern": "hay",
+        "color": "#f3cf63",
+        "accent": "#ddb045"
+      },
+      "sound": {
+        "synth": "rustle"
+      },
+      "behaviors": [
+        "speak",
+        "sound"
+      ]
+    },
+    {
+      "id": "moon-rock",
+      "name": "moon rock",
+      "art": {
+        "pattern": "craters",
+        "color": "#c9b8f0",
+        "accent": "#a996dc"
+      },
+      "behaviors": [
+        "speak",
+        "bounce"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "id": "not-the-folder",
+  "name": "Mismatch",
+  "icon": { "block": "nope" },
+  "blocks": [
+    { "id": "a", "name": "a", "art": { "image": "icons/missing.png" }, "sound": { "file": "audio/missing.ogg" } },
+    { "id": "a", "name": "a again", "art": { "color": "#123456" }, "behaviors": ["sound"] }
+  ]
+}

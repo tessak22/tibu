@@ -1,0 +1,21 @@
+{
+  "$schema": "../schemas/card.schema.json",
+  "id": "flower-bed",
+  "name": "flower bed",
+  "order": 8,
+  "blocks": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        2,
+        0,
+        1
+      ],
+      "block": "nature:flowers"
+    }
+  ]
+}

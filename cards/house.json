@@ -1,0 +1,57 @@
+{
+  "$schema": "../schemas/card.schema.json",
+  "id": "house",
+  "name": "house",
+  "order": 2,
+  "blocks": [
+    {
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "block": "building:brick"
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "z": 0,
+      "block": "building:door"
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "z": 0,
+      "block": "building:brick"
+    },
+    {
+      "x": 0,
+      "y": 1,
+      "z": 0,
+      "block": "building:brick"
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "z": 0,
+      "block": "building:window"
+    },
+    {
+      "x": 2,
+      "y": 1,
+      "z": 0,
+      "block": "building:brick"
+    },
+    {
+      "from": [
+        0,
+        2,
+        0
+      ],
+      "to": [
+        2,
+        2,
+        0
+      ],
+      "block": "building:roof"
+    }
+  ]
+}

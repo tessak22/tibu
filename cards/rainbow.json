@@ -1,0 +1,44 @@
+{
+  "$schema": "../schemas/card.schema.json",
+  "id": "rainbow",
+  "name": "rainbow",
+  "order": 6,
+  "blocks": [
+    {
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "block": "colors:red"
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "z": 0,
+      "block": "colors:orange"
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "z": 0,
+      "block": "colors:yellow"
+    },
+    {
+      "x": 3,
+      "y": 0,
+      "z": 0,
+      "block": "colors:green"
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "z": 0,
+      "block": "colors:blue"
+    },
+    {
+      "x": 5,
+      "y": 0,
+      "z": 0,
+      "block": "colors:purple"
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "$schema": "../schemas/card.schema.json",
+  "id": "bridge",
+  "name": "bridge",
+  "order": 3,
+  "blocks": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        0,
+        1,
+        0
+      ],
+      "block": "nature:stone"
+    },
+    {
+      "from": [
+        3,
+        0,
+        0
+      ],
+      "to": [
+        3,
+        1,
+        0
+      ],
+      "block": "nature:stone"
+    },
+    {
+      "from": [
+        0,
+        2,
+        0
+      ],
+      "to": [
+        3,
+        2,
+        0
+      ],
+      "block": "building:planks"
+    }
+  ]
+}

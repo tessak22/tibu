@@ -1,0 +1,113 @@
+{
+  "$schema": "../../schemas/theme.schema.json",
+  "id": "farm",
+  "name": "Farm",
+  "order": 3,
+  "sky": {
+    "top": "#7cc7ff",
+    "bottom": "#fff4d6"
+  },
+  "island": {
+    "shape": "square",
+    "depth": 4
+  },
+  "ground": [
+    "nature:grass",
+    "nature:dirt"
+  ],
+  "cloudColor": "#ffffff",
+  "scene": [
+    {
+      "from": [
+        5,
+        2,
+        5
+      ],
+      "to": [
+        7,
+        3,
+        7
+      ],
+      "block": "colors:red"
+    },
+    {
+      "x": 6,
+      "y": 2,
+      "z": 7,
+      "block": "building:door"
+    },
+    {
+      "x": 6,
+      "y": 3,
+      "z": 7,
+      "block": "building:window"
+    },
+    {
+      "x": 6,
+      "y": 2,
+      "z": 6,
+      "block": "building:planks"
+    },
+    {
+      "x": 6,
+      "y": 3,
+      "z": 6,
+      "block": "building:planks"
+    },
+    {
+      "from": [
+        5,
+        4,
+        5
+      ],
+      "to": [
+        7,
+        4,
+        7
+      ],
+      "block": "building:roof"
+    },
+    {
+      "x": 9,
+      "y": 2,
+      "z": 4,
+      "block": "nature:hay"
+    },
+    {
+      "x": 10,
+      "y": 2,
+      "z": 4,
+      "block": "nature:hay"
+    },
+    {
+      "x": 9,
+      "y": 3,
+      "z": 4,
+      "block": "nature:hay"
+    },
+    {
+      "x": 9,
+      "y": 2,
+      "z": 10,
+      "block": "animals:cow"
+    },
+    {
+      "x": 13,
+      "y": 2,
+      "z": 11,
+      "block": "animals:pig"
+    },
+    {
+      "x": 15,
+      "y": 2,
+      "z": 7,
+      "block": "animals:chicken"
+    },
+    {
+      "x": 11,
+      "y": 2,
+      "z": 15,
+      "block": "animals:sheep"
+    }
+  ]
+}

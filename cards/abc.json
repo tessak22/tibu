@@ -1,0 +1,26 @@
+{
+  "$schema": "../schemas/card.schema.json",
+  "id": "abc",
+  "name": "A B C",
+  "order": 10,
+  "blocks": [
+    {
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "block": "letters:a"
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "z": 0,
+      "block": "letters:b"
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "z": 0,
+      "block": "letters:c"
+    }
+  ]
+}

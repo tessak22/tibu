@@ -1,0 +1,96 @@
+{
+  "$schema": "../../schemas/theme.schema.json",
+  "id": "snow",
+  "name": "Snow",
+  "order": 4,
+  "sky": {
+    "top": "#8ccdf7",
+    "bottom": "#f4fbff"
+  },
+  "island": {
+    "shape": "round",
+    "depth": 4
+  },
+  "ground": [
+    "nature:snow",
+    "nature:stone"
+  ],
+  "cloudColor": "#ffffff",
+  "scene": [
+    {
+      "x": 7,
+      "y": 2,
+      "z": 7,
+      "block": "nature:snow"
+    },
+    {
+      "x": 7,
+      "y": 3,
+      "z": 7,
+      "block": "nature:snow"
+    },
+    {
+      "x": 7,
+      "y": 4,
+      "z": 7,
+      "block": "colors:white"
+    },
+    {
+      "x": 7,
+      "y": 4,
+      "z": 8,
+      "block": "colors:orange"
+    },
+    {
+      "from": [
+        14,
+        2,
+        13
+      ],
+      "to": [
+        16,
+        2,
+        15
+      ],
+      "block": "nature:ice"
+    },
+    {
+      "from": [
+        15,
+        2,
+        6
+      ],
+      "to": [
+        15,
+        4,
+        6
+      ],
+      "block": "nature:wood"
+    },
+    {
+      "from": [
+        14,
+        5,
+        5
+      ],
+      "to": [
+        16,
+        5,
+        7
+      ],
+      "block": "nature:leaves"
+    },
+    {
+      "x": 15,
+      "y": 6,
+      "z": 6,
+      "block": "nature:snow"
+    },
+    {
+      "x": 10,
+      "y": 2,
+      "z": 15,
+      "block": "animals:bunny"
+    }
+  ]
+}

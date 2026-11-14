@@ -1,0 +1,113 @@
+{
+  "$schema": "../../schemas/theme.schema.json",
+  "id": "meadow",
+  "name": "Meadow",
+  "order": 1,
+  "sky": {
+    "top": "#6ec3ff",
+    "bottom": "#dff3ff"
+  },
+  "island": {
+    "shape": "round",
+    "depth": 4
+  },
+  "ground": [
+    "nature:grass",
+    "nature:dirt"
+  ],
+  "cloudColor": "#ffffff",
+  "scene": [
+    {
+      "from": [
+        6,
+        2,
+        6
+      ],
+      "to": [
+        6,
+        4,
+        6
+      ],
+      "block": "nature:wood"
+    },
+    {
+      "from": [
+        5,
+        5,
+        5
+      ],
+      "to": [
+        7,
+        5,
+        7
+      ],
+      "block": "nature:leaves"
+    },
+    {
+      "x": 6,
+      "y": 6,
+      "z": 6,
+      "block": "nature:leaves"
+    },
+    {
+      "x": 6,
+      "y": 7,
+      "z": 6,
+      "block": "animals:bird"
+    },
+    {
+      "x": 9,
+      "y": 2,
+      "z": 5,
+      "block": "nature:flowers"
+    },
+    {
+      "x": 10,
+      "y": 2,
+      "z": 5,
+      "block": "nature:flowers"
+    },
+    {
+      "x": 9,
+      "y": 2,
+      "z": 4,
+      "block": "nature:flowers"
+    },
+    {
+      "x": 15,
+      "y": 2,
+      "z": 15,
+      "block": "nature:flowers"
+    },
+    {
+      "x": 16,
+      "y": 2,
+      "z": 15,
+      "block": "nature:flowers"
+    },
+    {
+      "x": 14,
+      "y": 2,
+      "z": 8,
+      "block": "colors:red"
+    },
+    {
+      "x": 14,
+      "y": 3,
+      "z": 8,
+      "block": "colors:yellow"
+    },
+    {
+      "x": 14,
+      "y": 4,
+      "z": 8,
+      "block": "colors:blue"
+    },
+    {
+      "x": 8,
+      "y": 2,
+      "z": 15,
+      "block": "animals:bunny"
+    }
+  ]
+}

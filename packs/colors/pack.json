@@ -1,0 +1,122 @@
+{
+  "$schema": "../../schemas/pack.schema.json",
+  "id": "colors",
+  "name": "Colors",
+  "order": 1,
+  "icon": {
+    "block": "red"
+  },
+  "tileColor": "#ffe3e0",
+  "blocks": [
+    {
+      "id": "red",
+      "name": "red",
+      "art": {
+        "color": "#ef5350",
+        "mark": "heart"
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "orange",
+      "name": "orange",
+      "art": {
+        "color": "#ff9838",
+        "mark": "circle"
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "yellow",
+      "name": "yellow",
+      "art": {
+        "color": "#ffd23f",
+        "mark": "star"
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "green",
+      "name": "green",
+      "art": {
+        "color": "#5cc96b",
+        "mark": "triangle"
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "blue",
+      "name": "blue",
+      "art": {
+        "color": "#4a9cf0",
+        "mark": "drop"
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "purple",
+      "name": "purple",
+      "art": {
+        "color": "#9c6ade",
+        "mark": "diamond"
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "pink",
+      "name": "pink",
+      "art": {
+        "color": "#ff8fc7",
+        "mark": "flower"
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "brown",
+      "name": "brown",
+      "art": {
+        "color": "#a47148",
+        "mark": "square"
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "white",
+      "name": "white",
+      "art": {
+        "color": "#f7f4ee",
+        "mark": "cloud"
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "black",
+      "name": "black",
+      "art": {
+        "color": "#3d3a4b",
+        "mark": "moon"
+      },
+      "behaviors": [
+        "speak"
+      ]
+    }
+  ]
+}

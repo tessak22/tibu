@@ -1,0 +1,351 @@
+{
+  "$schema": "../../schemas/pack.schema.json",
+  "id": "animals",
+  "name": "Animals",
+  "order": 5,
+  "icon": {
+    "block": "cow"
+  },
+  "tileColor": "#fdeedd",
+  "blocks": [
+    {
+      "id": "cow",
+      "name": "cow",
+      "art": {
+        "pattern": "animal-face",
+        "color": "#fbf7f0",
+        "params": {
+          "animal": "cow"
+        }
+      },
+      "faces": {
+        "top": {
+          "pattern": "spots",
+          "color": "#fbf7f0",
+          "accent": "#5d4a42"
+        },
+        "bottom": {
+          "color": "#fbf7f0"
+        }
+      },
+      "sound": {
+        "synth": "moo"
+      },
+      "behaviors": [
+        "speak",
+        "sound",
+        "bounce"
+      ]
+    },
+    {
+      "id": "pig",
+      "name": "pig",
+      "art": {
+        "pattern": "animal-face",
+        "color": "#ffb3c6",
+        "params": {
+          "animal": "pig"
+        }
+      },
+      "faces": {
+        "top": {
+          "color": "#ffb3c6"
+        },
+        "bottom": {
+          "color": "#ffb3c6"
+        }
+      },
+      "sound": {
+        "synth": "oink"
+      },
+      "behaviors": [
+        "speak",
+        "sound",
+        "bounce"
+      ]
+    },
+    {
+      "id": "sheep",
+      "name": "sheep",
+      "art": {
+        "pattern": "animal-face",
+        "color": "#f6f1e7",
+        "params": {
+          "animal": "sheep"
+        }
+      },
+      "faces": {
+        "top": {
+          "pattern": "fluffy",
+          "color": "#f6f1e7"
+        },
+        "bottom": {
+          "color": "#f6f1e7"
+        }
+      },
+      "sound": {
+        "synth": "baa"
+      },
+      "behaviors": [
+        "speak",
+        "sound",
+        "bounce"
+      ]
+    },
+    {
+      "id": "horse",
+      "name": "horse",
+      "art": {
+        "pattern": "animal-face",
+        "color": "#b07a4f",
+        "params": {
+          "animal": "horse"
+        }
+      },
+      "faces": {
+        "top": {
+          "color": "#b07a4f"
+        },
+        "bottom": {
+          "color": "#b07a4f"
+        }
+      },
+      "sound": {
+        "synth": "neigh"
+      },
+      "behaviors": [
+        "speak",
+        "sound",
+        "bounce"
+      ]
+    },
+    {
+      "id": "chicken",
+      "name": "chicken",
+      "art": {
+        "pattern": "animal-face",
+        "color": "#fffaf0",
+        "params": {
+          "animal": "chicken"
+        }
+      },
+      "faces": {
+        "top": {
+          "pattern": "fluffy",
+          "color": "#fffaf0"
+        },
+        "bottom": {
+          "color": "#fffaf0"
+        }
+      },
+      "sound": {
+        "synth": "cluck"
+      },
+      "behaviors": [
+        "speak",
+        "sound",
+        "bounce"
+      ]
+    },
+    {
+      "id": "duck",
+      "name": "duck",
+      "art": {
+        "pattern": "animal-face",
+        "color": "#ffd84d",
+        "params": {
+          "animal": "duck"
+        }
+      },
+      "faces": {
+        "top": {
+          "color": "#ffd84d"
+        },
+        "bottom": {
+          "color": "#ffd84d"
+        }
+      },
+      "sound": {
+        "synth": "quack"
+      },
+      "behaviors": [
+        "speak",
+        "sound",
+        "bounce"
+      ]
+    },
+    {
+      "id": "cat",
+      "name": "cat",
+      "art": {
+        "pattern": "animal-face",
+        "color": "#ffab5e",
+        "params": {
+          "animal": "cat"
+        }
+      },
+      "faces": {
+        "top": {
+          "pattern": "stripes",
+          "color": "#ffab5e",
+          "accent": "#f08a3c",
+          "params": {
+            "count": 4,
+            "angle": 0
+          }
+        },
+        "bottom": {
+          "color": "#ffab5e"
+        }
+      },
+      "sound": {
+        "synth": "meow"
+      },
+      "behaviors": [
+        "speak",
+        "sound",
+        "bounce"
+      ]
+    },
+    {
+      "id": "dog",
+      "name": "dog",
+      "art": {
+        "pattern": "animal-face",
+        "color": "#e0b382",
+        "params": {
+          "animal": "dog"
+        }
+      },
+      "faces": {
+        "top": {
+          "pattern": "spots",
+          "color": "#e0b382",
+          "accent": "#a8754a"
+        },
+        "bottom": {
+          "color": "#e0b382"
+        }
+      },
+      "sound": {
+        "synth": "woof"
+      },
+      "behaviors": [
+        "speak",
+        "sound",
+        "bounce"
+      ]
+    },
+    {
+      "id": "bird",
+      "name": "bird",
+      "art": {
+        "pattern": "animal-face",
+        "color": "#6cb8f5",
+        "params": {
+          "animal": "bird"
+        }
+      },
+      "faces": {
+        "top": {
+          "color": "#6cb8f5"
+        },
+        "bottom": {
+          "color": "#6cb8f5"
+        }
+      },
+      "sound": {
+        "synth": "tweet"
+      },
+      "behaviors": [
+        "speak",
+        "sound",
+        "bounce"
+      ]
+    },
+    {
+      "id": "frog",
+      "name": "frog",
+      "art": {
+        "pattern": "animal-face",
+        "color": "#7ed36b",
+        "params": {
+          "animal": "frog"
+        }
+      },
+      "faces": {
+        "top": {
+          "pattern": "dots",
+          "color": "#7ed36b",
+          "accent": "#64bb55"
+        },
+        "bottom": {
+          "color": "#7ed36b"
+        }
+      },
+      "sound": {
+        "synth": "ribbit"
+      },
+      "behaviors": [
+        "speak",
+        "sound",
+        "bounce"
+      ]
+    },
+    {
+      "id": "mouse",
+      "name": "mouse",
+      "art": {
+        "pattern": "animal-face",
+        "color": "#c5c3cf",
+        "params": {
+          "animal": "mouse"
+        }
+      },
+      "faces": {
+        "top": {
+          "color": "#c5c3cf"
+        },
+        "bottom": {
+          "color": "#c5c3cf"
+        }
+      },
+      "sound": {
+        "synth": "squeak"
+      },
+      "behaviors": [
+        "speak",
+        "sound",
+        "bounce"
+      ]
+    },
+    {
+      "id": "bunny",
+      "name": "bunny",
+      "art": {
+        "pattern": "animal-face",
+        "color": "#f3ece6",
+        "params": {
+          "animal": "bunny"
+        }
+      },
+      "faces": {
+        "top": {
+          "pattern": "fluffy",
+          "color": "#f3ece6"
+        },
+        "bottom": {
+          "color": "#f3ece6"
+        }
+      },
+      "sound": {
+        "synth": "squeak"
+      },
+      "behaviors": [
+        "speak",
+        "sound",
+        "bounce"
+      ]
+    }
+  ]
+}

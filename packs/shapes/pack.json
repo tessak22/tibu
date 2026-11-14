@@ -1,0 +1,194 @@
+{
+  "$schema": "../../schemas/pack.schema.json",
+  "id": "shapes",
+  "name": "Shapes",
+  "order": 2,
+  "icon": {
+    "block": "star"
+  },
+  "tileColor": "#fff4cc",
+  "blocks": [
+    {
+      "id": "circle",
+      "name": "circle",
+      "art": {
+        "color": "#fff8ec",
+        "mark": "circle",
+        "markColor": "#ef5350",
+        "markSize": 0.72
+      },
+      "behaviors": [
+        "speak",
+        "bounce"
+      ]
+    },
+    {
+      "id": "square",
+      "name": "square",
+      "art": {
+        "color": "#fff8ec",
+        "mark": "square",
+        "markColor": "#4a9cf0",
+        "markSize": 0.72
+      },
+      "behaviors": [
+        "speak",
+        "bounce"
+      ]
+    },
+    {
+      "id": "triangle",
+      "name": "triangle",
+      "art": {
+        "color": "#fff8ec",
+        "mark": "triangle",
+        "markColor": "#5cc96b",
+        "markSize": 0.72
+      },
+      "behaviors": [
+        "speak",
+        "bounce"
+      ]
+    },
+    {
+      "id": "star",
+      "name": "star",
+      "art": {
+        "color": "#fff8ec",
+        "mark": "star",
+        "markColor": "#ffb300",
+        "markSize": 0.72
+      },
+      "behaviors": [
+        "speak",
+        "bounce"
+      ]
+    },
+    {
+      "id": "heart",
+      "name": "heart",
+      "art": {
+        "color": "#fff8ec",
+        "mark": "heart",
+        "markColor": "#ff6fae",
+        "markSize": 0.72
+      },
+      "behaviors": [
+        "speak",
+        "bounce"
+      ]
+    },
+    {
+      "id": "diamond",
+      "name": "diamond",
+      "art": {
+        "color": "#fff8ec",
+        "mark": "diamond",
+        "markColor": "#9c6ade",
+        "markSize": 0.72
+      },
+      "behaviors": [
+        "speak",
+        "bounce"
+      ]
+    },
+    {
+      "id": "oval",
+      "name": "oval",
+      "art": {
+        "color": "#fff8ec",
+        "mark": "oval",
+        "markColor": "#ff9838",
+        "markSize": 0.72
+      },
+      "behaviors": [
+        "speak",
+        "bounce"
+      ]
+    },
+    {
+      "id": "moon",
+      "name": "moon",
+      "art": {
+        "color": "#fff8ec",
+        "mark": "moon",
+        "markColor": "#f2c230",
+        "markSize": 0.72
+      },
+      "behaviors": [
+        "speak",
+        "bounce"
+      ]
+    },
+    {
+      "id": "rectangle",
+      "name": "rectangle",
+      "art": {
+        "color": "#fff8ec",
+        "mark": "rectangle",
+        "markColor": "#29b6c6",
+        "markSize": 0.72
+      },
+      "behaviors": [
+        "speak",
+        "bounce"
+      ]
+    },
+    {
+      "id": "hexagon",
+      "name": "hexagon",
+      "art": {
+        "color": "#fff8ec",
+        "mark": "hexagon",
+        "markColor": "#7cb342",
+        "markSize": 0.72
+      },
+      "behaviors": [
+        "speak",
+        "bounce"
+      ]
+    },
+    {
+      "id": "pentagon",
+      "name": "pentagon",
+      "art": {
+        "color": "#fff8ec",
+        "mark": "pentagon",
+        "markColor": "#e57373",
+        "markSize": 0.72
+      },
+      "behaviors": [
+        "speak",
+        "bounce"
+      ]
+    },
+    {
+      "id": "cross",
+      "name": "cross",
+      "art": {
+        "color": "#fff8ec",
+        "mark": "cross",
+        "markColor": "#5c7cfa",
+        "markSize": 0.72
+      },
+      "behaviors": [
+        "speak",
+        "bounce"
+      ]
+    },
+    {
+      "id": "cloud",
+      "name": "cloud",
+      "art": {
+        "color": "#fff8ec",
+        "mark": "cloud",
+        "markColor": "#64b5f6",
+        "markSize": 0.72
+      },
+      "behaviors": [
+        "speak",
+        "bounce"
+      ]
+    }
+  ]
+}

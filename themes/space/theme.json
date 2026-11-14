@@ -1,0 +1,95 @@
+{
+  "$schema": "../../schemas/theme.schema.json",
+  "id": "space",
+  "name": "Space",
+  "order": 5,
+  "sky": {
+    "top": "#5b3fd6",
+    "bottom": "#a98bff",
+    "stars": true
+  },
+  "island": {
+    "shape": "blob",
+    "depth": 3
+  },
+  "ground": [
+    "nature:moon-rock",
+    "nature:moon-rock"
+  ],
+  "cloudColor": "#ffd6f5",
+  "scene": [
+    {
+      "from": [
+        8,
+        2,
+        8
+      ],
+      "to": [
+        8,
+        5,
+        8
+      ],
+      "block": "colors:white"
+    },
+    {
+      "x": 8,
+      "y": 4,
+      "z": 8,
+      "block": "building:window"
+    },
+    {
+      "x": 8,
+      "y": 6,
+      "z": 8,
+      "block": "colors:red"
+    },
+    {
+      "x": 7,
+      "y": 2,
+      "z": 8,
+      "block": "colors:red"
+    },
+    {
+      "x": 9,
+      "y": 2,
+      "z": 8,
+      "block": "colors:red"
+    },
+    {
+      "x": 8,
+      "y": 2,
+      "z": 7,
+      "block": "colors:red"
+    },
+    {
+      "x": 8,
+      "y": 2,
+      "z": 9,
+      "block": "colors:red"
+    },
+    {
+      "x": 15,
+      "y": 2,
+      "z": 15,
+      "block": "building:star-light"
+    },
+    {
+      "x": 16,
+      "y": 7,
+      "z": 6,
+      "block": "building:star-light"
+    },
+    {
+      "x": 5,
+      "y": 9,
+      "z": 14,
+      "block": "building:star-light"
+    },
+    {
+      "x": 14,
+      "y": 2,
+      "z": 9,
+      "block": "shapes:moon"
+    }
+  ]
+}

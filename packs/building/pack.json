@@ -1,0 +1,203 @@
+{
+  "$schema": "../../schemas/pack.schema.json",
+  "id": "building",
+  "name": "Building",
+  "order": 8,
+  "icon": {
+    "block": "window"
+  },
+  "tileColor": "#ffe9d6",
+  "blocks": [
+    {
+      "id": "brick",
+      "name": "brick",
+      "art": {
+        "pattern": "bricks",
+        "color": "#e0775a",
+        "accent": "#f6e6d6"
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "wall",
+      "name": "wall",
+      "art": {
+        "pattern": "bricks",
+        "color": "#fff3e2",
+        "accent": "#e9d8c2",
+        "params": {
+          "soft": true
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "planks",
+      "name": "planks",
+      "art": {
+        "pattern": "planks",
+        "color": "#d9a066",
+        "accent": "#b37a45"
+      },
+      "sound": {
+        "synth": "knock"
+      },
+      "behaviors": [
+        "speak",
+        "sound"
+      ]
+    },
+    {
+      "id": "window",
+      "name": "window",
+      "art": {
+        "pattern": "window",
+        "color": "#ffffff",
+        "accent": "#8fd3ff"
+      },
+      "faces": {
+        "top": {
+          "pattern": "planks",
+          "color": "#f4f0ea",
+          "accent": "#d9d2c8"
+        },
+        "bottom": {
+          "pattern": "planks",
+          "color": "#f4f0ea",
+          "accent": "#d9d2c8"
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "door",
+      "name": "door",
+      "art": {
+        "pattern": "door",
+        "color": "#4fa3e0",
+        "accent": "#ffd23f"
+      },
+      "faces": {
+        "top": {
+          "pattern": "planks",
+          "color": "#d9a066",
+          "accent": "#b37a45"
+        },
+        "bottom": {
+          "pattern": "planks",
+          "color": "#d9a066",
+          "accent": "#b37a45"
+        }
+      },
+      "sound": {
+        "synth": "knock"
+      },
+      "behaviors": [
+        "speak",
+        "sound"
+      ]
+    },
+    {
+      "id": "roof",
+      "name": "roof",
+      "art": {
+        "pattern": "roof",
+        "color": "#e85d5d",
+        "accent": "#c94545"
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "blue-roof",
+      "name": "blue roof",
+      "art": {
+        "pattern": "roof",
+        "color": "#5b8def",
+        "accent": "#4570cf"
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "glass",
+      "name": "glass",
+      "art": {
+        "pattern": "glass",
+        "color": "#d9f2ff",
+        "accent": "#ffffff"
+      },
+      "sound": {
+        "synth": "ding"
+      },
+      "behaviors": [
+        "speak",
+        "sound"
+      ]
+    },
+    {
+      "id": "lamp",
+      "name": "lamp",
+      "art": {
+        "pattern": "lamp",
+        "color": "#ffe27a",
+        "accent": "#fff6c8"
+      },
+      "sound": {
+        "synth": "ding"
+      },
+      "behaviors": [
+        "speak",
+        "sound",
+        "glow"
+      ],
+      "glowColor": "#ffd75e"
+    },
+    {
+      "id": "star-light",
+      "name": "star light",
+      "art": {
+        "pattern": "star-shape",
+        "color": "#8a7cf0",
+        "accent": "#fff07a"
+      },
+      "sound": {
+        "synth": "chime"
+      },
+      "behaviors": [
+        "speak",
+        "sound",
+        "glow",
+        "bounce"
+      ],
+      "glowColor": "#fff07a"
+    },
+    {
+      "id": "heart-light",
+      "name": "heart light",
+      "art": {
+        "color": "#ff9ccb",
+        "mark": "heart",
+        "markColor": "#fff0f7",
+        "markSize": 0.6
+      },
+      "sound": {
+        "synth": "chime"
+      },
+      "behaviors": [
+        "speak",
+        "sound",
+        "glow"
+      ],
+      "glowColor": "#ff9ccb"
+    }
+  ]
+}

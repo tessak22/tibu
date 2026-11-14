@@ -1,0 +1,172 @@
+{
+  "$schema": "../../schemas/pack.schema.json",
+  "id": "music",
+  "name": "Music",
+  "order": 7,
+  "icon": {
+    "block": "g"
+  },
+  "tileColor": "#efe4ff",
+  "blocks": [
+    {
+      "id": "c",
+      "name": "C",
+      "art": {
+        "pattern": "note",
+        "color": "#ef5350",
+        "params": {
+          "label": "C",
+          "high": false
+        }
+      },
+      "sound": {
+        "synth": "note",
+        "note": 60
+      },
+      "behaviors": [
+        "sound",
+        "bounce"
+      ]
+    },
+    {
+      "id": "d",
+      "name": "D",
+      "art": {
+        "pattern": "note",
+        "color": "#ff9838",
+        "params": {
+          "label": "D",
+          "high": false
+        }
+      },
+      "sound": {
+        "synth": "note",
+        "note": 62
+      },
+      "behaviors": [
+        "sound",
+        "bounce"
+      ]
+    },
+    {
+      "id": "e",
+      "name": "E",
+      "art": {
+        "pattern": "note",
+        "color": "#f5c400",
+        "params": {
+          "label": "E",
+          "high": false
+        }
+      },
+      "sound": {
+        "synth": "note",
+        "note": 64
+      },
+      "behaviors": [
+        "sound",
+        "bounce"
+      ]
+    },
+    {
+      "id": "f",
+      "name": "F",
+      "art": {
+        "pattern": "note",
+        "color": "#5cc96b",
+        "params": {
+          "label": "F",
+          "high": false
+        }
+      },
+      "sound": {
+        "synth": "note",
+        "note": 65
+      },
+      "behaviors": [
+        "sound",
+        "bounce"
+      ]
+    },
+    {
+      "id": "g",
+      "name": "G",
+      "art": {
+        "pattern": "note",
+        "color": "#29b6c6",
+        "params": {
+          "label": "G",
+          "high": false
+        }
+      },
+      "sound": {
+        "synth": "note",
+        "note": 67
+      },
+      "behaviors": [
+        "sound",
+        "bounce"
+      ]
+    },
+    {
+      "id": "a",
+      "name": "A",
+      "art": {
+        "pattern": "note",
+        "color": "#4a9cf0",
+        "params": {
+          "label": "A",
+          "high": false
+        }
+      },
+      "sound": {
+        "synth": "note",
+        "note": 69
+      },
+      "behaviors": [
+        "sound",
+        "bounce"
+      ]
+    },
+    {
+      "id": "b",
+      "name": "B",
+      "art": {
+        "pattern": "note",
+        "color": "#9c6ade",
+        "params": {
+          "label": "B",
+          "high": false
+        }
+      },
+      "sound": {
+        "synth": "note",
+        "note": 71
+      },
+      "behaviors": [
+        "sound",
+        "bounce"
+      ]
+    },
+    {
+      "id": "high-c",
+      "name": "high C",
+      "art": {
+        "pattern": "note",
+        "color": "#ff6fae",
+        "params": {
+          "label": "C",
+          "high": true
+        }
+      },
+      "sound": {
+        "synth": "note",
+        "note": 72
+      },
+      "behaviors": [
+        "sound",
+        "bounce"
+      ]
+    }
+  ]
+}

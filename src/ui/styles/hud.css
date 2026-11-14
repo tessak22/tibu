@@ -1,0 +1,169 @@
+.screens > .hud {
+  pointer-events: none;
+}
+
+.hud > .parent-corner {
+  pointer-events: auto;
+}
+
+.hud-group {
+  position: absolute;
+  display: flex;
+  gap: var(--gap);
+  pointer-events: auto;
+}
+
+.hud-top-start {
+  top: calc(var(--safe-top) + 12px);
+  inset-inline-start: calc(var(--safe-left) + 12px);
+}
+
+.hud-top-end {
+  top: calc(var(--safe-top) + 12px);
+  inset-inline-end: calc(var(--safe-right) + 64px);
+}
+
+.hud-side-start {
+  flex-direction: column;
+  align-items: center;
+  top: 50%;
+  transform: translateY(-60%);
+  inset-inline-start: calc(var(--safe-left) + 12px);
+}
+
+.hud-side-end {
+  top: 50%;
+  transform: translateY(-60%);
+  inset-inline-end: calc(var(--safe-right) + 12px);
+}
+
+.hud-bottom {
+  bottom: calc(var(--safe-bottom) + 10px);
+  inset-inline: calc(var(--safe-left) + 12px) calc(var(--safe-right) + 12px);
+  align-items: center;
+}
+
+/* Build / smash: active one is clearly bigger and brighter. */
+.mode-btn {
+  opacity: 0.6;
+  transform: scale(0.85);
+  filter: saturate(0.6);
+}
+
+.mode-btn.active {
+  opacity: 1;
+  transform: scale(1.2);
+  filter: none;
+  background: #fff6c9;
+  box-shadow: 0 0 0 5px var(--sun), 0 8px 18px rgb(0 0 0 / 0.18);
+}
+
+.mode-btn.active.pop {
+  animation: pop-big 320ms ease;
+}
+
+@keyframes pop-big {
+  0% { transform: scale(1.2); }
+  40% { transform: scale(1.38); }
+  100% { transform: scale(1.2); }
+}
+
+.hud-side-start .mode-btn.active {
+  margin-block: 10px;
+}
+
+.undo-btn.big {
+  width: calc(var(--btn) * 1.25);
+  height: calc(var(--btn) * 1.25);
+  background: #e3f0ff;
+}
+
+.undo-btn.dim {
+  opacity: 0.55;
+}
+
+.mute-btn.off {
+  background: #eceff1;
+}
+
+.card-btn[hidden] {
+  display: none;
+}
+
+.card-btn.showing {
+  width: calc(var(--btn) * 1.9);
+  height: calc(var(--btn) * 1.9);
+  padding: 6px;
+  background: #fff8e1;
+  box-shadow: 0 0 0 4px #ffb300, 0 8px 18px rgb(0 0 0 / 0.18);
+}
+
+.pack-btn {
+  flex: none;
+  background: #fff0e6;
+  padding: 6px;
+}
+
+/* Block tray */
+.tray {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  touch-action: pan-x;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  border-radius: 26px;
+  background: rgb(255 255 255 / 0.72);
+  box-shadow: 0 6px 18px rgb(0 0 0 / 0.12);
+  direction: ltr;
+}
+
+.tray::-webkit-scrollbar {
+  display: none;
+}
+
+.tray-row {
+  display: flex;
+  gap: 10px;
+  padding: 14px 14px;
+  width: max-content;
+}
+
+.tray-item {
+  flex: none;
+  width: var(--btn);
+  height: var(--btn);
+  padding: 6px;
+  border: 0;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 4px 0 rgb(0 0 0 / 0.1);
+  cursor: pointer;
+  touch-action: pan-x;
+  transition: transform 120ms ease;
+}
+
+.tray-item.selected {
+  transform: scale(1.08);
+  box-shadow: 0 0 0 5px var(--accent), 0 8px 14px rgb(0 0 0 / 0.2);
+}
+
+.tray-item.selected.pop {
+  animation: none;
+}
+
+/* Smash mode: the tray fades a little so the hammer reads as active. */
+.hud[data-mode='smash'] .tray {
+  opacity: 0.7;
+}
+
+@media (orientation: portrait) {
+  .hud-side-start,
+  .hud-side-end {
+    top: auto;
+    bottom: calc(var(--safe-bottom) + var(--btn) + 48px);
+    transform: none;
+  }
+}

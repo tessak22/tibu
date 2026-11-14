@@ -1,0 +1,115 @@
+{
+  "$schema": "../../schemas/theme.schema.json",
+  "id": "beach",
+  "name": "Beach",
+  "order": 2,
+  "sky": {
+    "top": "#4fb6f7",
+    "bottom": "#fff1c9"
+  },
+  "island": {
+    "shape": "blob",
+    "depth": 3
+  },
+  "ground": [
+    "nature:sand",
+    "nature:sand"
+  ],
+  "cloudColor": "#ffffff",
+  "scene": [
+    {
+      "from": [
+        14,
+        2,
+        13
+      ],
+      "to": [
+        18,
+        2,
+        17
+      ],
+      "block": "nature:water"
+    },
+    {
+      "x": 16,
+      "y": 3,
+      "z": 15,
+      "block": "animals:duck"
+    },
+    {
+      "from": [
+        5,
+        2,
+        6
+      ],
+      "to": [
+        7,
+        2,
+        8
+      ],
+      "block": "nature:sand"
+    },
+    {
+      "x": 5,
+      "y": 3,
+      "z": 6,
+      "block": "nature:sand"
+    },
+    {
+      "x": 7,
+      "y": 3,
+      "z": 6,
+      "block": "nature:sand"
+    },
+    {
+      "x": 5,
+      "y": 3,
+      "z": 8,
+      "block": "nature:sand"
+    },
+    {
+      "x": 7,
+      "y": 3,
+      "z": 8,
+      "block": "nature:sand"
+    },
+    {
+      "x": 6,
+      "y": 3,
+      "z": 7,
+      "block": "shapes:star"
+    },
+    {
+      "from": [
+        12,
+        2,
+        5
+      ],
+      "to": [
+        12,
+        5,
+        5
+      ],
+      "block": "nature:wood"
+    },
+    {
+      "from": [
+        11,
+        6,
+        4
+      ],
+      "to": [
+        13,
+        6,
+        6
+      ],
+      "block": "nature:leaves"
+    },
+    {
+      "x": 9,
+      "y": 2,
+      "z": 12,
+      "block": "shapes:circle"
+    }
+  ]
+}

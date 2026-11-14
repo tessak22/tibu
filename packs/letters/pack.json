@@ -1,0 +1,376 @@
+{
+  "$schema": "../../schemas/pack.schema.json",
+  "id": "letters",
+  "name": "Letters",
+  "order": 3,
+  "icon": {
+    "block": "a"
+  },
+  "tileColor": "#e3f0ff",
+  "blocks": [
+    {
+      "id": "a",
+      "name": "A",
+      "art": {
+        "pattern": "glyph",
+        "color": "#ef5350",
+        "params": {
+          "text": "A"
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "b",
+      "name": "B",
+      "art": {
+        "pattern": "glyph",
+        "color": "#ff9838",
+        "params": {
+          "text": "B"
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "c",
+      "name": "C",
+      "art": {
+        "pattern": "glyph",
+        "color": "#f5b800",
+        "params": {
+          "text": "C"
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "d",
+      "name": "D",
+      "art": {
+        "pattern": "glyph",
+        "color": "#5cc96b",
+        "params": {
+          "text": "D"
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "e",
+      "name": "E",
+      "art": {
+        "pattern": "glyph",
+        "color": "#29b6c6",
+        "params": {
+          "text": "E"
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "f",
+      "name": "F",
+      "art": {
+        "pattern": "glyph",
+        "color": "#4a9cf0",
+        "params": {
+          "text": "F"
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "g",
+      "name": "G",
+      "art": {
+        "pattern": "glyph",
+        "color": "#9c6ade",
+        "params": {
+          "text": "G"
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "h",
+      "name": "H",
+      "art": {
+        "pattern": "glyph",
+        "color": "#ff6fae",
+        "params": {
+          "text": "H"
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "i",
+      "name": "I",
+      "art": {
+        "pattern": "glyph",
+        "color": "#ef5350",
+        "params": {
+          "text": "I"
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "j",
+      "name": "J",
+      "art": {
+        "pattern": "glyph",
+        "color": "#ff9838",
+        "params": {
+          "text": "J"
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "k",
+      "name": "K",
+      "art": {
+        "pattern": "glyph",
+        "color": "#f5b800",
+        "params": {
+          "text": "K"
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "l",
+      "name": "L",
+      "art": {
+        "pattern": "glyph",
+        "color": "#5cc96b",
+        "params": {
+          "text": "L"
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "m",
+      "name": "M",
+      "art": {
+        "pattern": "glyph",
+        "color": "#29b6c6",
+        "params": {
+          "text": "M"
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "n",
+      "name": "N",
+      "art": {
+        "pattern": "glyph",
+        "color": "#4a9cf0",
+        "params": {
+          "text": "N"
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "o",
+      "name": "O",
+      "art": {
+        "pattern": "glyph",
+        "color": "#9c6ade",
+        "params": {
+          "text": "O"
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "p",
+      "name": "P",
+      "art": {
+        "pattern": "glyph",
+        "color": "#ff6fae",
+        "params": {
+          "text": "P"
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "q",
+      "name": "Q",
+      "art": {
+        "pattern": "glyph",
+        "color": "#ef5350",
+        "params": {
+          "text": "Q"
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "r",
+      "name": "R",
+      "art": {
+        "pattern": "glyph",
+        "color": "#ff9838",
+        "params": {
+          "text": "R"
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "s",
+      "name": "S",
+      "art": {
+        "pattern": "glyph",
+        "color": "#f5b800",
+        "params": {
+          "text": "S"
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "t",
+      "name": "T",
+      "art": {
+        "pattern": "glyph",
+        "color": "#5cc96b",
+        "params": {
+          "text": "T"
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "u",
+      "name": "U",
+      "art": {
+        "pattern": "glyph",
+        "color": "#29b6c6",
+        "params": {
+          "text": "U"
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "v",
+      "name": "V",
+      "art": {
+        "pattern": "glyph",
+        "color": "#4a9cf0",
+        "params": {
+          "text": "V"
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "w",
+      "name": "W",
+      "art": {
+        "pattern": "glyph",
+        "color": "#9c6ade",
+        "params": {
+          "text": "W"
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "x",
+      "name": "X",
+      "art": {
+        "pattern": "glyph",
+        "color": "#ff6fae",
+        "params": {
+          "text": "X"
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "y",
+      "name": "Y",
+      "art": {
+        "pattern": "glyph",
+        "color": "#ef5350",
+        "params": {
+          "text": "Y"
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    },
+    {
+      "id": "z",
+      "name": "Z",
+      "art": {
+        "pattern": "glyph",
+        "color": "#ff9838",
+        "params": {
+          "text": "Z"
+        }
+      },
+      "behaviors": [
+        "speak"
+      ]
+    }
+  ]
+}

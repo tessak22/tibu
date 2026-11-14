@@ -1,0 +1,39 @@
+{
+  "$schema": "../schemas/card.schema.json",
+  "id": "car",
+  "name": "car",
+  "order": 7,
+  "blocks": [
+    {
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "block": "colors:black"
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "z": 0,
+      "block": "colors:black"
+    },
+    {
+      "from": [
+        0,
+        1,
+        0
+      ],
+      "to": [
+        2,
+        1,
+        0
+      ],
+      "block": "colors:red"
+    },
+    {
+      "x": 1,
+      "y": 2,
+      "z": 0,
+      "block": "building:window"
+    }
+  ]
+}

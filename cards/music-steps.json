@@ -1,0 +1,45 @@
+{
+  "$schema": "../schemas/card.schema.json",
+  "id": "music-steps",
+  "name": "music steps",
+  "order": 11,
+  "blocks": [
+    {
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "block": "music:c"
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "z": 0,
+      "block": "music:d"
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "z": 0,
+      "block": "music:e"
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "z": 0,
+      "block": "music:f"
+    },
+    {
+      "from": [
+        2,
+        1,
+        0
+      ],
+      "to": [
+        2,
+        2,
+        0
+      ],
+      "block": "music:g"
+    }
+  ]
+}
